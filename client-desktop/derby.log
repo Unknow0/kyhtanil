@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Sat Feb 06 21:35:59 CET 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.11.1.1 - (1616546): instance a816c00e-0152-b84c-5f0e-000006bb82c8 
+on database directory /home/unknow/prog/kyhtanil/client-desktop/data/db with class loader java.net.URLClassLoader@15f87254 
+Loaded from file:/home/unknow/prog/kyhtanil/client-desktop/target/lib/derby-10.11.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_91-b02
+user.dir=/home/unknow/prog/kyhtanil/client-desktop
+os.name=Linux
+os.arch=amd64
+os.version=4.3.0-1-amd64
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

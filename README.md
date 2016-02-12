@@ -1,4 +1,4 @@
 kyhtanil
 ========
 
-Kyhtanil grind game
+Kyhtanil game
