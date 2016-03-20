@@ -10,6 +10,8 @@
  ******************************************************************************/
 package unknow.kyhtanil.server.pojo;
 
+import unknow.kyhtanil.common.pojo.*;
+
 /** 
  * @author  Unknow
  */

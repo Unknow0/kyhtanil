@@ -5,6 +5,10 @@
  */
 package unknow.kyhtanil.common;
 
+import unknow.common.tools.*;
+import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.pojo.*;
+
 import com.artemis.*;
 
 public class Spawn extends PooledComponent
@@ -12,11 +16,10 @@ public class Spawn extends PooledComponent
 	public UUID uuid;
 	public int type;
 	public String name;
-	public int hp;
+	public CalculatedComp total;
 	public float x;
 	public float y;
-	public float dirX;
-	public float dirY;
+	public float direction;
 
 	/**
 	 * Default constructor.  
@@ -28,19 +31,23 @@ public class Spawn extends PooledComponent
 	/**
 	 * All-args constructor.
 	 */
-	public Spawn(UUID uuid, java.lang.Integer type, java.lang.String name, java.lang.Integer hp, java.lang.Float x, java.lang.Float y, java.lang.Float dirX, java.lang.Float dirY)
+	public Spawn(UUID uuid, int type, String name, CalculatedComp total, float x, float y, float direction)
 		{
 		this.uuid=uuid;
 		this.type=type;
 		this.name=name;
-		this.hp=hp;
+		this.total=total;
 		this.x=x;
 		this.y=y;
-		this.dirX=dirX;
-		this.dirY=dirY;
+		this.direction=direction;
 		}
 
 	protected void reset()
 		{
+		}
+
+	public String toString()
+		{
+		return JsonUtils.toString(this);
 		}
 	}

@@ -12,9 +12,11 @@ package unknow.kyhtanil.server.pojo;
 
 import java.util.*;
 
-import unknow.kyhtanil.server.pojo.Item.*;
+import unknow.kyhtanil.common.pojo.*;
+import unknow.kyhtanil.server.pojo.Item.Slot;
+import unknow.kyhtanil.server.pojo.Item.Type;
 
-public class Mob /*extends Actor*/ implements MobInterface
+public class Mob /*extends Actor*/implements MobInterface
 	{
 	protected String name;
 	protected int level;

@@ -3,11 +3,11 @@
  * 
  * DO NOT EDIT DIRECTLY
  */
-package unknow.kyhtanil.common;
+package unknow.kyhtanil.common.pojo;
 
 import java.util.*;
 
-public class UUID
+public class UUID implements Comparable<UUID>
 	{
 	public byte[] bytes;
 
@@ -46,5 +46,24 @@ public class UUID
 	public String toString()
 		{
 		return Arrays.toString(bytes);
+		}
+
+	public int compareTo(UUID o)
+		{
+		if(o==null)
+			return -1;
+		byte[] b1=bytes;
+		byte[] b2=o.bytes;
+
+		int s=b1.length-b2.length;
+		if(s!=0)
+			return s;
+		for(int i=0; i<b1.length; i++)
+			{
+			s=b1[i]-b2[i];
+			if(s!=0)
+				return s;
+			}
+		return 0;
 		}
 	}

@@ -1,4 +1,4 @@
-package unknow.kyhtanil.server.component;
+package unknow.kyhtanil.common.component;
 
 import com.artemis.*;
 

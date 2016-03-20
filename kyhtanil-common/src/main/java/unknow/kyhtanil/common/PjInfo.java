@@ -5,22 +5,22 @@
  */
 package unknow.kyhtanil.common;
 
+import unknow.common.tools.*;
+import unknow.kyhtanil.common.component.*;
+
 import com.artemis.*;
 
 public class PjInfo extends PooledComponent
 	{
 	public String name;
-	public int level;
 	public int map;
 	public float x;
 	public float y;
 	public int hp;
 	public int mp;
-	public int constitution;
-	public int strength;
-	public int concentration;
-	public int intelligence;
-	public int dexterity;
+
+	public Body body;
+	public CalculatedComp total;
 
 	/**
 	 * Default constructor.
@@ -32,23 +32,23 @@ public class PjInfo extends PooledComponent
 	/**
 	 * All-args constructor.
 	 */
-	public PjInfo(String name, int level, int map, float x, float y, int hp, int mp, int constitution, int strength, int concentration, int intelligence, int dexterity)
+	public PjInfo(String name, int map, float x, float y, int hp, int mp, Body body, CalculatedComp total)
 		{
 		this.name=name;
-		this.level=level;
 		this.map=map;
 		this.x=x;
 		this.y=y;
 		this.hp=hp;
 		this.mp=mp;
-		this.constitution=constitution;
-		this.strength=strength;
-		this.concentration=concentration;
-		this.intelligence=intelligence;
-		this.dexterity=dexterity;
+		this.body=body;
+		this.total=total;
 		}
 
 	protected void reset()
 		{
+		}
+	public String toString()
+		{
+		return JsonUtils.toString(this);
 		}
 	}

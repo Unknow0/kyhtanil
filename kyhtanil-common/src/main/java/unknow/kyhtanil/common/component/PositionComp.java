@@ -1,15 +1,19 @@
-package unknow.kyhtanil.client.component;
+package unknow.kyhtanil.common.component;
 
 import com.artemis.*;
 
 public class PositionComp extends PooledComponent
 	{
-	public float x;
-	public float y;
+	public float x, y;
 
 	protected void reset()
 		{
 		x=y=0;
+		}
+
+	public double distance(PositionComp p)
+		{
+		return distance(p.x, p.y);
 		}
 
 	public double distance(float x, float y)

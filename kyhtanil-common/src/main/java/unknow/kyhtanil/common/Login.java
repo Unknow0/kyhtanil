@@ -5,6 +5,8 @@
  */
 package unknow.kyhtanil.common;
 
+import unknow.common.tools.*;
+
 import com.artemis.*;
 
 public class Login extends PooledComponent
@@ -30,5 +32,9 @@ public class Login extends PooledComponent
 
 	protected void reset()
 		{
+		}
+	public String toString()
+		{
+		return JsonUtils.toString(this);
 		}
 	}

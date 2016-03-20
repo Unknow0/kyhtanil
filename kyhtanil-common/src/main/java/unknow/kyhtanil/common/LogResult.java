@@ -5,14 +5,15 @@
  */
 package unknow.kyhtanil.common;
 
-import java.util.*;
+import unknow.common.tools.*;
+import unknow.kyhtanil.common.pojo.*;
 
 import com.artemis.*;
 
 public class LogResult extends PooledComponent
 	{
 	public UUID uuid;
-	public List<CharDesc> characters;
+	public CharDesc[] characters;
 
 	/**
 	 * Default constructor.
@@ -24,7 +25,7 @@ public class LogResult extends PooledComponent
 	/**
 	 * All-args constructor.
 	 */
-	public LogResult(UUID uuid, List<CharDesc> characters)
+	public LogResult(UUID uuid, CharDesc[] characters)
 		{
 		this.uuid=uuid;
 		this.characters=characters;
@@ -32,5 +33,9 @@ public class LogResult extends PooledComponent
 
 	protected void reset()
 		{
+		}
+	public String toString()
+		{
+		return JsonUtils.toString(this);
 		}
 	}

@@ -1,15 +1,13 @@
-package unknow.kyhtanil.client.component;
+package unknow.kyhtanil.common.component;
 
 import com.artemis.*;
 
 public class VelocityComp extends PooledComponent
 	{
-	public float dirX;
-	public float dirY;
+	public float direction;
 	public float speed;
 
 	protected void reset()
 		{
-		dirX=dirY=speed=0;
 		}
 	}

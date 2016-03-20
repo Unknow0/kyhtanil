@@ -1,7 +1,11 @@
 package unknow.kyhtanil.client.artemis;
 
+import org.slf4j.*;
+
+import unknow.common.tools.*;
 import unknow.kyhtanil.client.component.*;
 import unknow.kyhtanil.common.*;
+import unknow.kyhtanil.common.component.*;
 
 import com.artemis.*;
 import com.artemis.utils.*;
@@ -9,12 +13,14 @@ import com.badlogic.gdx.graphics.g2d.*;
 
 public class Builder
 	{
+	private static final Logger log=LoggerFactory.getLogger(Builder.class);
 	private static World world;
 
 	private static ComponentMapper<PositionComp> positionMapper;
 	private static ComponentMapper<SpriteComp> spriteMapper;
 	private static ComponentMapper<VelocityComp> velocityMapper;
 	private static ComponentMapper<TargetComp> target;
+	private static ComponentMapper<CalculatedComp> calculated;
 
 	private static EntitySubscription allTarget;
 
@@ -32,8 +38,9 @@ public class Builder
 		Builder.spriteMapper=ComponentMapper.getFor(SpriteComp.class, world);
 		Builder.target=ComponentMapper.getFor(TargetComp.class, world);
 		Builder.velocityMapper=ComponentMapper.getFor(VelocityComp.class, world);
+		Builder.calculated=ComponentMapper.getFor(CalculatedComp.class, world);
 
-		Builder.mobArch=new ArchetypeBuilder().add(SpriteComp.class, PositionComp.class, VelocityComp.class).build(world);
+		Builder.mobArch=new ArchetypeBuilder().add(SpriteComp.class, PositionComp.class, VelocityComp.class, CalculatedComp.class).build(world);
 
 		AspectSubscriptionManager sm=world.getAspectSubscriptionManager();
 		allTarget=sm.get(Aspect.all(TargetComp.class));
@@ -54,7 +61,7 @@ public class Builder
 		return velocityMapper.get(id);
 		}
 
-	public static int buildMob(float x, float y, TextureRegion tex, float w, float h)
+	public static int buildMob(float x, float y, TextureRegion tex, float w, float h, CalculatedComp total)
 		{
 		int e=world.create(mobArch);
 		PositionComp p=getPosition(e);
@@ -65,6 +72,13 @@ public class Builder
 		s.tex=tex;
 		s.w=w;
 		s.h=h;
+
+		log.debug("buildMod: {}", JsonUtils.toString(total));
+		if(total!=null)
+			{
+			CalculatedComp calc=calculated.get(e);
+			calc.set(total);
+			}
 
 		return e;
 		}

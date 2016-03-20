@@ -1,18 +1,13 @@
 package unknow.kyhtanil.server.manager;
 
 import unknow.common.data.*;
-import unknow.kyhtanil.server.component.*;
+import unknow.kyhtanil.common.component.*;
 
 import com.artemis.*;
-import com.artemis.annotations.*;
 import com.artemis.utils.*;
 
-
-@SkipWire
 public class LocalizedManager extends BaseEntitySystem
 	{
-	private static final LocalizedManager self=new LocalizedManager(10f, 10f);
-
 	private BTree<Loc,IntBag> locMap=new BTree<Loc,IntBag>(50);
 	private BTree<Integer,Loc> objects=new BTree<Integer,Loc>(50);
 
@@ -23,7 +18,7 @@ public class LocalizedManager extends BaseEntitySystem
 	/**
 	 * create a manager with a w x h square to store entity
 	 */
-	private LocalizedManager(float w, float h)
+	public LocalizedManager(float w, float h)
 		{
 		super(Aspect.all(PositionComp.class));
 		this.w=w;
@@ -33,7 +28,7 @@ public class LocalizedManager extends BaseEntitySystem
 	@Override
 	protected void initialize()
 		{
-		position=ComponentMapper.getFor(PositionComp.class, world);
+//		position=ComponentMapper.getFor(PositionComp.class, world);
 		}
 
 	@Override
@@ -54,7 +49,7 @@ public class LocalizedManager extends BaseEntitySystem
 		objects.put(entityId, loc);
 		}
 
-	public void _changed(int entityId)
+	public void changed(int entityId)
 		{
 		Loc loc=objects.get(entityId);
 		IntBag bag=locMap.get(loc);
@@ -92,7 +87,7 @@ public class LocalizedManager extends BaseEntitySystem
 		bag.remove(entityId);
 		}
 
-	public IntBag _get(float x, float y, float r, ComponentMapper<?>... expected)
+	public IntBag get(float x, float y, float r, ComponentMapper<?>... expected)
 		{
 		float mx=x+2*r;
 		float my=y+2*r;
@@ -151,18 +146,18 @@ public class LocalizedManager extends BaseEntitySystem
 		{
 		}
 
-	public static final LocalizedManager self()
-		{
-		return self;
-		}
+//	public static final LocalizedManager self()
+//		{
+//		return self;
+//		}
 
-	public static final IntBag get(float x, float y, float r, ComponentMapper<?>... expected)
-		{
-		return self._get(x, y, r, expected);
-		}
-
-	public static final void changed(int entityId)
-		{
-		self._changed(entityId);
-		}
+//	public static final IntBag get(float x, float y, float r, ComponentMapper<?>... expected)
+//		{
+//		return self._get(x, y, r, expected);
+//		}
+//
+//	public static final void changed(int entityId)
+//		{
+//		self._changed(entityId);
+//		}
 	}

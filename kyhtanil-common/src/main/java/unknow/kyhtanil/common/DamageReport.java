@@ -5,6 +5,9 @@
  */
 package unknow.kyhtanil.common;
 
+import unknow.common.tools.*;
+import unknow.kyhtanil.common.pojo.*;
+
 import com.artemis.*;
 
 public class DamageReport extends PooledComponent
@@ -30,5 +33,9 @@ public class DamageReport extends PooledComponent
 
 	protected void reset()
 		{
+		}
+	public String toString()
+		{
+		return JsonUtils.toString(this);
 		}
 	}

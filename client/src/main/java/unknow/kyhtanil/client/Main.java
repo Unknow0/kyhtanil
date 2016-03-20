@@ -1,26 +1,31 @@
 package unknow.kyhtanil.client;
 
-import org.apache.logging.log4j.*;
-
 import unknow.common.*;
-import unknow.common.tools.*;
-import unknow.json.*;
+import unknow.kyhtanil.client.artemis.*;
 import unknow.kyhtanil.client.graphics.*;
 import unknow.kyhtanil.client.screen.*;
-import unknow.kyhtanil.common.*;
+import unknow.kyhtanil.client.system.*;
+import unknow.kyhtanil.client.system.net.*;
+import unknow.kyhtanil.common.component.*;
 
+import com.artemis.*;
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.kotcrab.vis.ui.*;
 
 public class Main extends Game
 	{
-	private static final Logger log=LogManager.getFormatterLogger(Main.class);
 	private Connection client;
 	public static Main self;
 
-	private LoginScreen login;
+	public LoginScreen login;
 	private CharSelectScreen charSelect;
-	private WorldScreen world;
+	private WorldScreen worldScreen;
+
+	private World world;
+	private UUIDManager manager;
+	private InputSystem inputSystem;
 
 	public void create()
 		{
@@ -29,23 +34,57 @@ public class Main extends Game
 		TileSet tileset=new TileSet(Gdx.files.internal("tileset.png"), 32, 32);
 		MapModel mapModel=new MapModel(100, 100);
 
+		manager=new UUIDManager();
+
 		TileMap map=new TileMap(mapModel, tileset);
-		world=new WorldScreen(map);
-
+		worldScreen=new WorldScreen(map, manager);
 		charSelect=new CharSelectScreen();
-
 		login=new LoginScreen();
+
+		inputSystem=new InputSystem(worldScreen.gameViewpoint(), worldScreen, manager);
+		worldScreen.set(inputSystem);
+		WorldConfiguration cfg=new WorldConfiguration();
+		cfg.setSystem(manager);
+		cfg.setSystem(inputSystem);
+		cfg.setSystem(new MovementSystem());
+		cfg.setSystem(new RenderingSystem(worldScreen.gameViewpoint().getCamera()));
+
+		cfg.setSystem(new ErrorSystem(this));
+		cfg.setSystem(new LogResultSystem(this, charSelect));
+		cfg.setSystem(new PjInfoSystem(this, worldScreen));
+		cfg.setSystem(new SpawnSystem());
+		cfg.setSystem(new DespawnSystem());
+		cfg.setSystem(new MoveSystem());
+
+		world=new World(cfg);
+		Builder.init(world);
+
+		TextureRegion tex=new TextureRegion(new Texture(Gdx.files.internal("test.png")));
+		State.entity=Builder.buildMob(0, 0, tex, Main.pixelToUnit(tex.getRegionWidth()), Main.pixelToUnit(tex.getRegionHeight()), null);
+		VelocityComp v=Builder.getVelocity(State.entity);
+		v.speed=1f;
+
 		setScreen(login);
 
 		try
 			{
-			client=new Connection(Cfg.getSystemString("game.host"), Cfg.getSystemInt("game.port"));
+			client=new Connection(Cfg.getSystemString("game.host"), Cfg.getSystemInt("game.port"), world);
 			client.start();
 			}
-		catch (JsonException e)
+		catch (Exception e)
 			{
 			throw new RuntimeException(e);
 			}
+		}
+
+	public void render()
+		{
+		world.delta=Gdx.graphics.getDeltaTime();
+		if(screen==worldScreen)
+			worldScreen.renderMap(world.delta);
+
+		world.process();
+		screen.render(world.delta);
 		}
 
 	public static GameScreen screen()
@@ -67,32 +106,6 @@ public class Main extends Game
 					self.setScreen(screen);
 					}
 			});
-		}
-
-	public void manage(Object data)
-		{
-		log.debug("%s: %s", data==null?"":data.getClass().getSimpleName(), StringTools.toJson(data, true));
-		if(data==null)
-			{
-			if(self.screen instanceof LoginScreen)
-				((LoginScreen)screen).setError("Login/pass error");
-			}
-		else if(data instanceof LogResult)
-			{
-			LogResult r=(LogResult)data;
-			State.uuid=r.uuid;
-			charSelect.setCharList(r.characters);
-			show(charSelect);
-			}
-		else if(data instanceof PjInfo)
-			{
-			world.manage(data);
-			show(world);
-			}
-		else
-			{
-			world.manage(data);
-			}
 		}
 
 	public static float pixelToUnit(int px)

@@ -13,6 +13,8 @@ package unknow.kyhtanil.server.pojo;
 import java.io.*;
 import java.util.*;
 
+import unknow.kyhtanil.common.pojo.*;
+
 public class Weapon extends Item implements Serializable
 	{
 	private static final long serialVersionUID=1L;

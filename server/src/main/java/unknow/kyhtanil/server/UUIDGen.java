@@ -1,6 +1,7 @@
 package unknow.kyhtanil.server;
 
 import unknow.kyhtanil.common.*;
+import unknow.kyhtanil.common.pojo.*;
 
 public class UUIDGen
 	{

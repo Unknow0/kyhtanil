@@ -8,7 +8,7 @@
  * Contributors:
  * Unknow - initial API and implementation
  ******************************************************************************/
-package unknow.kyhtanil.server.pojo;
+package unknow.kyhtanil.common.pojo;
 
 /**
  * 

@@ -1,17 +1,19 @@
-package unknow.kyhtanil.server.utils;
+package unknow.kyhtanil.common.util;
 
 import java.util.concurrent.*;
 
-import org.apache.logging.log4j.*;
 import org.objenesis.instantiator.*;
 import org.objenesis.strategy.*;
+import org.slf4j.*;
+
+import unknow.common.*;
 
 import com.artemis.*;
 import com.esotericsoftware.kryo.*;
 
 public class ArtemisInstantiator implements InstantiatorStrategy
 	{
-	private static final Logger log=LogManager.getFormatterLogger(ArtemisInstantiator.class);
+	private static final Logger log=LoggerFactory.getLogger(ArtemisInstantiator.class);
 	private static final ThreadLocal<Integer> lastCreated=new ThreadLocal<Integer>();
 	private final ConcurrentHashMap<Class<?>,ObjectInstantiator<?>> cache=new ConcurrentHashMap<>();
 	private final World world;
@@ -45,6 +47,11 @@ public class ArtemisInstantiator implements InstantiatorStrategy
 		return lastCreated.get();
 		}
 
+	public static void reset()
+		{
+		lastCreated.set(null);
+		}
+
 	private class ArtemisObjectInstantiator implements ObjectInstantiator<Object>
 		{
 		private Archetype arch;
@@ -59,11 +66,23 @@ public class ArtemisInstantiator implements InstantiatorStrategy
 			mapper=ComponentMapper.getFor(comp, world);
 			}
 
+		@SuppressWarnings("restriction")
 		public Object newInstance()
 			{
+			try
+				{
+				if(lastCreated.get()!=null)
+					return Reflection.unsafe().allocateInstance(mapper.getType().getType());
+				}
+			catch (InstantiationException e)
+				{
+				throw new RuntimeException(e);
+				}
+
 			int e=world.create(arch);
 			lastCreated.set(e);
-			log.info("create %s", mapper.getType());
+			log.info("create entity {}", mapper.getType());
+
 			return mapper.get(e);
 			}
 		}

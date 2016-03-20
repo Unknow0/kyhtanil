@@ -1,5 +1,8 @@
 package unknow.kyhtanil.client.graphics;
 
+import unknow.kyhtanil.client.*;
+import unknow.kyhtanil.common.*;
+
 import com.kotcrab.vis.ui.widget.*;
 
 public class Stats extends VisWindow
@@ -45,5 +48,15 @@ public class Stats extends VisWindow
 
 	public void update()
 		{
+		PjInfo pj=State.pj;
+
+		hp.setText(String.format("%d / %d", pj.hp, pj.total.maxHp));
+		mp.setText(String.format("%d / %d", pj.mp, pj.total.maxMp));
+
+		constitution.setText(String.format("%d", pj.total.constitution));
+		strength.setText(String.format("%d", pj.total.strength));
+		concentration.setText(String.format("%d", pj.total.concentration));
+		intelligence.setText(String.format("%d", pj.total.intelligence));
+		dexterity.setText(String.format("%d", pj.total.dexterity));
 		}
 	}

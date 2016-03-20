@@ -1,7 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>unknow.game</groupId>
-	<artifactId>desktop-launcher</artifactId>
+	<artifactId>client-desktop</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>Kyhtanil client desktop</name>
@@ -27,7 +26,7 @@
 						<configuration>
 							<outputDirectory>${project.build.directory}/lib</outputDirectory>
 							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteSnapshots>true</overWriteSnapshots>
 							<overWriteIfNewer>true</overWriteIfNewer>
 						</configuration>
 					</execution>
@@ -44,26 +43,37 @@
 							<goal>shade</goal>
 						</goals>
 						<configuration>
+							<minimizeJar>true</minimizeJar>
 							<artifactSet>
 								<includes>
 									<include>unknow:sync</include>
 									<include>unknow.common:common</include>
-									<include>org.slf4j</include>
+									<include>unknow.json:json</include>
+									<include>com.esotericsoftware:kryo</include>
+									<include>com.esotericsoftware:reflectasm</include>
+									<include>org.ow2.asm:asm</include>
+									<include>com.esotericsoftware:minlog</include>
+									<include>org.objenesis:objenesis</include>
+									<include>org.slf4j:slf4j-api</include>
+									<include>org.slf4j:slf4j-simple</include>
 								</includes>
+								<!--excludes> <exclude>unknow.kyhtanil:client</exclude> <exclude>unknow.kyhtanil:kyhtanil-common</exclude> <exclude>unknow.orm:unknow-orm</exclude> <exclude>io.netty</exclude> <exclude>com.badlogicgames.gdx</exclude> <exclude>com.kotcrab.vis</exclude> <exclude>net.onedaybeard.artemis</exclude> </excludes -->
 							</artifactSet>
 							<filters>
+								<!--filter> <artifact>org.slf4j</artifact> <includes> <include>*</include> </includes> </filter -->
 								<filter>
 									<artifact>*</artifact>
 									<excludes>
 										<exlude>META-INF/*SF</exlude>
 										<exclude>META-INF/*.DSA</exclude>
 										<exclude>META-INF/*.RSA</exclude>
+										<exclude>META-INF/maven/**</exclude>
 									</excludes>
 								</filter>
 							</filters>
 							<transformers>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>unknow.game.client.Launcher</mainClass>
+									<mainClass>unknow.kyhtanil.client.Launcher</mainClass>
 								</transformer>
 							</transformers>
 							<finalName>client</finalName>
@@ -86,7 +96,7 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>unknow.game</groupId>
+			<groupId>unknow.kyhtanil</groupId>
 			<artifactId>client</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

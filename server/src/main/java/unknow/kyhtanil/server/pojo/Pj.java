@@ -112,13 +112,13 @@ public class Pj extends Mob implements PjInterface
 	public boolean addXp(int amount)
 		{
 		xp+=amount;
-		if(World.xpForLevel(level)<=xp)
-			{
-			level++;
-			skillPoints++;
-			statPoints+=3;
-			return true;
-			}
+//		if(World.xpForLevel(level)<=xp)
+//			{
+//			level++;
+//			skillPoints++;
+//			statPoints+=3;
+//			return true;
+//			}
 		return false;
 		}
 
@@ -183,8 +183,8 @@ public class Pj extends Mob implements PjInterface
 			}
 		skillPoints--;
 		skillsLevel.put(s, skillLevel(s)+1);
-		if(s.type()==Type.PASSIVE)
-			World.cast(this, null, s);
+//		if(s.type()==Type.PASSIVE)
+//			World.cast(this, null, s);
 		return true;
 		}
 

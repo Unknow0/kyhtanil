@@ -7,11 +7,14 @@ import javax.naming.*;
 
 import unknow.common.*;
 import unknow.json.*;
-import unknow.kyhtanil.common.*;
+import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.pojo.*;
 import unknow.kyhtanil.server.component.*;
+import unknow.kyhtanil.server.dao.Character;
 import unknow.kyhtanil.server.pojo.*;
 import unknow.kyhtanil.server.utils.*;
 import unknow.orm.*;
+import unknow.orm.criteria.*;
 import unknow.orm.reflect.*;
 
 public class Database
@@ -21,10 +24,8 @@ public class Database
 
 //	private BTree<Integer,WeaponStub> weapon=new BTree<Integer,WeaponStub>();
 
-	public Database() throws ClassNotFoundException, ClassCastException, InstantiationException, IllegalAccessException, JsonException, SQLException, NamingException, ReflectException
+	public Database()
 		{
-		Mappings.load(null, Cfg.getSystem());
-		co=Mappings.getDatabase("game");
 
 //		Criteria crit=co.createCriteria(WeaponStub.class, "w");
 //		try (QueryResult r=crit.execute())
@@ -37,14 +38,16 @@ public class Database
 //			}
 		}
 
-	public void setMappers(Mappers mappers)
+	public void init(Mappers mappers) throws ClassNotFoundException, ClassCastException, InstantiationException, IllegalAccessException, ReflectException, JsonException, SQLException, NamingException
 		{
+		Mappings.load(null, Cfg.getSystem());
+		co=Mappings.getDatabase("kyhtanil");
 		this.mappers=mappers;
 		}
 
 	public boolean loginExist(String login) throws SQLException
 		{
-		Query query=co.createQuery("select id from accounts where login=:login");
+		Query query=co.createQuery("select id from accounts where lower(login)=lower(:login)");
 		query.setString("login", login);
 		QueryResult qr=query.execute();
 		boolean r=qr.next();
@@ -56,7 +59,7 @@ public class Database
 	public Account getAccount(String login, String pass) throws SQLException
 		{
 		Account a=null;
-		Query query=co.createQuery("select {a} from accounts a where login=:login", new String[] {"a"}, new Class[] {Account.class});
+		Query query=co.createQuery("select {a} from accounts a where lower(login)=lower(:login)", new String[] {"a"}, new Class[] {Account.class});
 		query.setString("login", login);
 		QueryResult qr=query.execute();
 		if(qr.next())
@@ -72,31 +75,38 @@ public class Database
 
 	public boolean loadPj(int account, Integer id, int e) throws SQLException
 		{
-		try (Query query=co.createQuery("select {c} from characters c where id=:id and account=:account", new String[] {"c"}, new Class[] {Pj.class}))
+		Criteria crit=co.createCriteria(Character.class, "c");
+		Join j=crit.addJoin(Body.class, "b");
+		j.on(On.eq("body", "id"));
+		j.setProjection(Projection.all());
+		crit.add(Restriction.eq("id", id));
+		crit.add(Restriction.eq("account", account));
+
+		try (QueryResult qr=crit.execute())
 			{
-			query.setInt("id", id);
-			query.setInt("account", account);
-			try (QueryResult qr=query.execute())
+			if(qr.next())
 				{
-				if(qr.next())
-					{
-					PositionComp p=mappers.position(e);
+				ReflectFactory.entity.set(e);
+				PositionComp p=mappers.position(e);
 //			pj.x=5;
 //			pj.y=5; // TODO
-					p.x=p.y=5;
+				p.x=p.y=5;
 
-					MobInfoComp m=mappers.mobInfo(e);
-					m.name=qr.getString("c.name");
-					m.level=qr.getInt("c.level");
-					m.hp=qr.getInt("c.hp");
-					m.mp=qr.getInt("c.mp");
-					m.constitution=qr.getInt("c.constitution");
-					m.strength=qr.getInt("c.strength");
-					m.concentration=qr.getInt("c.concentration");
-					m.intelligence=qr.getInt("c.intelligence");
-					m.dexterity=qr.getInt("c.dexterity");
-					return true;
-					}
+				Character c=qr.getEntity("c");
+				Body b=qr.getEntity("b");
+
+				MobInfoComp m=mappers.mobInfo(e);
+				m.name=c.name;
+				m.hp=c.hp;
+				m.mp=c.mp;
+
+//				m.level=b.level;
+//				m.constitution=b.constitution;
+//				m.strength=b.strength;
+//				m.concentration=b.concentration;
+//				m.intelligence=b.intelligence;
+//				m.dexterity=b.dexterity;
+				return true;
 				}
 			}
 		return false;
@@ -104,16 +114,16 @@ public class Database
 
 	public List<CharDesc> getCharList(int account) throws SQLException
 		{
-		Query query=co.createQuery("select id, name, level from characters where account=:account");
-		query.setInt("account", account);
-		QueryResult qr=query.execute();
 		List<CharDesc> list=new ArrayList<CharDesc>();
-		while (qr.next())
+		try (Query query=co.createQuery("select id, name, level from characters where account=:account"))
 			{
-			list.add(new CharDesc(qr.getInt("id"), qr.getString("name"), qr.getInt("level")));
+			query.setInt("account", account);
+			try (QueryResult qr=query.execute())
+				{
+				while (qr.next())
+					list.add(new CharDesc(qr.getInt("id"), qr.getString("name"), qr.getInt("level")));
+				}
 			}
-		qr.close();
-		query.close();
 		return list;
 		}
 	}

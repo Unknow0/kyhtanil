@@ -1,19 +1,15 @@
 package unknow.kyhtanil.server.manager;
 
-import unknow.kyhtanil.common.*;
+import unknow.kyhtanil.common.pojo.*;
 import unknow.kyhtanil.common.util.*;
 import unknow.kyhtanil.server.*;
 import unknow.kyhtanil.server.component.*;
 
 import com.artemis.*;
-import com.artemis.annotations.*;
 
-@SkipWire
 public class UUIDManager extends BaseUUIDManager
 	{
-	private static final UUIDManager self=new UUIDManager();
-
-	private UUIDManager()
+	public UUIDManager()
 		{
 		super(Aspect.all(MobInfoComp.class));
 		}
@@ -46,10 +42,5 @@ public class UUIDManager extends BaseUUIDManager
 
 	protected void processSystem()
 		{
-		}
-
-	public static final UUIDManager self()
-		{
-		return self;
 		}
 	}

@@ -5,6 +5,9 @@
  */
 package unknow.kyhtanil.common;
 
+import unknow.common.tools.*;
+import unknow.kyhtanil.common.pojo.*;
+
 import com.artemis.*;
 
 public class Move extends PooledComponent
@@ -12,8 +15,7 @@ public class Move extends PooledComponent
 	public UUID uuid;
 	public float x;
 	public float y;
-	public float dirX;
-	public float dirY;
+	public float direction;
 
 	/**
 	 * Default constructor.
@@ -25,16 +27,20 @@ public class Move extends PooledComponent
 	/**
 	 * All-args constructor.
 	 */
-	public Move(UUID uuid, java.lang.Float x, java.lang.Float y, java.lang.Float dirX, java.lang.Float dirY)
+	public Move(UUID uuid, float x, float y, float direction)
 		{
 		this.uuid=uuid;
 		this.x=x;
 		this.y=y;
-		this.dirX=dirX;
-		this.dirY=dirY;
+		this.direction=direction;
 		}
 
 	protected void reset()
 		{
+		}
+
+	public String toString()
+		{
+		return JsonUtils.toString(this);
 		}
 	}

@@ -1,8 +1,7 @@
 package unknow.kyhtanil.common.util;
 
-import java.util.*;
-
-import unknow.kyhtanil.common.UUID;
+import unknow.common.data.*;
+import unknow.kyhtanil.common.pojo.*;
 
 import com.artemis.Aspect.Builder;
 import com.artemis.*;
@@ -10,13 +9,13 @@ import com.artemis.utils.*;
 
 public class BaseUUIDManager extends BaseEntitySystem
 	{
-	private final Map<UUID,Integer> uuidToEntity;
+	private final BTree<UUID,Integer> uuidToEntity;
 	private final Bag<UUID> entityToUuid;
 
 	protected BaseUUIDManager(Builder aspect)
 		{
 		super(aspect);
-		this.uuidToEntity=new HashMap<UUID,Integer>();
+		this.uuidToEntity=new BTree<UUID,Integer>();
 		this.entityToUuid=new Bag<UUID>();
 		}
 
@@ -50,8 +49,16 @@ public class BaseUUIDManager extends BaseEntitySystem
 		return uuid;
 		}
 
+	/**
+	 * set this uuid to this entity.
+	 * <br>Remove old uuid maping for this entity and uuid
+	 */
 	public final void setUuid(int entityId, UUID newUuid)
 		{
+		Integer oldEntity=uuidToEntity.get(newUuid);
+		if(oldEntity!=null)
+			remove(oldEntity);
+
 		UUID oldUuid=entityToUuid.safeGet(entityId);
 		if(oldUuid!=null)
 			uuidToEntity.remove(oldUuid);

@@ -1,7 +1,7 @@
 package unknow.kyhtanil.client.system;
 
 import unknow.kyhtanil.client.artemis.*;
-import unknow.kyhtanil.client.component.*;
+import unknow.kyhtanil.common.component.*;
 
 import com.artemis.*;
 import com.artemis.systems.*;
@@ -22,11 +22,11 @@ public class MovementSystem extends IteratingSystem
 	protected void process(int e)
 		{
 		VelocityComp v=Builder.getVelocity(e);
-		if(v.dirX==0&&v.dirY==0)
+		if(v.speed==0)
 			return;
 
 		PositionComp p=Builder.getPosition(e);
-		p.x+=v.dirX*world.delta;
-		p.y+=v.dirY*world.delta;
+		p.x+=Math.cos(v.direction)*v.speed*world.delta;
+		p.y+=Math.sin(v.direction)*v.speed*world.delta;
 		}
 	}

@@ -3,7 +3,7 @@ package unknow.kyhtanil.client.screen;
 import java.io.*;
 
 import unknow.kyhtanil.client.*;
-import unknow.kyhtanil.common.*;
+import unknow.kyhtanil.common.pojo.*;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
@@ -63,7 +63,7 @@ public class CharSelectScreen extends GameScreen
 			}
 		}
 
-	public void setCharList(java.util.List<CharDesc> list)
+	public void setCharList(CharDesc[] list)
 		{
 		root.clear();
 		for(CharDesc c:list)

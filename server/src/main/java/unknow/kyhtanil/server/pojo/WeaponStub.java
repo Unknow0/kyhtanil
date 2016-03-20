@@ -12,7 +12,8 @@ package unknow.kyhtanil.server.pojo;
 
 import java.util.*;
 
-import unknow.kyhtanil.server.pojo.Item.*;
+import unknow.kyhtanil.common.pojo.*;
+import unknow.kyhtanil.server.pojo.Item.Slot;
 
 public class WeaponStub
 	{

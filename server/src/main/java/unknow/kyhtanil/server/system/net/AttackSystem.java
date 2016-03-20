@@ -1,8 +1,10 @@
 package unknow.kyhtanil.server.system.net;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 
 import unknow.kyhtanil.common.*;
+import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.pojo.*;
 import unknow.kyhtanil.server.component.*;
 import unknow.kyhtanil.server.manager.*;
 
@@ -12,8 +14,10 @@ import com.artemis.utils.*;
 
 public class AttackSystem extends IteratingSystem
 	{
-	private static final Logger log=LogManager.getFormatterLogger(AttackSystem.class);
+	private static final Logger log=LoggerFactory.getLogger(AttackSystem.class);
 
+	private LocalizedManager locManager;
+	private UUIDManager manager;
 	private ComponentMapper<Attack> attack;
 	private ComponentMapper<NetComp> net;
 	private ComponentMapper<PositionComp> position;
@@ -32,11 +36,11 @@ public class AttackSystem extends IteratingSystem
 			return;
 
 		world.delete(entityId);
-		Integer e=UUIDManager.self().getEntity(a.uuid);
+		Integer e=manager.getEntity(a.uuid);
 		if(e==null)
 			{
 			ctx.channel.close();
-			log.debug("failed to get State '%s' on attack", a.uuid);
+			log.debug("failed to get State '{}' on attack", a.uuid);
 			return;
 			}
 
@@ -44,13 +48,13 @@ public class AttackSystem extends IteratingSystem
 		PositionComp sp=position.get(e);
 		if(a.target instanceof UUID)
 			{
-			t=UUIDManager.self().getEntity((UUID)a.target);
+			t=manager.getEntity((UUID)a.target);
 			if(t!=null&&sp.distance(position.get(t))>2)
 				t=null;
 			}
 		else
 			{
-			IntBag entities=LocalizedManager.get(sp.x, sp.y, 2);
+			IntBag entities=locManager.get(sp.x, sp.y, 2);
 
 			Point p=(Point)a.target;
 			double rad1=Math.atan2(p.y-sp.y, p.x-sp.x);

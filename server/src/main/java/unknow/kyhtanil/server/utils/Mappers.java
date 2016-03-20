@@ -1,5 +1,6 @@
 package unknow.kyhtanil.server.utils;
 
+import unknow.kyhtanil.common.component.*;
 import unknow.kyhtanil.server.component.*;
 
 import com.artemis.*;

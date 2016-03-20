@@ -5,13 +5,16 @@
  */
 package unknow.kyhtanil.common;
 
+import unknow.common.tools.*;
+import unknow.kyhtanil.common.pojo.*;
+
 import com.artemis.*;
 
 public class Attack extends PooledComponent
 	{
 	public UUID uuid;
 	public int id;
-	public java.lang.Object target;
+	public Object target;
 
 	/**
 	 * Default constructor. 
@@ -32,5 +35,10 @@ public class Attack extends PooledComponent
 
 	protected void reset()
 		{
+		}
+
+	public String toString()
+		{
+		return JsonUtils.toString(this);
 		}
 	}

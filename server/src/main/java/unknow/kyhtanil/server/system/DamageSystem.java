@@ -1,6 +1,8 @@
 package unknow.kyhtanil.server.system;
 
 import unknow.kyhtanil.common.*;
+import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.pojo.*;
 import unknow.kyhtanil.server.*;
 import unknow.kyhtanil.server.component.*;
 import unknow.kyhtanil.server.manager.*;
@@ -9,6 +11,7 @@ import com.artemis.*;
 
 public class DamageSystem extends CompositeEntityProcessor<DamageListComp,DamageListComp.Damage>
 	{
+	private UUIDManager manager;
 	private ComponentMapper<MobInfoComp> mobInfo;
 	private ComponentMapper<PositionComp> position;
 
@@ -30,7 +33,7 @@ public class DamageSystem extends CompositeEntityProcessor<DamageListComp,Damage
 		{
 		mob=mobInfo.get(e);
 		p=position.get(e);
-		uuid=UUIDManager.self().getUuid(e);
+		uuid=manager.getUuid(e);
 		return true;
 		}
 
@@ -47,6 +50,7 @@ public class DamageSystem extends CompositeEntityProcessor<DamageListComp,Damage
 		GameServer.world().send(null, p.x, p.y, new DamageReport(uuid, total));
 		if(mob.hp<=0)
 			{
+			GameServer.world().send(null, p.x, p.y, new Despawn(uuid));
 			world.delete(e);
 			return false;
 			}

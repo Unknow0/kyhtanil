@@ -17,7 +17,6 @@ public class StateSystem extends IteratingSystem
 	@Override
 	protected void initialize()
 		{
-		state=ComponentMapper.getFor(StateComp.class, world);
 		}
 
 	@Override

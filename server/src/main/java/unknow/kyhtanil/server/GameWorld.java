@@ -4,10 +4,12 @@ import java.sql.*;
 
 import javax.naming.*;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 
 import unknow.json.*;
 import unknow.kyhtanil.common.*;
+import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.pojo.*;
 import unknow.kyhtanil.server.component.*;
 import unknow.kyhtanil.server.manager.*;
 import unknow.kyhtanil.server.system.*;
@@ -16,16 +18,17 @@ import unknow.kyhtanil.server.utils.*;
 import unknow.orm.reflect.*;
 
 import com.artemis.*;
-import com.artemis.World;
 import com.artemis.utils.*;
 
 public class GameWorld extends Thread
 	{
-	private static final Logger logger=LogManager.getFormatterLogger(GameWorld.class);
+	private static final Logger log=LoggerFactory.getLogger(GameWorld.class);
 
 	private Database database;
 
-	private final World world;
+	private World world;
+	private final UUIDManager uuidManager=new UUIDManager();
+	private final LocalizedManager locManager=new LocalizedManager(10f, 10f);
 
 	private final Mappers mappers;
 
@@ -36,14 +39,16 @@ public class GameWorld extends Thread
 		database=new Database();
 
 		WorldConfiguration cfg=new WorldConfiguration();
-		cfg.setSystem(UUIDManager.self());
-		cfg.setSystem(LocalizedManager.self());
+		cfg.setSystem(uuidManager);
+		cfg.setSystem(locManager);
+		cfg.setSystem(new StateManager());
 
 		cfg.setSystem(new LoginSystem(database));
 		cfg.setSystem(new LogCharSystem(database));
 		cfg.setSystem(new MoveSystem());
 		cfg.setSystem(new AttackSystem());
 
+		cfg.setSystem(new UpdateStatSystem());
 		cfg.setSystem(new StateSystem());
 		cfg.setSystem(new SpawnSystem());
 		cfg.setSystem(new DamageSystem());
@@ -56,7 +61,9 @@ public class GameWorld extends Thread
 
 		createSpawner(10, 10, 10, 3, 1);
 
-		database.setMappers(mappers);
+		Archetypes.init(world);
+		ReflectFactory.world=world;
+		database.init(mappers);
 		}
 
 	private void createSpawner(float x, float y, float range, int max_count, float speed)
@@ -93,15 +100,15 @@ public class GameWorld extends Thread
 
 	public void send(StateComp sender, float x, float y, Object msg)
 		{
-		logger.debug("send %s at %.2f x %.2f", msg.getClass().getSimpleName(), x, y);
-		IntBag bag=LocalizedManager.get(x, y, range, mappers.state());
+		log.debug("send {} at {} x {}", msg, x, y);
+		IntBag bag=locManager.get(x, y, range, mappers.state());
 
 		for(int i=0; i<bag.size(); i++)
 			{
 			StateComp s=mappers.state(bag.get(i));
 			if(s!=sender)
 				{
-				logger.debug("	%s", s.account.getLogin());
+				log.debug("	{} {}", s.account.getLogin(), uuidManager.getUuid(bag.get(i)));
 				s.channel.writeAndFlush(msg);
 				}
 			}
@@ -110,7 +117,7 @@ public class GameWorld extends Thread
 	public void despawn(StateComp sender, int entityId)
 		{
 		PositionComp p=mappers.position(entityId);
-		UUID uuid=UUIDManager.self().getUuid(entityId);
+		UUID uuid=uuidManager.getUuid(entityId);
 		send(sender, p.x, p.y, new Despawn(uuid));
 		}
 
@@ -119,7 +126,8 @@ public class GameWorld extends Thread
 		PositionComp p=mappers.position(entityId);
 		VelocityComp v=mappers.velocity(entityId);
 		MobInfoComp m=mappers.mobInfo(entityId);
-		UUID uuid=UUIDManager.self().getUuid(entityId);
-		send(sender, p.x, p.y, new Spawn(uuid, 0, m.name, m.hp, p.x, p.y, v.dirX, v.dirY));
+		CalculatedComp c=mappers.calculated(entityId);
+		UUID uuid=uuidManager.getUuid(entityId);
+		send(sender, p.x, p.y, new Spawn(uuid, 0, m.name, c, p.x, p.y, v.direction));
 		}
 	}

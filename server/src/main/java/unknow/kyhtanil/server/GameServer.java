@@ -10,11 +10,11 @@ import io.netty.handler.codec.*;
 
 import java.util.*;
 
-import org.apache.logging.log4j.*;
+import org.slf4j.*;
 
 import unknow.common.tools.*;
-import unknow.kyhtanil.server.component.*;
-import unknow.kyhtanil.server.utils.*;
+import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.util.*;
 
 import com.artemis.*;
 import com.esotericsoftware.kryo.*;
@@ -22,34 +22,39 @@ import com.esotericsoftware.kryo.io.*;
 
 public class GameServer
 	{
-	private static final Logger log=LogManager.getFormatterLogger(GameServer.class);
+	private static final Logger log=LoggerFactory.getLogger(GameServer.class);
 	private static GameWorld world;
 	private static ComponentMapper<NetComp> net;
-	private static ThreadLocal<Kryo> kryos;
+	private static Kryos kryos;
 
 	public static class Decoder extends ByteToMessageDecoder
 		{
 		protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
 			{
+			if(in.readableBytes()<1)
+				return;
 			try
 				{
 				byte[] dst=new byte[in.readableBytes()];
-				in.readBytes(dst);
+				in.getBytes(in.readerIndex(), dst);
 
 				Input input=new Input(dst);
 
-				Kryo kryo=kryos.get();
-				Object o=kryo.readClassAndObject(input);
+				Object o=kryos.read(input);
 				Integer e=ArtemisInstantiator.lastCreated();
 				NetComp netComp=net.get(e);
 				netComp.channel=ctx.channel();
 
-				log.debug("read: %d %s %s", e, o.getClass(), StringTools.toJson(o, true));
+				in.skipBytes(input.position());
+
+				log.trace("read: {} {} {}", e, o.getClass(), JsonUtils.toString(o, true));
 				}
 			catch (KryoException e)
 				{
-				e.printStackTrace();
-				// TODO
+				if(!e.getMessage().contains("Buffer underflow"))
+					{
+					log.error(e.getMessage(), e);
+					}
 				}
 			}
 		}
@@ -58,14 +63,19 @@ public class GameServer
 		{
 		protected void encode(ChannelHandlerContext ctx, Object data, ByteBuf out) throws Exception
 			{
-			log.debug("write: %s: %s", data.getClass(), StringTools.toJson(data, true));
+			log.trace("write: {}: {}", data.getClass(), JsonUtils.toString(data, true));
 
-			Kryo kryo=kryos.get();
-
-			ByteBufOutputStream buf=new ByteBufOutputStream(out);
-			Output output=new Output(buf);
-			kryo.writeClassAndObject(output, data instanceof Null?null:data);
-			output.close();
+			try
+				{
+				ByteBufOutputStream buf=new ByteBufOutputStream(out);
+				Output output=new Output(buf);
+				kryos.write(output, data);
+				output.close();
+				}
+			catch (Exception e)
+				{
+				log.error(e.getMessage(), e);
+				}
 			}
 		}
 
@@ -78,7 +88,6 @@ public class GameServer
 
 		public void channelInactive(ChannelHandlerContext ctx) throws Exception
 			{
-//			ServerWorld.self.close(ctx.channel());
 			}
 
 		public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception
@@ -98,18 +107,7 @@ public class GameServer
 
 		net=ComponentMapper.getFor(NetComp.class, world.world());
 
-		kryos=new ThreadLocal<Kryo>()
-			{
-				protected Kryo initialValue()
-					{
-					Kryo kryo=new Kryo();
-					kryo.setReferences(false);
-
-					kryo.setInstantiatorStrategy(new ArtemisInstantiator(world.world(), NetComp.class));
-
-					return kryo;
-					}
-			};
+		kryos=new Kryos(world.world(), NetComp.class);
 
 		EventLoopGroup bossGroup=new NioEventLoopGroup();
 		EventLoopGroup workerGroup=new NioEventLoopGroup();
