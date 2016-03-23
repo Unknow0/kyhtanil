@@ -1,5 +1,7 @@
 package unknow.kyhtanil.common.util;
 
+import org.slf4j.*;
+
 import unknow.common.data.*;
 import unknow.kyhtanil.common.pojo.*;
 
@@ -9,6 +11,7 @@ import com.artemis.utils.*;
 
 public class BaseUUIDManager extends BaseEntitySystem
 	{
+	private static final Logger log=LoggerFactory.getLogger(BaseUUIDManager.class);
 	private final BTree<UUID,Integer> uuidToEntity;
 	private final Bag<UUID> entityToUuid;
 
@@ -55,6 +58,7 @@ public class BaseUUIDManager extends BaseEntitySystem
 	 */
 	public final void setUuid(int entityId, UUID newUuid)
 		{
+		log.info("setUuuid {} {}", entityId, newUuid);
 		Integer oldEntity=uuidToEntity.get(newUuid);
 		if(oldEntity!=null)
 			remove(oldEntity);

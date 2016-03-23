@@ -60,7 +60,7 @@ public class LoginSystem extends IteratingSystem
 				s.channel=ctx.channel;
 				s.state=States.LOGGED;
 
-				UUID uuid=manager.log(ns, l.login);
+				UUID uuid=manager.log(ns, a.getLogin());
 				if(uuid!=null)
 					{
 					List<CharDesc> charList=database.getCharList(a.getId());

@@ -4,11 +4,14 @@ import unknow.kyhtanil.common.pojo.*;
 import unknow.kyhtanil.common.util.*;
 import unknow.kyhtanil.server.*;
 import unknow.kyhtanil.server.component.*;
+import unknow.kyhtanil.server.component.StateComp.*;
 
 import com.artemis.*;
 
 public class UUIDManager extends BaseUUIDManager
 	{
+	private ComponentMapper<StateComp> state;
+
 	public UUIDManager()
 		{
 		super(Aspect.all(MobInfoComp.class));
@@ -26,8 +29,13 @@ public class UUIDManager extends BaseUUIDManager
 		if(uuid==null)
 			return;
 
-		GameServer.world().despawn(null, entityId);
-		remove(entityId);
+		StateComp s=state.getSafe(entityId);
+
+		if(s==null||s.state==States.IN_GAME)
+			{
+			GameServer.world().despawn(null, entityId);
+			remove(entityId);
+			}
 		}
 
 	@Override

@@ -81,7 +81,7 @@ public class ArtemisInstantiator implements InstantiatorStrategy
 
 			int e=world.create(arch);
 			lastCreated.set(e);
-			log.info("create entity {}", mapper.getType());
+			log.info("create entity {} {}", mapper.getType(), e);
 
 			return mapper.get(e);
 			}

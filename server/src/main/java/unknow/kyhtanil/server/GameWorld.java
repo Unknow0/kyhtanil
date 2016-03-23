@@ -45,11 +45,10 @@ public class GameWorld extends Thread
 
 		cfg.setSystem(new LoginSystem(database));
 		cfg.setSystem(new LogCharSystem(database));
-		cfg.setSystem(new MoveSystem());
+		cfg.setSystem(new MoveSystem(this));
 		cfg.setSystem(new AttackSystem());
 
 		cfg.setSystem(new UpdateStatSystem());
-		cfg.setSystem(new StateSystem());
 		cfg.setSystem(new SpawnSystem());
 		cfg.setSystem(new DamageSystem());
 
@@ -90,9 +89,16 @@ public class GameWorld extends Thread
 
 		while (!isInterrupted())
 			{
-			world.setDelta((System.currentTimeMillis()-start)/1000f);
-			world.process();
-			start=System.currentTimeMillis();
+			try
+				{
+				world.setDelta((System.currentTimeMillis()-start)/1000f);
+				world.process();
+				start=System.currentTimeMillis();
+				}
+			catch (Exception e)
+				{
+				log.error("", e);
+				}
 			}
 		}
 

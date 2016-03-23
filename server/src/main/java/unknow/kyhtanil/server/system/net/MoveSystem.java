@@ -6,6 +6,8 @@ import org.slf4j.*;
 
 import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.server.*;
+import unknow.kyhtanil.server.component.*;
 import unknow.kyhtanil.server.manager.*;
 
 import com.artemis.*;
@@ -20,10 +22,15 @@ public class MoveSystem extends IteratingSystem
 	private ComponentMapper<NetComp> net;
 	private ComponentMapper<PositionComp> position;
 	private ComponentMapper<VelocityComp> velocity;
+	private ComponentMapper<CalculatedComp> calculated;
+	private ComponentMapper<StateComp> state;
 
-	public MoveSystem()
+	private GameWorld gameWorld;
+
+	public MoveSystem(GameWorld gameWorld)
 		{
 		super(Aspect.all(Move.class, NetComp.class));
+		this.gameWorld=gameWorld;
 		}
 
 	protected void process(int entityId)
@@ -44,12 +51,23 @@ public class MoveSystem extends IteratingSystem
 			return;
 			}
 
-		// TODO check validity
+		CalculatedComp c=calculated.get(e);
 		PositionComp p=position.get(e);
-		p.x=m.x;
-		p.y=m.y;
+		StateComp sender=state.get(e);
+//		if(p.distance(m.x, m.y)>c.moveSpeed+.1)
+//			{
+//			sender=null;
+//			m=new Move(m.uuid, p.x, p.y, m.direction);
+//			}
+//		else
+//			{
+			p.x=m.x;
+			p.y=m.y;
 
-		VelocityComp v=velocity.get(e);
-		v.direction=m.direction;
+			VelocityComp v=velocity.get(e);
+			v.direction=m.direction;
+//			}
+
+		gameWorld.send(sender, p.x, p.y, m);
 		}
 	}

@@ -2,6 +2,8 @@ package unknow.kyhtanil.server.manager;
 
 import unknow.common.data.*;
 import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.server.component.*;
+import unknow.kyhtanil.server.component.StateComp.*;
 
 import com.artemis.*;
 import com.artemis.utils.*;
@@ -14,6 +16,7 @@ public class LocalizedManager extends BaseEntitySystem
 	private float w, h;
 
 	private ComponentMapper<PositionComp> position;
+	private ComponentMapper<StateComp> state;
 
 	/**
 	 * create a manager with a w x h square to store entity
@@ -36,6 +39,10 @@ public class LocalizedManager extends BaseEntitySystem
 		{
 		PositionComp p=position.getSafe(entityId);
 		if(p==null)
+			return;
+		// don't add pj at there creation
+		StateComp s=state.getSafe(entityId);
+		if(s!=null&&s.state!=States.IN_GAME)
 			return;
 
 		Loc loc=new Loc(p.x-p.x%w, p.y-p.y%h);

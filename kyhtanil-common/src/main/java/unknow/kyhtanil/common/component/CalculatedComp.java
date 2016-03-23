@@ -21,7 +21,9 @@ public class CalculatedComp extends PooledComponent
 	public int concentration;
 	public int dexterity;
 
-	protected void reset()
+	public float moveSpeed;
+
+	public void reset()
 		{
 		dmg=null;
 		}
@@ -40,5 +42,7 @@ public class CalculatedComp extends PooledComponent
 		this.intelligence=c.intelligence;
 		this.concentration=c.concentration;
 		this.dexterity=c.dexterity;
+
+		this.moveSpeed=c.moveSpeed;
 		}
 	}

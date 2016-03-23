@@ -41,6 +41,8 @@ public class UpdateStatSystem extends IteratingSystem
 		calc.concentration=b.concentration;
 		calc.dexterity=b.dexterity;
 
+		calc.moveSpeed=1f;
+
 		// TODO add buff
 		}
 	}

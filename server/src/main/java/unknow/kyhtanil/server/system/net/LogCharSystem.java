@@ -118,9 +118,13 @@ public class LogCharSystem extends IteratingSystem
 			p=position.get(em);
 			m=mobInfo.get(em);
 			VelocityComp v=velocity.get(em);
+			c=calculated.get(em);
 
 			chan.write(new Spawn(uuid, 0, m.name, c, p.x, p.y, v.direction));
 			}
+
+		// insert the pj into the world
+		locManager.inserted(st);
 		chan.flush();
 		}
 	}

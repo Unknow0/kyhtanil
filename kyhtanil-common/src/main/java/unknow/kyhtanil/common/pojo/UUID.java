@@ -50,15 +50,15 @@ public class UUID implements Comparable<UUID>
 
 	public int compareTo(UUID o)
 		{
-		if(o==null)
-			return -1;
+		if(this==o)
+			return 0;
 		byte[] b1=bytes;
 		byte[] b2=o.bytes;
 
 		int s=b1.length-b2.length;
 		if(s!=0)
 			return s;
-		for(int i=0; i<b1.length; i++)
+		for(int i=b1.length-1; i>=0; i--)
 			{
 			s=b1[i]-b2[i];
 			if(s!=0)
