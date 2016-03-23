@@ -1,8 +1,6 @@
 package unknow.kyhtanil.client.system.net;
 
 import unknow.kyhtanil.client.*;
-import unknow.kyhtanil.client.artemis.*;
-import unknow.kyhtanil.client.component.*;
 import unknow.kyhtanil.client.screen.*;
 import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
@@ -16,6 +14,9 @@ public class PjInfoSystem extends IteratingSystem
 	private ComponentMapper<BooleanComp> done;
 	private Main main;
 	private WorldScreen worldScreen;
+
+	private ComponentMapper<PositionComp> position;
+	private ComponentMapper<CalculatedComp> calculated;
 
 	public PjInfoSystem(Main main, WorldScreen worldScreen)
 		{
@@ -35,8 +36,11 @@ public class PjInfoSystem extends IteratingSystem
 
 		main.show(worldScreen);
 		State.pj=pj;
-		PositionComp p=Builder.getPosition(State.entity);
-		p.x=State.pj.x;
-		p.y=State.pj.y;
+		PositionComp p=position.get(State.entity);
+		p.x=pj.x;
+		p.y=pj.y;
+
+		CalculatedComp c=calculated.get(State.entity);
+		c.set(pj.total);
 		}
 	}

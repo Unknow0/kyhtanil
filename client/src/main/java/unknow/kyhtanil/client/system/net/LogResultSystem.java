@@ -1,6 +1,7 @@
 package unknow.kyhtanil.client.system.net;
 
 import unknow.kyhtanil.client.*;
+import unknow.kyhtanil.client.artemis.*;
 import unknow.kyhtanil.client.screen.*;
 import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
@@ -14,6 +15,7 @@ public class LogResultSystem extends IteratingSystem
 	private ComponentMapper<BooleanComp> done;
 	private Main main;
 	private CharSelectScreen charSelect;
+	private UUIDManager manager;
 
 	public LogResultSystem(Main main, CharSelectScreen charSelect)
 		{
@@ -31,6 +33,7 @@ public class LogResultSystem extends IteratingSystem
 		world.delete(entityId);
 
 		State.uuid=logResult.uuid;
+		manager.setUuid(State.entity, State.uuid);
 		charSelect.setCharList(logResult.characters);
 		main.show(charSelect);
 		}

@@ -32,8 +32,9 @@ public class InputSystem extends BaseSystem implements InputProcessor
 	public int n1=Input.Keys.NUM_1;
 
 	protected EntitySubscription allPosition;
-	private UUIDManager manager;
 
+	private ComponentMapper<CalculatedComp> calculated;
+	private UUIDManager manager;
 	private WorldScreen screen;
 
 	private long lastSend=0;
@@ -58,6 +59,8 @@ public class InputSystem extends BaseSystem implements InputProcessor
 	public boolean keyDown(int keycode)
 		{
 		VelocityComp v=Builder.getVelocity(State.entity);
+		CalculatedComp c=calculated.get(State.entity);
+
 		if(up==keycode||down==keycode||left==keycode||right==keycode)
 			{// TODO take pj speed
 			if(up==keycode)
@@ -69,7 +72,7 @@ public class InputSystem extends BaseSystem implements InputProcessor
 			else if(right==keycode)
 				dirX=1;
 
-			v.speed=1f;
+			v.speed=c.moveSpeed;
 			v.direction=(float)Math.atan2(dirY, dirX);
 			}
 		return true;
@@ -78,12 +81,16 @@ public class InputSystem extends BaseSystem implements InputProcessor
 	public boolean keyUp(int keycode)
 		{
 		VelocityComp v=Builder.getVelocity(State.entity);
-		if(up==keycode||down==keycode)
-			dirY=0.;
-		else if(left==keycode||right==keycode)
-			dirX=0.;
-		if(dirY==0.&&dirX==0.)
-			v.speed=0f;
+		if(up==keycode||down==keycode||left==keycode||right==keycode)
+			{
+			if(up==keycode||down==keycode)
+				dirY=0.;
+			else if(left==keycode||right==keycode)
+				dirX=0.;
+			if(dirY==0.&&dirX==0.)
+				v.speed=0f;
+			v.direction=(float)Math.atan2(dirY, dirX);
+			}
 		else if(n1==keycode)
 			{
 			try

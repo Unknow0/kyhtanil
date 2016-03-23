@@ -1,7 +1,6 @@
 package unknow.kyhtanil.client.system.net;
 
 import java.sql.*;
-import java.util.*;
 
 import org.slf4j.*;
 
@@ -9,7 +8,6 @@ import unknow.kyhtanil.client.*;
 import unknow.kyhtanil.client.artemis.*;
 import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.pojo.UUID;
 
 import com.artemis.*;
 import com.artemis.systems.*;
@@ -72,9 +70,7 @@ public class SpawnSystem extends IteratingSystem
 			TextureRegion mobTex=new TextureRegion(new Texture(Gdx.files.internal(tex)));
 
 			int mob=Builder.buildMob(s.x, s.y, mobTex, Main.pixelToUnit(mobTex.getRegionWidth()), Main.pixelToUnit(mobTex.getRegionHeight()), s.total);
-			byte[] bytes=s.uuid.bytes;
-
-			manager.setUuid(mob, new UUID(Arrays.copyOf(bytes, bytes.length))); // duplicate to avoid reuse
+			manager.setUuid(mob, s.uuid);
 			}
 		}
 	}
