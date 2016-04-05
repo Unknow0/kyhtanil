@@ -19,6 +19,7 @@ public class Kryos extends KryoWrap
 		{
 		addClass(ErrorComp.class);
 		addClass(Login.class);
+		addClass(CreateAccount.class);
 		addClass(LogResult.class);
 		addClass(LogChar.class);
 		addClass(PjInfo.class);

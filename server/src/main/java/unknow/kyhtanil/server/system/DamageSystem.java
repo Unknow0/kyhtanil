@@ -11,6 +11,7 @@ import com.artemis.*;
 
 public class DamageSystem extends CompositeEntityProcessor<DamageListComp,DamageListComp.Damage>
 	{
+	private GameWorld gameWorld;
 	private UUIDManager manager;
 	private ComponentMapper<MobInfoComp> mobInfo;
 	private ComponentMapper<PositionComp> position;
@@ -19,9 +20,10 @@ public class DamageSystem extends CompositeEntityProcessor<DamageListComp,Damage
 	private PositionComp p;
 	private UUID uuid;
 
-	public DamageSystem()
+	public DamageSystem(GameWorld gameWorld)
 		{
 		super(Aspect.all(DamageListComp.class, PositionComp.class, MobInfoComp.class), DamageListComp.class);
+		this.gameWorld=gameWorld;
 		}
 
 	protected MobInfoComp processEntity(int e)
@@ -37,6 +39,7 @@ public class DamageSystem extends CompositeEntityProcessor<DamageListComp,Damage
 		return true;
 		}
 
+	@Override
 	protected boolean processComponent(int e, DamageListComp.Damage c)
 		{
 		// TODO res calculation
@@ -47,10 +50,10 @@ public class DamageSystem extends CompositeEntityProcessor<DamageListComp,Damage
 
 		mob.hp-=total;
 
-		GameServer.world().send(null, p.x, p.y, new DamageReport(uuid, total));
+		gameWorld.send(null, p.x, p.y, new DamageReport(uuid, total));
 		if(mob.hp<=0)
 			{
-			GameServer.world().send(null, p.x, p.y, new Despawn(uuid));
+			gameWorld.send(null, p.x, p.y, new Despawn(uuid));
 			world.delete(e);
 			return false;
 			}

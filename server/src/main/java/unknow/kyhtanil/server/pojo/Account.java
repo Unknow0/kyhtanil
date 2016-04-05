@@ -4,7 +4,13 @@ public class Account
 	{
 	private int id;
 	private String login;
-	private String pass;
+	private byte[] passHash;
+
+	public Account(String login, byte[] passHash)
+		{
+		this.login=login;
+		this.passHash=passHash;
+		}
 
 	public int getId()
 		{
@@ -16,8 +22,8 @@ public class Account
 		return login;
 		}
 
-	public String getPass()
+	public byte[] getPassHash()
 		{
-		return pass;
+		return passHash;
 		}
 	}

@@ -49,11 +49,11 @@ public class AttackSystem extends IteratingSystem
 		if(a.target instanceof UUID)
 			{
 			t=manager.getEntity((UUID)a.target);
-			if(t!=null&&sp.distance(position.get(t))>2)
+			if(t!=null&&sp.distance(position.get(t))>2) // TODO weapon range
 				t=null;
 			}
 		else
-			{
+			{ // TODO
 			IntBag entities=locManager.get(sp.x, sp.y, 2);
 
 			Point p=(Point)a.target;
@@ -72,7 +72,7 @@ public class AttackSystem extends IteratingSystem
 		if(t!=null)
 			{
 			DamageListComp d=damage.get(t);
-			d.add(new DamageListComp.Damage(e, 10, 0, 0, 0, 0, 0, 0, 0f));
+			d.add(new DamageListComp.Damage(e, 2, 0, 0, 0, 0, 0, 0, 0f));
 //			int damage=10; // TODO
 //
 //			t.looseHp(damage);

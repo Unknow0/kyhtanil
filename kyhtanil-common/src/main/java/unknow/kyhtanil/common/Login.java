@@ -12,7 +12,7 @@ import com.artemis.*;
 public class Login extends PooledComponent
 	{
 	public String login;
-	public String pass;
+	public byte[] passHash;
 
 	/**
 	 * Default constructor.
@@ -24,15 +24,16 @@ public class Login extends PooledComponent
 	/**
 	 * All-args constructor.
 	 */
-	public Login(String login, String pass)
+	public Login(String login, byte[] passHash)
 		{
 		this.login=login;
-		this.pass=pass;
+		this.passHash=passHash;
 		}
 
 	protected void reset()
 		{
 		}
+
 	public String toString()
 		{
 		return JsonUtils.toString(this);

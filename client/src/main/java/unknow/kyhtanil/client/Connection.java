@@ -2,12 +2,14 @@ package unknow.kyhtanil.client;
 
 import java.io.*;
 import java.security.*;
+import java.util.*;
 
 import org.slf4j.*;
 
 import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
 import unknow.kyhtanil.common.pojo.*;
+import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.common.util.*;
 
 import com.artemis.*;
@@ -28,7 +30,7 @@ public class Connection extends Thread
 
 	private ComponentMapper<BooleanComp> done;
 
-	public Connection(String host, int port, World world) throws NoSuchAlgorithmException
+	public Connection(String host, int port, World world) throws Exception
 		{
 		setDaemon(true);
 
@@ -41,6 +43,11 @@ public class Connection extends Thread
 		out=new Output(co.getOutputStream());
 
 		kryo=new Kryos(world, BooleanComp.class);
+//		kryo.write(out, kryo.hash()); TODO
+//		byte[] h=(byte[])kryo.read(in);
+//		if(!Arrays.equals(h, kryo.hash()))
+//			throw new Exception("Invalide version");
+
 		done=ComponentMapper.getFor(BooleanComp.class, world);
 		}
 
@@ -50,9 +57,22 @@ public class Connection extends Thread
 		return true;
 		}
 
-	public void login(String login, String pass) throws IOException
+	public void createAccount(String login, String pass) throws IOException, NoSuchAlgorithmException
 		{
-		kryo.write(out, new Login(login, pass));
+		MessageDigest md=MessageDigest.getInstance("SHA-512");
+		md.update(login.toLowerCase().getBytes("UTF8"));
+		md.update((byte)':');
+		md.update(pass.getBytes("UTF8"));
+		kryo.write(out, new CreateAccount(login, md.digest()));
+		}
+
+	public void login(String login, String pass) throws IOException, NoSuchAlgorithmException
+		{
+		MessageDigest md=MessageDigest.getInstance("SHA-512");
+		md.update(login.toLowerCase().getBytes("UTF8"));
+		md.update((byte)':');
+		md.update(pass.getBytes("UTF8"));
+		kryo.write(out, new Login(login, md.digest()));
 		}
 
 	public void update(UUID id, float x, float y, float direction) throws IOException

@@ -6,6 +6,7 @@ import javax.naming.*;
 
 import org.slf4j.*;
 
+import unknow.common.*;
 import unknow.json.*;
 import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
@@ -24,11 +25,11 @@ public class GameWorld extends Thread
 	{
 	private static final Logger log=LoggerFactory.getLogger(GameWorld.class);
 
-	private Database database;
+	private final Database database;
 
-	private World world;
-	private final UUIDManager uuidManager=new UUIDManager();
-	private final LocalizedManager locManager=new LocalizedManager(10f, 10f);
+	private final World world;
+	private final UUIDManager uuidManager;
+	private final LocalizedManager locManager;
 
 	private final Mappers mappers;
 
@@ -37,6 +38,8 @@ public class GameWorld extends Thread
 	public GameWorld() throws ClassNotFoundException, ClassCastException, InstantiationException, IllegalAccessException, JsonException, SQLException, NamingException, ReflectException
 		{
 		database=new Database();
+		uuidManager=new UUIDManager(this);
+		locManager=new LocalizedManager(10f, 10f);
 
 		WorldConfiguration cfg=new WorldConfiguration();
 		cfg.setSystem(uuidManager);
@@ -44,13 +47,13 @@ public class GameWorld extends Thread
 		cfg.setSystem(new StateManager());
 
 		cfg.setSystem(new LoginSystem(database));
-		cfg.setSystem(new LogCharSystem(database));
+		cfg.setSystem(new LogCharSystem(database, this));
 		cfg.setSystem(new MoveSystem(this));
 		cfg.setSystem(new AttackSystem());
 
 		cfg.setSystem(new UpdateStatSystem());
 		cfg.setSystem(new SpawnSystem());
-		cfg.setSystem(new DamageSystem());
+		cfg.setSystem(new DamageSystem(this));
 
 		world=new World(cfg);
 
@@ -135,5 +138,16 @@ public class GameWorld extends Thread
 		CalculatedComp c=mappers.calculated(entityId);
 		UUID uuid=uuidManager.getUuid(entityId);
 		send(sender, p.x, p.y, new Spawn(uuid, 0, m.name, c, p.x, p.y, v.direction));
+		}
+
+	private static Server server;
+
+	public static void main(String arg[]) throws Exception
+		{
+		GameWorld world=new GameWorld();
+
+		server=new Server(world.world());
+		server.bind(Cfg.getSystemInt("kyhtanil.port"));
+		server.waitShutdown();
 		}
 	}

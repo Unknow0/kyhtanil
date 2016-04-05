@@ -6,6 +6,7 @@ import unknow.kyhtanil.common.component.*;
 
 import com.artemis.*;
 import com.artemis.systems.*;
+import com.badlogic.gdx.*;
 
 public class ErrorSystem extends IteratingSystem
 	{
@@ -27,6 +28,7 @@ public class ErrorSystem extends IteratingSystem
 			return;
 		world.delete(entityId);
 
+		Screen screen=main.getScreen();
 		switch (e.code)
 			{
 			case INVALID_LOGIN:

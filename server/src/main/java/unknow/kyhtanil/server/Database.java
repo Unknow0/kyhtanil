@@ -56,7 +56,21 @@ public class Database
 		return r;
 		}
 
-	public Account getAccount(String login, String pass) throws SQLException
+	public Account createAccount(String login, byte[] passHash)
+		{
+		Account a=new Account(login, passHash);
+		try
+			{
+			co.insert(a);
+			return a;
+			}
+		catch (SQLException e)
+			{
+			return null;
+			}
+		}
+
+	public Account getAccount(String login, byte[] passHash) throws SQLException
 		{
 		Account a=null;
 		Query query=co.createQuery("select {a} from accounts a where lower(login)=lower(:login)", new String[] {"a"}, new Class[] {Account.class});
@@ -65,7 +79,7 @@ public class Database
 		if(qr.next())
 			{
 			a=(Account)qr.getEntity("a");
-			if(!pass.equals(a.getPass()))
+			if(!Arrays.equals(passHash, a.getPassHash()))
 				a=null;
 			}
 		qr.close();
@@ -93,7 +107,7 @@ public class Database
 				p.x=p.y=5;
 
 				Character c=qr.getEntity("c");
-				Body b=qr.getEntity("b");
+				qr.getEntity("b");
 
 				MobInfoComp m=mappers.mobInfo(e);
 				m.name=c.name;

@@ -12,7 +12,7 @@ import com.artemis.utils.*;
 public class BaseUUIDManager extends BaseEntitySystem
 	{
 	private static final Logger log=LoggerFactory.getLogger(BaseUUIDManager.class);
-	private final BTree<UUID,Integer> uuidToEntity;
+	protected final BTree<UUID,Integer> uuidToEntity;
 	private final Bag<UUID> entityToUuid;
 
 	protected BaseUUIDManager(Builder aspect)
@@ -30,15 +30,6 @@ public class BaseUUIDManager extends BaseEntitySystem
 	public final UUID getUuid(int entityId)
 		{
 		return entityToUuid.safeGet(entityId);
-		}
-
-	public final UUID assignUuid(int e)
-		{
-		UUID uuid=UUIDGen.next();
-		while (uuidToEntity.containsKey(uuid))
-			uuid=UUIDGen.next();
-		setUuid(e, uuid);
-		return uuid;
 		}
 
 	public final UUID remove(int e)

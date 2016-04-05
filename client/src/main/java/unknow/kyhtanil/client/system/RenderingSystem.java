@@ -1,7 +1,6 @@
 package unknow.kyhtanil.client.system;
 
 import unknow.kyhtanil.client.*;
-import unknow.kyhtanil.client.artemis.*;
 import unknow.kyhtanil.client.component.*;
 import unknow.kyhtanil.common.component.*;
 
@@ -18,6 +17,9 @@ public class RenderingSystem extends IteratingSystem
 	private Camera cam;
 
 	private ComponentMapper<CalculatedComp> calculated;
+	private ComponentMapper<TargetComp> target;
+	private ComponentMapper<PositionComp> position;
+	private ComponentMapper<SpriteComp> sprite;
 
 	private Texture targetTex;
 	private Vector2 targetSize;
@@ -49,31 +51,31 @@ public class RenderingSystem extends IteratingSystem
 	@Override
 	protected void process(int id)
 		{
-		PositionComp pos=Builder.getPosition(id);
-		SpriteComp sprite=Builder.getSprite(id);
+		PositionComp pos=position.get(id);
+		SpriteComp s=sprite.get(id);
 
-		if(sprite.rotation!=0)
+		if(s.rotation!=0)
 			{
 			batch.end();
 			Matrix4 cpy=batch.getTransformMatrix().cpy();
 			batch.getTransformMatrix().translate(pos.x, pos.y, 0);
-			batch.getTransformMatrix().rotateRad(0, 0, 1, sprite.rotation);
+			batch.getTransformMatrix().rotateRad(0, 0, 1, s.rotation);
 
 			batch.begin();
-			batch.draw(sprite.tex, -sprite.w/2, -sprite.h/2, sprite.w, sprite.h);
+			batch.draw(s.tex, -s.w/2, -s.h/2, s.w, s.h);
 			batch.end();
 
 			batch.setTransformMatrix(cpy);
 			batch.begin();
 			}
 		else
-			batch.draw(sprite.tex, pos.x-sprite.w/2, pos.y-sprite.h/2, sprite.w, sprite.h);
-		if(Builder.isTarget(id))
+			batch.draw(s.tex, pos.x-s.w/2, pos.y-s.h/2, s.w, s.h);
+		if(target.has(id))
 			batch.draw(targetTex, pos.x-targetSize.x/2, pos.y-targetSize.y/2, targetSize.x, targetSize.y);
 
 		CalculatedComp c=calculated.get(id);
 
-		batch.draw(hpTex, pos.x-sprite.w/2, pos.y+sprite.h/2+.5f, sprite.w*c.hp*1f/c.maxHp, .5f);
+		batch.draw(hpTex, pos.x-s.w/2, pos.y+s.h/2+.5f, s.w*c.hp*1f/c.maxHp, .5f);
 		}
 
 	@Override

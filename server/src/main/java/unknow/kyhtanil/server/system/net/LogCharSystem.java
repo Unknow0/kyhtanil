@@ -9,7 +9,7 @@ import unknow.kyhtanil.common.component.*;
 import unknow.kyhtanil.common.pojo.*;
 import unknow.kyhtanil.server.*;
 import unknow.kyhtanil.server.component.*;
-import unknow.kyhtanil.server.component.StateComp.*;
+import unknow.kyhtanil.server.component.StateComp.States;
 import unknow.kyhtanil.server.manager.*;
 import unknow.kyhtanil.server.system.*;
 
@@ -24,6 +24,8 @@ import com.artemis.utils.*;
 public class LogCharSystem extends IteratingSystem
 	{
 	private static final Logger log=LoggerFactory.getLogger(LogCharSystem.class);
+
+	private GameWorld gameWorld;
 
 	private LocalizedManager locManager;
 	private UUIDManager manager;
@@ -43,10 +45,11 @@ public class LogCharSystem extends IteratingSystem
 
 	private static final float range=50f;
 
-	public LogCharSystem(Database database)
+	public LogCharSystem(Database database, GameWorld gameWorld)
 		{
 		super(Aspect.all(LogChar.class, NetComp.class));
 		this.database=database;
+		this.gameWorld=gameWorld;
 		}
 
 	@Override
@@ -103,7 +106,7 @@ public class LogCharSystem extends IteratingSystem
 		CalculatedComp c=calculated.get(st);
 
 		// spawn the new pj in the world
-		GameServer.world().spawn(s, st);
+		gameWorld.spawn(s, st);
 		PjInfo pjInfo=new PjInfo(m.name, 1, p.x, p.y, m.hp, m.mp, b, c);
 		chan.write(pjInfo);
 

@@ -22,7 +22,7 @@ public class MoveSystem extends IteratingSystem
 	private ComponentMapper<NetComp> net;
 	private ComponentMapper<PositionComp> position;
 	private ComponentMapper<VelocityComp> velocity;
-	private ComponentMapper<CalculatedComp> calculated;
+//	private ComponentMapper<CalculatedComp> calculated;
 	private ComponentMapper<StateComp> state;
 
 	private GameWorld gameWorld;
@@ -51,21 +51,21 @@ public class MoveSystem extends IteratingSystem
 			return;
 			}
 
-		CalculatedComp c=calculated.get(e);
+//		CalculatedComp c=calculated.get(e);
 		PositionComp p=position.get(e);
 		StateComp sender=state.get(e);
-//		if(p.distance(m.x, m.y)>c.moveSpeed+.1)
+//		if(p.distance(m.x, m.y)>c.moveSpeed+.1) TODO
 //			{
 //			sender=null;
 //			m=new Move(m.uuid, p.x, p.y, m.direction);
 //			}
 //		else
 //			{
-			p.x=m.x;
-			p.y=m.y;
+		p.x=m.x;
+		p.y=m.y;
 
-			VelocityComp v=velocity.get(e);
-			v.direction=m.direction;
+		VelocityComp v=velocity.get(e);
+		v.direction=m.direction;
 //			}
 
 		gameWorld.send(sender, p.x, p.y, m);

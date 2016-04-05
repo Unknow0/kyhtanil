@@ -50,7 +50,7 @@ public class LoginSystem extends IteratingSystem
 		world.delete(e);
 		try
 			{
-			Account a=database.getAccount(l.login, l.pass);
+			Account a=database.getAccount(l.login, l.passHash);
 			if(a!=null)
 				{
 				int ns=world.create(Archetypes.pj);

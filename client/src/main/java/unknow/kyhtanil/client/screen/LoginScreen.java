@@ -1,21 +1,14 @@
 package unknow.kyhtanil.client.screen;
 
-import java.io.*;
-
 import unknow.kyhtanil.client.*;
 
-import com.badlogic.gdx.*;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
-import com.badlogic.gdx.utils.viewport.*;
 import com.kotcrab.vis.ui.widget.*;
 
 public class LoginScreen extends GameScreen
 	{
-	private Stage stage;
-
 	private VisLabel txt;
 	private VisTextField login;
 	private VisTextField pass;
@@ -27,7 +20,6 @@ public class LoginScreen extends GameScreen
 		pass.setPasswordMode(true);
 		pass.setPasswordCharacter('*');
 
-		stage=new Stage(new ScreenViewport());
 		VisTable table=new VisTable();
 		table.setFillParent(true);
 		stage.addActor(table);
@@ -51,14 +43,26 @@ public class LoginScreen extends GameScreen
 		txt=new VisLabel("");
 		table.add(txt).colspan(2);
 		table.row();
-
 		table.add(new VisLabel("Login"));
 		table.add(login);
 		table.row();
 		table.add(new VisLabel("Pass"));
 		table.add(pass);
 		table.row();
-		VisTextButton button=new VisTextButton("login");
+		VisTable t2=new VisTable();
+		table.add(t2).colspan(2).center();
+		VisTextButton button=new VisTextButton("create");
+		button.addListener(new ChangeListener()
+			{
+				@Override
+				public void changed(ChangeEvent event, Actor actor)
+					{
+					create();
+					}
+			});
+
+		t2.add(button);
+		button=new VisTextButton("login");
 		button.addListener(new ChangeListener()
 			{
 				@Override
@@ -68,29 +72,7 @@ public class LoginScreen extends GameScreen
 					}
 			});
 
-		table.add(button).colspan(2);
-		}
-
-	public void render(float delta)
-		{
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(delta);
-		stage.draw();
-		}
-
-	public void resize(int width, int height)
-		{
-		stage.getViewport().update(width, height, true);
-		}
-
-	public void show()
-		{
-		Gdx.input.setInputProcessor(stage);
-		}
-
-	public void dispose()
-		{
-		stage.dispose();
+		t2.add(button);
 		}
 
 	private void login()
@@ -99,7 +81,19 @@ public class LoginScreen extends GameScreen
 			{
 			Main.co().login(login.getText(), pass.getText());
 			}
-		catch (IOException e)
+		catch (Exception e)
+			{ // TODO manage error
+			e.printStackTrace();
+			}
+		}
+
+	private void create()
+		{
+		try
+			{
+			Main.co().createAccount(login.getText(), pass.getText());
+			}
+		catch (Exception e)
 			{ // TODO manage error
 			e.printStackTrace();
 			}
