@@ -1,0 +1,27 @@
+<root xmlns="scene-builder">
+	<table ref-id='tileset.edit' visible='false' movable='true' setKeepWithinStage='true'>
+		<row expandX='true' center=''>
+			<actor class='com.kotcrab.vis.ui.widget.VisLabel' name='Tileset'/>
+			<actor class='com.kotcrab.vis.ui.widget.VisSelectBox' id='tileset.file'>
+				<inject name="addListener" ref-id='tileset.show'/>
+			</actor>
+			<actor class='com.kotcrab.vis.ui.widget.VisTextButton' name='add'>
+				<inject name="addListener" ref-id="tileset.open"/>
+			</actor>
+		</row>
+		<row colspan='3' expand='' fill=''>
+			<scroll fadeScrollBars='false'>
+				<table id='tileset.root'/>
+			</scroll>
+		</row>
+		<row colspan='3' expand='' fill=''>
+			<actor class='com.kotcrab.vis.ui.widget.VisTextButton' name='close'>
+				<inject name="addListener" ref-id="tileset.close"/>
+			</actor>
+			<actor class='com.kotcrab.vis.ui.widget.VisTextButton' name='save'>
+				<inject name="addListener" ref-id="tileset.save"/>
+			</actor>
+		</row>
+	</table>
+	<actor class='unknow.game.admin.screen.TilesetEditor$TileSetChooser' width='400' height='200' visible='false' id='tileset.fileChooser'/>
+</root>

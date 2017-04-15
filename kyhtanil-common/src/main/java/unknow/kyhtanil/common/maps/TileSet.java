@@ -1,6 +1,6 @@
-package unknow.kyhtanil.client.graphics;
+package unknow.kyhtanil.common.maps;
 
-import unknow.kyhtanil.client.*;
+import java.io.*;
 
 import com.badlogic.gdx.files.*;
 import com.badlogic.gdx.graphics.*;
@@ -10,16 +10,12 @@ public class TileSet
 	{
 	/** full texture */
 	private Texture texture;
-	/** tile size*/
-	private int width, height;
 
 	private TextureRegion[] tiles;
 
-	public TileSet(FileHandle file, int w, int h)
+	public TileSet(FileHandle tex, int width, int height)
 		{
-		texture=new Texture(file);
-		width=w;
-		height=h;
+		texture=new Texture(tex);
 
 		int texWidth=texture.getWidth()/width;
 		int texHeight=texture.getHeight()/height;
@@ -27,9 +23,7 @@ public class TileSet
 		for(int x=0; x<texWidth; x++)
 			{
 			for(int y=0; y<texHeight; y++)
-				{
-				tiles[x+y*texHeight]=new TextureRegion(texture, x*width, y*height, width, height);
-				}
+				tiles[x+y*texWidth]=new TextureRegion(texture, x*width, y*height, width, height);
 			}
 		}
 
@@ -41,16 +35,6 @@ public class TileSet
 	public int tileCount()
 		{
 		return tiles.length;
-		}
-
-	public float tileWidth()
-		{
-		return Main.pixelToUnit(width);
-		}
-
-	public float tileHeight()
-		{
-		return Main.pixelToUnit(height);
 		}
 
 	public void dispose()

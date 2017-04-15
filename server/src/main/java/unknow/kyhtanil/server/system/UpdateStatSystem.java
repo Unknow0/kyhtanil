@@ -43,6 +43,7 @@ public class UpdateStatSystem extends IteratingSystem
 
 		calc.moveSpeed=1f;
 
+		calc.dmg.set(1, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		// TODO add buff
 		}
 	}

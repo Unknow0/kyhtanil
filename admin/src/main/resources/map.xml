@@ -1,0 +1,36 @@
+<root xmlns="scene-builder">
+	<include source='tileset.xml'/>
+	<table fillParent='true'>
+		<row colspan='2' left=''>
+			<include source='menu.xml'/>
+		</row>
+		<row colspan='2' expandX='true'>
+			<table center=''>
+				<actor class='com.kotcrab.vis.ui.widget.VisLabel' name='Name'/>
+				<actor class='com.kotcrab.vis.ui.widget.VisTextField' id='name'/>
+				<actor class='com.kotcrab.vis.ui.widget.VisTextButton' name='Save'>
+					<inject name="addListener" ref-id="save"/>
+				</actor>
+			</table>
+		</row>
+		<row>
+			<cell id='map' grow=''>
+				<actor class='com.badlogic.gdx.scenes.scene2d.Actor'/>
+			</cell>
+			<cell minWidth='210'>
+				<table>
+					<row colspan='6'>
+						<actor class='com.kotcrab.vis.ui.widget.VisSelectBox' id='tilesetBox'>
+							<inject name="addListener" ref-id="tilesetChange"/>
+						</actor>
+					</row>
+					<row>
+						<scroll class="com.kotcrab.vis.ui.widget.VisScrollPane">
+							<table id='tileset'/>
+						</scroll>
+					</row>
+				</table>
+			</cell>
+		</row>
+	</table>
+</root>

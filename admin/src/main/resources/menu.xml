@@ -1,0 +1,28 @@
+<root xmlns="scene-builder">
+	<menuBar>
+		<menu name='File'>
+			<menuItem name='Update'>
+				<inject name="addListener" ref-id="update"/>
+			</menuItem>
+			<menuItem name='Commit'>
+				<inject name="addListener" ref-id="commit"/>
+			</menuItem>
+			<separator/>
+			<menuItem name='Quit'>
+				<inject name="addListener" ref-id="quit"/>
+			</menuItem>
+		</menu>
+		<menu name='Map'>
+			<menuItem name='new'>
+				<inject name="addListener" ref-id="map.new"/>
+			</menuItem>
+			<menuItem name='Load map' id='map.edit'/>
+		</menu>
+		<menu name='TileSet' id='tileset'>
+			<menuItem name="add">
+				<inject name="addListener" ref-id='tileset.new'/>
+			</menuItem>
+			<menuItem name="edit" id='tileset.edit'/>
+		</menu>
+	</menuBar>
+</root>

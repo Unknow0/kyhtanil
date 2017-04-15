@@ -1,4 +1,4 @@
-package unknow.kyhtanil.client;
+package unknow.kyhtanil.common.maps;
 
 import java.io.*;
 
@@ -12,6 +12,14 @@ public class MapModel
 		this.width=width;
 		this.height=height;
 		this.map=new byte[width*height];
+		}
+
+	public MapModel(DataInputStream in) throws IOException
+		{
+		width=in.readInt();
+		height=in.readInt();
+		map=new byte[width*height];
+		in.read(map);
 		}
 
 	/** @retrun the id at these coord */
@@ -32,14 +40,6 @@ public class MapModel
 		return height;
 		}
 
-	public void load(DataInputStream in) throws IOException
-		{
-		width=in.readInt();
-		height=in.readInt();
-		map=new byte[width*height];
-		in.read(map);
-		}
-
 	public void save(DataOutputStream out) throws IOException
 		{
 		out.writeInt(width);
@@ -49,7 +49,9 @@ public class MapModel
 
 	public void set(int x, int y, byte i)
 		{
-		map[x+y*width]=i;
+		int v=x+y*width;
+		if(v>0&&v<map.length)
+			map[v]=i;
 		}
 
 	public void setSize(int nw, int nh)

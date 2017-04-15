@@ -6,7 +6,7 @@ import com.artemis.*;
 
 public class CalculatedComp extends PooledComponent
 	{
-	public Damage dmg;
+	public Damage dmg=new Damage();
 	// TODO res
 
 	public int hp;
@@ -25,7 +25,7 @@ public class CalculatedComp extends PooledComponent
 
 	public void reset()
 		{
-		dmg=null;
+		dmg=new Damage();
 		}
 
 	public void set(CalculatedComp c)

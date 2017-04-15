@@ -105,10 +105,10 @@ public class Server
 		}
 
 	private EventLoopGroup serverGroup=new NioEventLoopGroup();
-	private EventLoopGroup clientGroup=new NioEventLoopGroup();
 	private ServerBootstrap server=new ServerBootstrap();
+	private EventLoopGroup clientGroup=new NioEventLoopGroup();
 	private Bootstrap client=new Bootstrap();
-	private List<ChannelFuture> bind;
+	private List<ChannelFuture> bind=new ArrayList<ChannelFuture>();
 
 	private final Encoder encoder=new Encoder();
 	private final Handler handler=new Handler();
@@ -127,24 +127,24 @@ public class Server
 
 		kryos=new Kryos(world, NetComp.class);
 
-		try
-			{
-			server.group(serverGroup).channel(NioServerSocketChannel.class);
-			server.childHandler(initializer);
-			server.option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
+		server.group(serverGroup).channel(NioServerSocketChannel.class);
+		server.childHandler(initializer);
+		server.option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
 
-			client.group(clientGroup).channel(NioSocketChannel.class);
-			client.handler(initializer);
-			}
-		finally
-			{
-			close();
-			}
+		client.group(clientGroup).channel(NioSocketChannel.class);
+		client.handler(initializer);
 		}
 
 	public void bind(int port) throws InterruptedException
 		{
-		bind.add(server.bind(port));
+		ChannelFuture b=server.bind(port).sync();
+		bind.add(b.channel().closeFuture());
+		}
+
+	public void connect(String host, int port) throws InterruptedException
+		{
+		ChannelFuture connect=client.connect(host, port);
+		connect.sync();
 		}
 
 	public void waitShutdown() throws InterruptedException

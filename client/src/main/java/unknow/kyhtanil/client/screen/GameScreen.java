@@ -53,16 +53,12 @@ public class GameScreen implements Screen
 		stage.dispose();
 		}
 
-	public void showError(Exception e)
+	public void showError(String msg, Exception e)
 		{
-		showError(e.getMessage());
-		}
-
-	public void showError(String e)
-		{
-		log.error("", e);
+		log.error(msg, e);
 		VisWindow error=new VisWindow("Error");
-		error.add(new VisLabel(e));
+		error.add(new VisLabel(msg));
+		error.add(new VisLabel(e.getMessage()));
 		error.add(new VisTextButton("Quit", new ChangeListener()
 			{
 				public void changed(ChangeEvent event, Actor actor)

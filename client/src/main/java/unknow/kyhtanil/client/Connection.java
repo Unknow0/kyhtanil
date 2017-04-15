@@ -43,18 +43,12 @@ public class Connection extends Thread
 		out=new Output(co.getOutputStream());
 
 		kryo=new Kryos(world, BooleanComp.class);
-//		kryo.write(out, kryo.hash()); TODO
-//		byte[] h=(byte[])kryo.read(in);
-//		if(!Arrays.equals(h, kryo.hash()))
-//			throw new Exception("Invalide version");
+		kryo.write(out, kryo.hash());
+		byte[] h=(byte[])kryo.read(in);
+		if(!Arrays.equals(h, kryo.hash()))
+			throw new Exception("Invalide version");
 
 		done=ComponentMapper.getFor(BooleanComp.class, world);
-		}
-
-	public boolean checkVersion() throws IOException
-		{
-		// TODO
-		return true;
 		}
 
 	public void createAccount(String login, String pass) throws IOException, NoSuchAlgorithmException

@@ -7,6 +7,7 @@ import unknow.kyhtanil.client.screen.*;
 import unknow.kyhtanil.client.system.*;
 import unknow.kyhtanil.client.system.net.*;
 import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.maps.*;
 
 import com.artemis.*;
 import com.badlogic.gdx.*;
@@ -34,13 +35,12 @@ public class Main extends Game
 			{
 			self=this;
 			VisUI.load();
-			TileSet tileset=new TileSet(Gdx.files.internal("tileset.png"), 32, 32);
-			MapModel mapModel=new MapModel(100, 100);
+//			TileSet tileset=new TileSet(Gdx.files.internal("tileset.png"), 32, 32);
+//			MapModel mapModel=new MapModel(100, 100);
 
 			manager=new UUIDManager();
 
-			TileMap map=new TileMap(mapModel, tileset);
-			worldScreen=new WorldScreen(map, manager);
+			worldScreen=new WorldScreen(manager);
 			charSelect=new CharSelectScreen();
 			login=new LoginScreen();
 
@@ -83,7 +83,14 @@ public class Main extends Game
 		{
 		world.delta=Gdx.graphics.getDeltaTime();
 		if(screen==worldScreen)
-			worldScreen.renderMap(world.delta);
+			try
+				{
+				worldScreen.renderMap(world.delta);
+				}
+			catch (Exception e)
+				{
+				e.printStackTrace();
+				}
 
 		world.process();
 		screen.render(world.delta);

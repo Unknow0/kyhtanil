@@ -15,6 +15,7 @@ public class SpawnSystem extends IteratingSystem
 	private ComponentMapper<MobInfoComp> mobInfo;
 
 	private UpdateStatSystem update;
+	private EventSystem event;
 
 	public SpawnSystem()
 		{
@@ -48,6 +49,31 @@ public class SpawnSystem extends IteratingSystem
 			mi.name="mob";
 
 			update.process(m);
+			event.register(m, new Listener(spawner, e));
+			}
+		}
+
+	private static class Listener implements EventSystem.EntityListener
+		{
+		private ComponentMapper<SpawnerComp> spawner;
+		private int spawnerId;
+
+		public Listener(ComponentMapper<SpawnerComp> spawner, int spawnerId)
+			{
+			this.spawner=spawner;
+			this.spawnerId=spawnerId;
+			}
+
+		@Override
+		public void inserted(int entityId)
+			{
+			}
+
+		@Override
+		public void removed(int entityId)
+			{
+			SpawnerComp s=spawner.get(spawnerId);
+			s.current_count--;
 			}
 		}
 	}

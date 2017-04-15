@@ -40,18 +40,7 @@ public class Damage
 
 	public Damage(int s, int s_r, int b, int b_r, int p, int p_r, int f, int f_r, int l, int l_r, int i, int i_r)
 		{
-		slashingMin=s;
-		slashingRng=s_r;
-		bluntMin=b;
-		bluntRng=b_r;
-		piercingMin=p;
-		piercingRng=p_r;
-		fireMin=f;
-		fireRng=f_r;
-		iceMin=i;
-		iceRng=i_r;
-		lightningMin=l;
-		lightningRng=l_r;
+		set(s, s_r, b, b_r, p, p_r, f, f_r, l, l_r, i, i_r);
 		}
 
 	public Damage mult(double i)
@@ -125,5 +114,26 @@ public class Damage
 	public int rawMax()
 		{
 		return rawMin()+slashingRng+bluntRng+piercingRng+fireRng+iceRng+lightningRng;
+		}
+
+	public void set(int s, int s_r, int b, int b_r, int p, int p_r, int f, int f_r, int l, int l_r, int i, int i_r)
+		{
+		slashingMin=s;
+		slashingRng=s_r;
+		bluntMin=b;
+		bluntRng=b_r;
+		piercingMin=p;
+		piercingRng=p_r;
+		fireMin=f;
+		fireRng=f_r;
+		iceMin=i;
+		iceRng=i_r;
+		lightningMin=l;
+		lightningRng=l_r;
+		}
+
+	public void reset()
+		{
+		set(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 		}
 	}
