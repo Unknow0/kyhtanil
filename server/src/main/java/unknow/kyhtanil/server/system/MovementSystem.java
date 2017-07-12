@@ -1,6 +1,7 @@
 package unknow.kyhtanil.server.system;
 
 import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.maps.*;
 import unknow.kyhtanil.server.manager.*;
 
 import com.artemis.*;
@@ -31,7 +32,6 @@ public class MovementSystem extends IteratingSystem
 		PositionComp p=position.get(e);
 		p.x+=Math.cos(v.direction)*v.speed*world.delta;
 		p.y+=Math.sin(v.direction)*v.speed*world.delta;
-
 		locManager.changed(e);
 		}
 	}

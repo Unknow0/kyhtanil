@@ -4,8 +4,9 @@ import io.netty.channel.*;
 
 import org.slf4j.*;
 
-import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.component.account.*;
+import unknow.kyhtanil.common.component.net.*;
 import unknow.kyhtanil.common.pojo.*;
 import unknow.kyhtanil.server.*;
 import unknow.kyhtanil.server.component.*;
@@ -107,7 +108,7 @@ public class LogCharSystem extends IteratingSystem
 
 		// spawn the new pj in the world
 		gameWorld.spawn(s, st);
-		PjInfo pjInfo=new PjInfo(m.name, 1, p.x, p.y, m.hp, m.mp, b, c);
+		PjInfo pjInfo=new PjInfo(m.name, p.x, p.y, m.hp, m.mp, b, c);
 		chan.write(pjInfo);
 
 		// get all surrounding entity and notify the new player with them
@@ -123,7 +124,8 @@ public class LogCharSystem extends IteratingSystem
 			VelocityComp v=velocity.get(em);
 			c=calculated.get(em);
 
-			chan.write(new Spawn(uuid, 0, m.name, c, p.x, p.y, v.direction));
+			// TODO tex from entity
+			chan.write(new Spawn(uuid, "data/tex/mob.png", m.name, c, p.x, p.y, v.direction));
 			}
 
 		// insert the pj into the world

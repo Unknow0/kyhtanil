@@ -1,5 +1,6 @@
 package unknow.kyhtanil.server;
 
+import java.io.*;
 import java.sql.*;
 
 import javax.naming.*;
@@ -9,8 +10,9 @@ import org.slf4j.*;
 
 import unknow.common.*;
 import unknow.json.*;
-import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.component.net.*;
+import unknow.kyhtanil.common.maps.*;
 import unknow.kyhtanil.common.pojo.*;
 import unknow.kyhtanil.server.component.*;
 import unknow.kyhtanil.server.manager.*;
@@ -41,18 +43,18 @@ public class GameWorld
 
 	private final Archetype spawnArch;
 
-	private final ScriptEngine js;
-
-	public GameWorld() throws ClassNotFoundException, ClassCastException, InstantiationException, IllegalAccessException, JsonException, SQLException, NamingException, ReflectException, ScriptException
+	public GameWorld() throws ClassNotFoundException, ClassCastException, InstantiationException, IllegalAccessException, JsonException, SQLException, NamingException, ReflectException, ScriptException, FileNotFoundException, IOException
 		{
-		js=new ScriptEngineManager().getEngineByName("javascript");
 
 		database=new Database();
 		uuidManager=new UUIDManager(this);
 		locManager=new LocalizedManager(10f, 10f);
+		MapLayout layout=new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
 
 		AttackSystem attackSystem=new AttackSystem();
 		ApiWorld apiWorld=new ApiWorld();
+		ScriptEngine js=new ScriptEngineManager().getEngineByName("javascript");
+		js.put("api", apiWorld);
 
 		WorldConfiguration cfg=new WorldConfiguration();
 		cfg.setSystem(uuidManager);
@@ -70,8 +72,8 @@ public class GameWorld
 		cfg.setSystem(new DamageSystem(this));
 
 		cfg.register(database);
+		cfg.register(layout);
 		cfg.register("javax.script.ScriptEngine", js);
-		cfg.register(apiWorld);
 
 		world=new World(cfg);
 		world.inject(database);
@@ -135,9 +137,10 @@ public class GameWorld
 
 	public void send(StateComp sender, float x, float y, Object msg)
 		{
-		log.debug("send {} at {} x {}", msg, x, y);
+		log.debug("send {} at {} x {} from {}", msg, x, y, sender);
 		IntBag bag=locManager.get(x, y, range, state);
-
+		if(bag.size()==2)
+			return;
 		for(int i=0; i<bag.size(); i++)
 			{
 			StateComp s=state.get(bag.get(i));
@@ -163,7 +166,7 @@ public class GameWorld
 		MobInfoComp m=mobInfo.get(entityId);
 		CalculatedComp c=calculated.get(entityId);
 		UUID uuid=uuidManager.getUuid(entityId);
-		send(sender, p.x, p.y, new Spawn(uuid, 0, m.name, c, p.x, p.y, v.direction));
+		send(sender, p.x, p.y, new Spawn(uuid, "data/tex/mob.png", m.name, c, p.x, p.y, v.direction));
 		}
 
 	private static Server server;

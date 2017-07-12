@@ -16,6 +16,12 @@ public class PositionComp extends PooledComponent
 		return distance(p.x, p.y);
 		}
 
+	public void set(PositionComp p)
+		{
+		this.x=p.x;
+		this.y=p.y;
+		}
+
 	public double distance(float x, float y)
 		{
 		float dx=this.x-x;

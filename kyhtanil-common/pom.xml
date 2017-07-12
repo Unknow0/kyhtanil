@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>kyhtanil-common</artifactId>
 	<version>${kyhtanil.version}</version>
@@ -13,6 +12,49 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>7</source>
+					<target>7</target>
+				</configuration>
+			</plugin>
+			<!--plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/main/generated</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>unknow.pojo.generator</groupId>
+				<artifactId>pojo-generator</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<out>${basedir}/src/main/generated/</out>
+							<files>
+								<file>${basedir}/src/main/resources/component.xml</file>
+								<file>${basedir}/src/main/resources/account.xml</file>
+								<file>${basedir}/src/main/resources/net.xml</file>
+							</files>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin-->
 		</plugins>
 	</build>
 	<dependencies>

@@ -2,6 +2,7 @@ package unknow.kyhtanil.client.graphics;
 
 import unknow.kyhtanil.client.*;
 import unknow.kyhtanil.common.*;
+import unknow.kyhtanil.common.component.account.*;
 
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.kotcrab.vis.ui.widget.*;

@@ -1,13 +1,12 @@
 package unknow.kyhtanil.client.system.net;
 
-import java.sql.*;
-
 import org.slf4j.*;
 
 import unknow.kyhtanil.client.*;
 import unknow.kyhtanil.client.artemis.*;
-import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.component.net.*;
+import unknow.kyhtanil.common.pojo.*;
 
 import com.artemis.*;
 import com.artemis.systems.*;
@@ -36,32 +35,22 @@ public class SpawnSystem extends IteratingSystem
 		world.delete(entityId);
 		log.info("{}", s);
 
-		final String tex;
-		String t=null;
-		try
-			{
-			t=Db.getMobTex(s.type); // TODO cache
-			}
-		catch (SQLException e)
-			{
-			e.printStackTrace();
-			}
-		if(t!=null)
-			tex=t;
-		else
-			tex="mob.png";
-
-		Gdx.app.postRunnable(new MobLoader(s, tex));
+		Gdx.app.postRunnable(new MobLoader(s, s.type));
 		}
 
 	private class MobLoader implements Runnable
 		{
 		String tex;
-		Spawn s;
+		float x, y;
+		UUID uuid;
+		CalculatedComp total;
 
 		public MobLoader(Spawn s, String tex)
 			{
-			this.s=s;
+			this.uuid=s.uuid;
+			this.x=s.x;
+			this.y=s.y;
+			this.total=s.total;
 			this.tex=tex;
 			}
 
@@ -69,8 +58,8 @@ public class SpawnSystem extends IteratingSystem
 			{
 			TextureRegion mobTex=new TextureRegion(new Texture(Gdx.files.internal(tex)));
 
-			int mob=Builder.buildMob(s.x, s.y, mobTex, Main.pixelToUnit(mobTex.getRegionWidth()), Main.pixelToUnit(mobTex.getRegionHeight()), s.total);
-			manager.setUuid(mob, s.uuid);
+			int mob=Builder.buildMob(x, y, mobTex, Main.pixelToUnit(mobTex.getRegionWidth()), Main.pixelToUnit(mobTex.getRegionHeight()), total);
+			manager.setUuid(mob, uuid);
 			}
 		}
 	}

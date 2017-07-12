@@ -66,6 +66,7 @@ public class LocalizedManager extends BaseEntitySystem
 		if(p==null)
 			{
 			bag.remove(entityId);
+			objects.remove(entityId);
 			return;
 			}
 
@@ -82,6 +83,7 @@ public class LocalizedManager extends BaseEntitySystem
 			locMap.put(nloc, bag);
 			}
 		bag.add(entityId);
+		objects.put(entityId, nloc);
 		}
 
 	@Override

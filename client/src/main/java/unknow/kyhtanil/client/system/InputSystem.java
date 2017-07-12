@@ -29,7 +29,7 @@ public class InputSystem extends BaseSystem implements InputProcessor
 
 	public int showStat=Input.Keys.C;
 
-	public int n1=Input.Keys.NUM_1;
+	public int[] bar=new int[] {Input.Keys.NUM_1, Input.Keys.NUM_2, Input.Keys.NUM_3, Input.Keys.NUM_4, Input.Keys.NUM_5, Input.Keys.NUM_6, Input.Keys.NUM_7, Input.Keys.NUM_8, Input.Keys.NUM_9};
 
 	protected EntitySubscription allPosition;
 
@@ -91,31 +91,38 @@ public class InputSystem extends BaseSystem implements InputProcessor
 				v.speed=0f;
 			v.direction=(float)Math.atan2(dirY, dirX);
 			}
-		else if(n1==keycode)
-			{
-			try
-				{
-				Vector2 vec=vp.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-				IntBag targets=Builder.getTarget();
-				UUID uuid=null;
-				if(!targets.isEmpty())
-					{
-					int i=targets.get(0);
-					uuid=manager.getUuid(i);
-					log.info("attaque {} {}", i, uuid);
-					}
-				Main.co().attack(State.uuid, 0, targets.isEmpty()?null:uuid, vec.x, vec.y);
-				}
-			catch (IOException e)
-				{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				}
-			}
 		else if(showStat==keycode)
 			screen.toggleStat();
 		else if(Input.Keys.ESCAPE==keycode)
 			screen.closeLast();
+		else
+			{
+			for(int i=0; i<bar.length; i++)
+				{
+				if(bar[i]==keycode)
+					{
+					try
+						{
+						Vector2 vec=vp.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+						IntBag targets=Builder.getTarget();
+						UUID uuid=null;
+						if(!targets.isEmpty())
+							{
+							int t=targets.get(0);
+							uuid=manager.getUuid(t);
+							log.info("attaque {} {}", t, uuid);
+							}
+						Main.co().attack(State.uuid, i, uuid, vec.x, vec.y);
+						}
+					catch (IOException e)
+						{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						}
+					break;
+					}
+				}
+			}
 		return true;
 		}
 
@@ -176,7 +183,7 @@ public class InputSystem extends BaseSystem implements InputProcessor
 	protected void processSystem()
 		{
 		// not char logged => nothing to do
-		if(State.pj==null)
+		if(State.pj==null||State.uuid==null)
 			return;
 		SpriteComp s=Builder.getSprite(State.entity);
 		PositionComp p=Builder.getPosition(State.entity);

@@ -189,6 +189,8 @@ class B
 		conf.setTitle("Game");
 		conf.setWindowedMode(560, 368);
 		conf.setResizable(true);
+		conf.useOpenGL3(true, 3, 2);
+		conf.useVsync(true);
 		new Lwjgl3Application(new Main(), conf);
 		}
 	}

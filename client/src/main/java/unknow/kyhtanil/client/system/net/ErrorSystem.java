@@ -1,7 +1,6 @@
 package unknow.kyhtanil.client.system.net;
 
 import unknow.kyhtanil.client.*;
-import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
 
 import com.artemis.*;

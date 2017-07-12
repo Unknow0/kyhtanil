@@ -5,16 +5,26 @@ import java.net.*;
 import java.util.*;
 
 import javax.lang.model.element.*;
+import javax.script.*;
 import javax.tools.*;
 import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileObject.Kind;
 
 import unknow.common.tools.*;
 
-public class Test
+public abstract class Test
 	{
+	
+
 	public static void main(String[] arg) throws Exception
 		{
+		ScriptEngine js=new ScriptEngineManager().getEngineByName("javascript");
+		
+		System.out.println(js.eval("var t=Java.type('unknow.kyhtanil.server.Test'); new t {f:function f() {}}"));
+		
+		if(true)
+			return;
+
 		JavaCompiler cc=ToolProvider.getSystemJavaCompiler();
 		FileManager manager=new FileManager(cc.getStandardFileManager(null, null, null));
 		CompilationTask task=cc.getTask(null, manager, null, null, null, new Iterable<JavaFileObject>()

@@ -3,8 +3,8 @@ package unknow.kyhtanil.client.system.net;
 import org.slf4j.*;
 
 import unknow.kyhtanil.client.artemis.*;
-import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.component.net.*;
 
 import com.artemis.*;
 import com.artemis.systems.*;

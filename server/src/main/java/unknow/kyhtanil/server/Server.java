@@ -14,7 +14,7 @@ import java.util.*;
 import org.slf4j.*;
 
 import unknow.common.tools.*;
-import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.component.net.*;
 import unknow.kyhtanil.common.util.*;
 
 import com.artemis.*;

@@ -1,13 +1,13 @@
 package unknow.kyhtanil.client;
 
+import org.slf4j.*;
+
 import unknow.common.*;
 import unknow.kyhtanil.client.artemis.*;
-import unknow.kyhtanil.client.graphics.*;
 import unknow.kyhtanil.client.screen.*;
 import unknow.kyhtanil.client.system.*;
 import unknow.kyhtanil.client.system.net.*;
 import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.maps.*;
 
 import com.artemis.*;
 import com.badlogic.gdx.*;
@@ -17,6 +17,7 @@ import com.kotcrab.vis.ui.*;
 
 public class Main extends Game
 	{
+	private static final Logger log=LoggerFactory.getLogger(Main.class);
 	private Connection client;
 	public static Main self;
 
@@ -35,8 +36,6 @@ public class Main extends Game
 			{
 			self=this;
 			VisUI.load();
-//			TileSet tileset=new TileSet(Gdx.files.internal("tileset.png"), 32, 32);
-//			MapModel mapModel=new MapModel(100, 100);
 
 			manager=new UUIDManager();
 
@@ -63,7 +62,8 @@ public class Main extends Game
 			world=new World(cfg);
 			Builder.init(world);
 
-			TextureRegion tex=new TextureRegion(new Texture(Gdx.files.internal("test.png")));
+			// TODO get from server
+			TextureRegion tex=new TextureRegion(new Texture(Gdx.files.internal("data/tex/char.png")));
 			State.entity=Builder.buildMob(0, 0, tex, Main.pixelToUnit(tex.getRegionWidth()), Main.pixelToUnit(tex.getRegionHeight()), null);
 			VelocityComp v=Builder.getVelocity(State.entity);
 			v.speed=1f;
@@ -79,6 +79,7 @@ public class Main extends Game
 			}
 		}
 
+	@Override
 	public void render()
 		{
 		world.delta=Gdx.graphics.getDeltaTime();
@@ -91,7 +92,6 @@ public class Main extends Game
 				{
 				e.printStackTrace();
 				}
-
 		world.process();
 		screen.render(world.delta);
 		}

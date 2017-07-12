@@ -3,8 +3,8 @@ package unknow.kyhtanil.client.system.net;
 import unknow.kyhtanil.client.*;
 import unknow.kyhtanil.client.artemis.*;
 import unknow.kyhtanil.client.screen.*;
-import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.component.account.*;
 
 import com.artemis.*;
 import com.artemis.systems.*;

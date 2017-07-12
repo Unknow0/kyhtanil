@@ -1,11 +1,16 @@
 package unknow.kyhtanil.server.system.net;
 
+import java.io.*;
+import java.util.regex.*;
+
 import javax.script.*;
 
 import org.slf4j.*;
 
+import unknow.common.*;
 import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.component.net.*;
 import unknow.kyhtanil.common.pojo.*;
 import unknow.kyhtanil.server.*;
 import unknow.kyhtanil.server.manager.*;
@@ -13,28 +18,23 @@ import unknow.kyhtanil.server.manager.*;
 import com.artemis.*;
 import com.artemis.annotations.*;
 import com.artemis.systems.*;
-import com.artemis.utils.*;
 import com.esotericsoftware.kryo.util.*;
 
 public class AttackSystem extends IteratingSystem
 	{
 	private static final Logger log=LoggerFactory.getLogger(AttackSystem.class);
 
-	private LocalizedManager locManager;
 	private UUIDManager manager;
 	private ComponentMapper<Attack> attack;
 	private ComponentMapper<NetComp> net;
 	private ComponentMapper<PositionComp> position;
 
 	@Wire
-	private ApiWorld api;
-	@Wire
 	private ScriptEngine js;
 	@Wire
 	private Database database;
-	private Bindings bind;
 
-	private IntMap<CompiledScript> skills;
+	private IntMap<Skill> skills=new IntMap<Skill>();
 
 	public AttackSystem()
 		{
@@ -43,12 +43,18 @@ public class AttackSystem extends IteratingSystem
 
 	public void delayedInit()
 		{
-		bind=js.createBindings();
-		bind.put("api", api);
 		try
 			{
 			database.init();
-			skills=database.processSkill((Compilable)js);
+			js.put("Skill", js.eval("Java.type('"+Skill.class.getName()+"');"));
+			for(Resource r:Resource.findRessources(Pattern.compile("skills/.*.js")))
+				{
+				try (Reader in=new InputStreamReader(r.url.openStream(), "UTF8"))
+					{
+					Skill eval=(Skill)js.eval(in);
+					skills.put(eval.id, eval);
+					}
+				}
 			}
 		catch (Exception e)
 			{
@@ -72,56 +78,25 @@ public class AttackSystem extends IteratingSystem
 			return;
 			}
 
-		float range=5;
+//		float range=5;
 		Integer t=null;
-		PositionComp sp=position.get(self);
+//		PositionComp sp=position.get(self);
+		Point p;
 		if(a.target instanceof UUID)
 			{
 			t=manager.getEntity((UUID)a.target);
-			if(t!=null&&sp.distance(position.get(t))>range) // TODO weapon range
-				t=null;
+			if(t==null)
+				return;
+			PositionComp pos=position.get(t);
+			p=new Point(pos.x, pos.y);
 			}
 		else
-			{ // TODO
-			IntBag entities=locManager.get(sp.x, sp.y, range);
+			p=(Point)a.target;
 
-			Point p=(Point)a.target;
-			double rad1=Math.atan2(p.y-sp.y, p.x-sp.x);
-			for(int i=0; i<entities.size(); i++)
-				{
-				PositionComp m=position.get(entities.get(i));
-				double rad2=Math.atan2(m.y-sp.y, m.x-sp.x);
-
-				double dif=rad1-rad2;
-				if(-.3<dif&&dif<.3)
-					t=entities.get(i);
-				}
-			}
-		if(t!=null)
-			{
-			try
-				{
-				bind.put("target", t);
-				bind.put("self", self);
-				CompiledScript script=skills.get(a.id);
-				script.eval(bind);
-				}
-			catch (ScriptException e)
-				{
-				log.error("failed to execute skill", e);
-				}
-//			DamageListComp d=damage.get(t);
-//			d.add(new DamageListComp.Damage(e, 2, 0, 0, 0, 0, 0, 0, 0f));
-//			int damage=10; // TODO
-//
-//			t.looseHp(damage);
-//			send(s, t.x, t.y, new Message(new DamageReport(t.uuid, damage)));
-//			if(t.hp()<=0)
-//				{
-//				// TODO xp & loot
-//				despwan(s, t);
-//				}
-			}
-		ctx.channel.flush();
+//		js.put("point", p);
+//		js.put("target", t);
+//		js.put("self", self);
+		Skill script=skills.get(a.id);
+		script.exec(self, p, t);
 		}
 	}

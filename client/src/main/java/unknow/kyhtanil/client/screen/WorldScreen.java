@@ -3,6 +3,8 @@ package unknow.kyhtanil.client.screen;
 import java.io.*;
 import java.util.*;
 
+import org.slf4j.*;
+
 import unknow.kyhtanil.client.*;
 import unknow.kyhtanil.client.artemis.*;
 import unknow.kyhtanil.client.graphics.*;
@@ -19,12 +21,12 @@ import com.kotcrab.vis.ui.widget.*;
 
 public class WorldScreen extends GameScreen
 	{
+	private static final Logger log=LoggerFactory.getLogger(WorldScreen.class);
 	private Stage stage;
 	protected TileSet tileset;
 	protected MapLayout layout;
 
 	protected Viewport vp;
-	protected TextureRegion mobTex; // XXX
 
 	protected UUIDManager manager;
 	protected InputSystem inputSystem;
@@ -38,16 +40,14 @@ public class WorldScreen extends GameScreen
 	/** list of opened windows */
 	private LinkedList<VisWindow> windows=new LinkedList<VisWindow>();
 
-	public WorldScreen(UUIDManager manager)
+	public WorldScreen(UUIDManager manager) throws FileNotFoundException, IOException
 		{
 		this.vp=new ExtendViewport(70, 46);
-
-		mobTex=new TextureRegion(new Texture(Gdx.files.internal("mob.png")));
 
 		batch=new SpriteBatch();
 
 		this.manager=manager;
-
+		this.layout=new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
 		stage=new Stage();
 		}
 

@@ -228,7 +228,7 @@ public class LayoutEditorScreen extends AdminScreen implements InputProcessor
 	public boolean touchDown(int screenX, int screenY, int pointer, int button)
 		{
 		Vector2 v=mapVp.unproject(new Vector2(screenX, screenY));
-		selected=layout.get(v.x, v.y);
+		selected=layout.get((int)v.x, (int)v.y);
 		if(selected!=null)
 			{
 			if(System.currentTimeMillis()-lastClic<200)

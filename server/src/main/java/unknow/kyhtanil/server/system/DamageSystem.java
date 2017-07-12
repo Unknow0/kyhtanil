@@ -1,7 +1,7 @@
 package unknow.kyhtanil.server.system;
 
-import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.component.net.*;
 import unknow.kyhtanil.common.pojo.*;
 import unknow.kyhtanil.server.*;
 import unknow.kyhtanil.server.component.*;

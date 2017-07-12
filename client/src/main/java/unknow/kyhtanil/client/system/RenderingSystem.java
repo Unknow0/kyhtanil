@@ -29,9 +29,9 @@ public class RenderingSystem extends IteratingSystem
 		{
 		super(Aspect.all(PositionComp.class, SpriteComp.class, CalculatedComp.class));
 		this.cam=cam;
-		targetTex=new Texture(Gdx.files.internal("target.png"));
+		targetTex=new Texture(Gdx.files.internal("data/tex/target.png"));
 		targetSize=new Vector2(Main.pixelToUnit(targetTex.getWidth()), Main.pixelToUnit(targetTex.getHeight()));
-		hpTex=new Texture(Gdx.files.internal("hp.png"));
+		hpTex=new Texture(Gdx.files.internal("data/tex/hp.png"));
 		}
 
 	@Override

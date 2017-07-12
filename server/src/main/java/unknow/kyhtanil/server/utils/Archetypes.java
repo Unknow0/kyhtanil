@@ -9,6 +9,7 @@ public class Archetypes
 	{
 	public static Archetype mob;
 	public static Archetype pj;
+	public static Archetype proj;
 
 	@SuppressWarnings("unchecked")
 	public static void init(World world)
@@ -21,5 +22,9 @@ public class Archetypes
 
 		builder.add(StateComp.class);
 		pj=builder.build(world);
+
+		builder=new ArchetypeBuilder();
+		builder.add(PositionComp.class, VelocityComp.class, Projectile.class);
+		proj=builder.build(world);
 		}
 	}

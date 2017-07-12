@@ -1,12 +1,10 @@
 package unknow.kyhtanil.server;
 
+import unknow.kyhtanil.common.component.net.*;
+import unknow.kyhtanil.common.pojo.*;
+
 import com.artemis.*;
 import com.artemis.systems.*;
-
-import unknow.common.*;
-import unknow.kyhtanil.common.*;
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.pojo.*;
 
 public class MasterNode
 	{

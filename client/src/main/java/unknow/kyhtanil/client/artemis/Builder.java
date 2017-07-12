@@ -4,8 +4,8 @@ import org.slf4j.*;
 
 import unknow.common.tools.*;
 import unknow.kyhtanil.client.component.*;
-import unknow.kyhtanil.common.*;
 import unknow.kyhtanil.common.component.*;
+import unknow.kyhtanil.common.component.net.*;
 
 import com.artemis.*;
 import com.artemis.utils.*;

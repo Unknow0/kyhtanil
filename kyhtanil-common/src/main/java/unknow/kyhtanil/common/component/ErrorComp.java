@@ -3,7 +3,7 @@
  * 
  * DO NOT EDIT DIRECTLY
  */
-package unknow.kyhtanil.common;
+package unknow.kyhtanil.common.component;
 
 import com.artemis.*;
 

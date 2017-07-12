@@ -49,11 +49,11 @@ public class MapLayout
 			t.save(out);
 		}
 
-	public MapEntry get(float x, float y)
+	public MapEntry get(int x, int y)
 		{
 		for(MapEntry e:maps)
 			{
-			if(x>e.x&&y>e.y&&x<e.x+e.w&&y<e.y+e.h)
+			if(x>=e.x&&y>=e.y&&x<e.x+e.w&&y<e.y+e.h)
 				return e;
 			}
 		return null;
@@ -70,6 +70,13 @@ public class MapLayout
 		return list;
 		}
 
+	public boolean isWall(int x, int y) throws IOException
+		{
+		MapEntry e=get(x, y);
+		TilesetInfo ti=tileset.get(e.tileset);
+		return ti.isWall(e.map().get(x-e.x, y-e.y));
+		}
+
 	public void add(int x, int y, int w, int h, String file, String tilesetFile)
 		{
 		MapEntry e=new MapEntry(x, y, w, h, file, tilesetFile);
@@ -84,11 +91,6 @@ public class MapLayout
 		}
 
 	public void draw(Batch batch, float unitsPerPixel, Viewport vp) throws IOException
-		{
-		draw(batch, unitsPerPixel, vp, 0);
-		}
-
-	public void draw(Batch batch, float unitsPerPixel, Viewport vp, float gap) throws IOException
 		{
 		float tw=tileWidth*unitsPerPixel;
 		float th=tileHeight*unitsPerPixel;
@@ -115,10 +117,10 @@ public class MapLayout
 			float mye=e.y+e.h;
 
 			int x=e.x<sx?sx:e.x;
-			while (x<ex&&x<mxe)
+			while (x<=ex&&x<mxe)
 				{
-				int y=e.y<ey?sy:e.y;
-				while (y<ey&&y<mye)
+				int y=e.y<sy?sy:e.y;
+				while (y<=ey&&y<mye)
 					{
 					TextureRegion tex=tileset.get(m.get(x-e.x, y-e.y));
 					batch.draw(tex, x*tw, y*th, tw, th);
@@ -276,8 +278,15 @@ public class MapLayout
 				{
 				try
 					{
-					FileHandle fh=Gdx.files.internal("data/maps/"+name+".map");
-					DataInputStream in=new DataInputStream(fh.read());
+					String s="data/maps/"+name+".map";
+					DataInputStream in;
+					if(Gdx.files!=null)
+						{
+						FileHandle fh=Gdx.files.internal(s);
+						in=new DataInputStream(fh.read());
+						}
+					else
+						in=new DataInputStream(new FileInputStream(s));
 					map=new MapModel(in);
 					in.close();
 					}
