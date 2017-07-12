@@ -33,7 +33,6 @@
 		<module>server</module>
 		<module>kyhtanil-common</module>
 		<module>client</module>
-		<module>client-data</module>
 		<module>client-desktop</module>
 	</modules>
 
