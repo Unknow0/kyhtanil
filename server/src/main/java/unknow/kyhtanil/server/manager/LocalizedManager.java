@@ -31,17 +31,17 @@ public class LocalizedManager extends BaseEntitySystem
 	@Override
 	protected void initialize()
 		{
-//		position=ComponentMapper.getFor(PositionComp.class, world);
+//		position=BaseComponentMapper.getFor(PositionComp.class, world);
 		}
 
 	@Override
 	public void inserted(int entityId)
 		{
-		PositionComp p=position.getSafe(entityId);
+		PositionComp p=position.get(entityId);
 		if(p==null)
 			return;
 		// don't add pj at there creation
-		StateComp s=state.getSafe(entityId);
+		StateComp s=state.get(entityId);
 		if(s!=null&&s.state!=States.IN_GAME)
 			return;
 
@@ -61,7 +61,7 @@ public class LocalizedManager extends BaseEntitySystem
 		Loc loc=objects.get(entityId);
 		IntBag bag=locMap.get(loc);
 
-		PositionComp p=position.getSafe(entityId);
+		PositionComp p=position.get(entityId);
 
 		if(p==null)
 			{
@@ -93,10 +93,10 @@ public class LocalizedManager extends BaseEntitySystem
 		if(loc==null)
 			return;
 		IntBag bag=locMap.get(loc);
-		bag.remove(entityId);
+		bag.removeValue(entityId);
 		}
 
-	public IntBag get(float x, float y, float r, ComponentMapper<?>... expected)
+	public IntBag get(float x, float y, float r, Choose c)
 		{
 		float mx=x+2*r;
 		float my=y+2*r;
@@ -111,14 +111,11 @@ public class LocalizedManager extends BaseEntitySystem
 					loop: for(int i=0; i<l.size(); i++)
 						{
 						int e=l.get(i);
-						PositionComp p=position.getSafe(e);
+						PositionComp p=position.get(e);
 						if(p==null)
 							continue;
-						for(int j=0; j<expected.length; j++)
-							{
-							if(!expected[j].has(e))
-								continue loop;
-							}
+						if(c!=null&&!c.choose(e))
+							continue loop;
 
 						float dx=x-p.x;
 						float dy=y-p.y;
@@ -155,18 +152,8 @@ public class LocalizedManager extends BaseEntitySystem
 		{
 		}
 
-//	public static final LocalizedManager self()
-//		{
-//		return self;
-//		}
-
-//	public static final IntBag get(float x, float y, float r, ComponentMapper<?>... expected)
-//		{
-//		return self._get(x, y, r, expected);
-//		}
-//
-//	public static final void changed(int entityId)
-//		{
-//		self._changed(entityId);
-//		}
+	public static interface Choose
+		{
+		public boolean choose(int e);
+		}
 	}

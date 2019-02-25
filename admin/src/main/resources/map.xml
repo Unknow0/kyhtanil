@@ -2,7 +2,7 @@
 	<include source='tileset.xml'/>
 	<table fillParent='true'>
 		<row colspan='2' left=''>
-			<include source='menu.xml'/>
+			<actor ref-id='menu'/>
 		</row>
 		<row colspan='2' expandX='true'>
 			<table center=''>

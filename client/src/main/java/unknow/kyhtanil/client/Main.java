@@ -1,19 +1,34 @@
 package unknow.kyhtanil.client;
 
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import unknow.common.*;
-import unknow.kyhtanil.client.artemis.*;
-import unknow.kyhtanil.client.screen.*;
-import unknow.kyhtanil.client.system.*;
-import unknow.kyhtanil.client.system.net.*;
-import unknow.kyhtanil.common.component.*;
+import com.artemis.World;
+import com.artemis.WorldConfiguration;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.kotcrab.vis.ui.VisUI;
 
-import com.artemis.*;
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.kotcrab.vis.ui.*;
+import unknow.common.Cfg;
+import unknow.kyhtanil.client.artemis.Builder;
+import unknow.kyhtanil.client.artemis.UUIDManager;
+import unknow.kyhtanil.client.screen.CharSelectScreen;
+import unknow.kyhtanil.client.screen.GameScreen;
+import unknow.kyhtanil.client.screen.LoginScreen;
+import unknow.kyhtanil.client.screen.WorldScreen;
+import unknow.kyhtanil.client.system.InputSystem;
+import unknow.kyhtanil.client.system.MovementSystem;
+import unknow.kyhtanil.client.system.RenderingSystem;
+import unknow.kyhtanil.client.system.TexManager;
+import unknow.kyhtanil.client.system.net.DamageReportSystem;
+import unknow.kyhtanil.client.system.net.DespawnSystem;
+import unknow.kyhtanil.client.system.net.ErrorSystem;
+import unknow.kyhtanil.client.system.net.LogResultSystem;
+import unknow.kyhtanil.client.system.net.MoveSystem;
+import unknow.kyhtanil.client.system.net.PjInfoSystem;
+import unknow.kyhtanil.client.system.net.SpawnSystem;
+import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.VelocityComp;
 
 public class Main extends Game
 	{
@@ -48,6 +63,7 @@ public class Main extends Game
 			WorldConfiguration cfg=new WorldConfiguration();
 			cfg.setSystem(manager);
 			cfg.setSystem(inputSystem);
+			cfg.setSystem(new TexManager());
 			cfg.setSystem(new MovementSystem());
 			cfg.setSystem(new RenderingSystem(worldScreen.gameViewpoint().getCamera()));
 
@@ -61,12 +77,6 @@ public class Main extends Game
 
 			world=new World(cfg);
 			Builder.init(world);
-
-			// TODO get from server
-			TextureRegion tex=new TextureRegion(new Texture(Gdx.files.internal("data/tex/char.png")));
-			State.entity=Builder.buildMob(0, 0, tex, Main.pixelToUnit(tex.getRegionWidth()), Main.pixelToUnit(tex.getRegionHeight()), null);
-			VelocityComp v=Builder.getVelocity(State.entity);
-			v.speed=1f;
 
 			setScreen(login);
 
@@ -110,10 +120,10 @@ public class Main extends Game
 		{
 		Gdx.app.postRunnable(new Runnable()
 			{
-				public void run()
-					{
-					self.setScreen(screen);
-					}
+			public void run()
+				{
+				self.setScreen(screen);
+				}
 			});
 		}
 

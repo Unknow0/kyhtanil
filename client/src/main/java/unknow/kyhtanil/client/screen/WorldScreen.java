@@ -3,7 +3,10 @@ package unknow.kyhtanil.client.screen;
 import java.io.*;
 import java.util.*;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.slf4j.*;
+import org.xml.sax.SAXException;
 
 import unknow.kyhtanil.client.*;
 import unknow.kyhtanil.client.artemis.*;
@@ -11,6 +14,7 @@ import unknow.kyhtanil.client.graphics.*;
 import unknow.kyhtanil.client.system.*;
 import unknow.kyhtanil.common.component.*;
 import unknow.kyhtanil.common.maps.*;
+import unknow.scene.builder.SceneBuilder;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
@@ -22,7 +26,6 @@ import com.kotcrab.vis.ui.widget.*;
 public class WorldScreen extends GameScreen
 	{
 	private static final Logger log=LoggerFactory.getLogger(WorldScreen.class);
-	private Stage stage;
 	protected TileSet tileset;
 	protected MapLayout layout;
 
@@ -40,7 +43,7 @@ public class WorldScreen extends GameScreen
 	/** list of opened windows */
 	private LinkedList<VisWindow> windows=new LinkedList<VisWindow>();
 
-	public WorldScreen(UUIDManager manager) throws FileNotFoundException, IOException
+	public WorldScreen(UUIDManager manager) throws FileNotFoundException, IOException, SAXException, ParserConfigurationException
 		{
 		this.vp=new ExtendViewport(70, 46);
 
@@ -48,7 +51,13 @@ public class WorldScreen extends GameScreen
 
 		this.manager=manager;
 		this.layout=new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
-		stage=new Stage();
+
+		stat.setVisible(false);
+		stage.addActor(stat);
+
+		SceneBuilder sceneBuilder=new SceneBuilder();
+		sceneBuilder.addActor("hpbar", new HpBarActor());
+		sceneBuilder.build("layout.xml", stage.getRoot());
 		}
 
 	public void set(InputSystem inputSystem)
@@ -148,19 +157,17 @@ public class WorldScreen extends GameScreen
 
 	public void toggleStat()
 		{
-		Group root=stage.getRoot();
-		if(root.getChildren().contains(stat, true))
+		if(stat.isVisible())
 			{
-			root.removeActor(stat, true);
+			stat.setVisible(false);
 			windows.remove(stat);
 			}
 		else
 			{
 			stat.update();
-//			stat.pack();
-			root.addActor(stat);
-			windows.addFirst(stat);
 			stat.centerWindow();
+			stat.setVisible(true);
+			windows.push(stat);
 			}
 		}
 
@@ -168,6 +175,6 @@ public class WorldScreen extends GameScreen
 		{
 		VisWindow w=windows.poll();
 		if(w!=null)
-			stage.getRoot().removeActor(w, true);
+			w.setVisible(false);
 		}
 	}

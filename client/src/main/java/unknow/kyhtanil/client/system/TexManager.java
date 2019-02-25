@@ -1,19 +1,21 @@
 package unknow.kyhtanil.client.system;
 
-import unknow.common.data.*;
-import unknow.kyhtanil.client.component.*;
+import com.artemis.Aspect;
+import com.artemis.BaseEntitySystem;
+import com.artemis.ComponentMapper;
+import com.artemis.utils.IntBag;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import com.artemis.*;
-import com.artemis.utils.*;
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.*;
+import unknow.common.data.BTree;
+import unknow.kyhtanil.common.component.SpriteComp;
 
 public class TexManager extends BaseEntitySystem
 	{
 	private ComponentMapper<SpriteComp> sprite;
 
-	private BTree<String,Ref> cache=new BTree<String,Ref>();
+	private static BTree<String,Ref> cache=new BTree<String,Ref>();
 
 	public TexManager()
 		{
@@ -53,7 +55,7 @@ public class TexManager extends BaseEntitySystem
 		{
 		}
 
-	public TextureRegion get(String tex)
+	public static TextureRegion get(String tex)
 		{
 		Ref ref=cache.get(tex);
 		return ref==null?null:ref.tex;

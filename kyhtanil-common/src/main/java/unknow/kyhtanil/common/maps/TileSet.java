@@ -12,19 +12,31 @@ public class TileSet
 	private Texture texture;
 
 	private TextureRegion[] tiles;
+	private int width;
+	private int height;
 
 	public TileSet(FileHandle tex, int width, int height)
 		{
 		texture=new Texture(tex);
 
-		int texWidth=texture.getWidth()/width;
-		int texHeight=texture.getHeight()/height;
-		tiles=new TextureRegion[texHeight*texWidth];
-		for(int x=0; x<texWidth; x++)
+		this.width=texture.getWidth()/width;
+		this.height=texture.getHeight()/height;
+		tiles=new TextureRegion[this.height*width];
+		for(int x=0; x<width; x++)
 			{
-			for(int y=0; y<texHeight; y++)
-				tiles[x+y*texWidth]=new TextureRegion(texture, x*width, y*height, width, height);
+			for(int y=0; y<this.height; y++)
+				tiles[x+y*width]=new TextureRegion(texture, x*width, y*height, width, height);
 			}
+		}
+
+	public int width()
+		{
+		return width;
+		}
+
+	public int height()
+		{
+		return height;
 		}
 
 	public TextureRegion get(int i)

@@ -1,22 +1,33 @@
 package unknow.kyhtanil.server.system.net;
 
-import io.netty.channel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.slf4j.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
+import com.artemis.systems.IteratingSystem;
+import com.artemis.utils.IntBag;
 
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.component.account.*;
-import unknow.kyhtanil.common.component.net.*;
-import unknow.kyhtanil.common.pojo.*;
-import unknow.kyhtanil.server.*;
-import unknow.kyhtanil.server.component.*;
+import io.netty.channel.Channel;
+import unknow.kyhtanil.common.component.Body;
+import unknow.kyhtanil.common.component.CalculatedComp;
+import unknow.kyhtanil.common.component.ErrorComp;
+import unknow.kyhtanil.common.component.MobInfoComp;
+import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.account.LogChar;
+import unknow.kyhtanil.common.component.account.PjInfo;
+import unknow.kyhtanil.common.component.net.NetComp;
+import unknow.kyhtanil.common.component.net.Spawn;
+import unknow.kyhtanil.common.pojo.UUID;
+import unknow.kyhtanil.server.Database;
+import unknow.kyhtanil.server.GameWorld;
+import unknow.kyhtanil.server.component.StateComp;
 import unknow.kyhtanil.server.component.StateComp.States;
-import unknow.kyhtanil.server.manager.*;
-import unknow.kyhtanil.server.system.*;
-
-import com.artemis.*;
-import com.artemis.systems.*;
-import com.artemis.utils.*;
+import unknow.kyhtanil.server.manager.LocalizedManager;
+import unknow.kyhtanil.server.manager.UUIDManager;
+import unknow.kyhtanil.server.system.UpdateStatSystem;
 
 /**
  * Manage the LogChar request
@@ -35,6 +46,7 @@ public class LogCharSystem extends IteratingSystem
 	private ComponentMapper<NetComp> net;
 	private ComponentMapper<StateComp> state;
 	private ComponentMapper<PositionComp> position;
+	private ComponentMapper<SpriteComp> sprite;
 	private ComponentMapper<VelocityComp> velocity;
 	private ComponentMapper<MobInfoComp> mobInfo;
 	private ComponentMapper<Body> body;
@@ -71,7 +83,7 @@ public class LogCharSystem extends IteratingSystem
 			log.debug("failed to get State '{}' on log", l.uuid);
 			return;
 			}
-		StateComp s=state.getSafe(st);
+		StateComp s=state.get(st);
 		if(s==null)
 			{
 			chan.writeAndFlush(ErrorComp.INVALID_UUID);
@@ -112,7 +124,7 @@ public class LogCharSystem extends IteratingSystem
 		chan.write(pjInfo);
 
 		// get all surrounding entity and notify the new player with them
-		IntBag bag=locManager.get(p.x, p.y, range);
+		IntBag bag=locManager.get(p.x, p.y, range, null);
 		for(int i=0; i<bag.size(); i++)
 			{
 			int em=bag.get(i);
@@ -123,9 +135,9 @@ public class LogCharSystem extends IteratingSystem
 			m=mobInfo.get(em);
 			VelocityComp v=velocity.get(em);
 			c=calculated.get(em);
-
-			// TODO tex from entity
-			chan.write(new Spawn(uuid, "data/tex/mob.png", m.name, c, p.x, p.y, v.direction));
+			if(c!=null)
+				m=new MobInfoComp(m, c);
+			chan.write(new Spawn(uuid, sprite.get(em), m, p, v));
 			}
 
 		// insert the pj into the world

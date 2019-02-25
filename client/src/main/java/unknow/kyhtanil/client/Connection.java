@@ -30,7 +30,7 @@ public class Connection extends Thread
 	private Input in;
 	private Output out;
 
-	private ComponentMapper<BooleanComp> done;
+	private BaseComponentMapper<BooleanComp> done;
 
 	public Connection(String host, int port, World world) throws Exception
 		{
@@ -50,7 +50,7 @@ public class Connection extends Thread
 		if(!Arrays.equals(h, kryo.hash()))
 			throw new Exception("Invalide version");
 
-		done=ComponentMapper.getFor(BooleanComp.class, world);
+		done=BaseComponentMapper.getFor(BooleanComp.class, world);
 		}
 
 	public void createAccount(String login, String pass) throws IOException, NoSuchAlgorithmException

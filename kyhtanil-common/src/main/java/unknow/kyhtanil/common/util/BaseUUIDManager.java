@@ -37,6 +37,7 @@ public class BaseUUIDManager extends BaseEntitySystem
 		UUID uuid=entityToUuid.safeGet(e);
 		if(uuid!=null)
 			{
+			log.debug("remove {} {}", e, uuid);
 			uuidToEntity.remove(uuid);
 			entityToUuid.set(e, null);
 			}

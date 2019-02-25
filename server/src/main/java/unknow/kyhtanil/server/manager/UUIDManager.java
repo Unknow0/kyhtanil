@@ -1,6 +1,7 @@
 package unknow.kyhtanil.server.manager;
 
 import unknow.json.*;
+import unknow.kyhtanil.common.component.SpriteComp;
 import unknow.kyhtanil.common.pojo.*;
 import unknow.kyhtanil.common.util.*;
 import unknow.kyhtanil.server.*;
@@ -18,7 +19,7 @@ public class UUIDManager extends BaseUUIDManager
 
 	public UUIDManager(GameWorld gameWorld) throws JsonException
 		{
-		super(Aspect.all(MobInfoComp.class));
+		super(Aspect.all(SpriteComp.class));
 		this.gameWorld=gameWorld;
 		uuidGen=new UUIDGen();
 		}
@@ -35,7 +36,7 @@ public class UUIDManager extends BaseUUIDManager
 		if(uuid==null)
 			return;
 
-		StateComp s=state.getSafe(entityId);
+		StateComp s=state.get(entityId);
 
 		if(s==null||s.state==States.IN_GAME)
 			{

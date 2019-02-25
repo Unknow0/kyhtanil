@@ -24,7 +24,7 @@ import com.esotericsoftware.kryo.io.*;
 public class Server
 	{
 	private static final Logger log=LoggerFactory.getLogger(Server.class);
-	private static ComponentMapper<NetComp> net;
+	private static BaseComponentMapper<NetComp> net;
 	private static Kryos kryos;
 
 	public static class Decoder extends ByteToMessageDecoder
@@ -123,7 +123,7 @@ public class Server
 
 	public Server(World world) throws Exception
 		{
-		net=ComponentMapper.getFor(NetComp.class, world);
+		net=BaseComponentMapper.getFor(NetComp.class, world);
 
 		kryos=new Kryos(world, NetComp.class);
 

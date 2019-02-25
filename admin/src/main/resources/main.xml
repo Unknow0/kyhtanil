@@ -1,0 +1,35 @@
+<root xmlns="scene-builder">
+	<table fillParent='true'>
+		<row left=''>
+			<menuBar id="menubar">
+				<menu name='File'>
+					<menuItem name='Update'>
+						<inject name="addListener" ref-id="update" />
+					</menuItem>
+					<menuItem name='Commit'>
+						<inject name="addListener" ref-id="commit" />
+					</menuItem>
+					<separator />
+					<menuItem name='Quit'>
+						<inject name="addListener" ref-id="quit" />
+					</menuItem>
+				</menu>
+				<menu name='Map'>
+					<menuItem name='new'>
+						<inject name="addListener" ref-id="map.new" />
+					</menuItem>
+					<menuItem name='Load map' id='map.edit' />
+				</menu>
+				<menu name='TileSet' id='tileset'>
+					<menuItem name="add">
+						<inject name="addListener" ref-id='tileset.new' />
+					</menuItem>
+					<menuItem name="edit" id='tileset.edit' />
+				</menu>
+			</menuBar>
+		</row>
+		<row expand=''>
+			<cell grow='' maxWidth='50000000' minWidth='0' maxHeight='50000000' minHeight='0' id="content" />
+		</row>
+	</table>
+</root>

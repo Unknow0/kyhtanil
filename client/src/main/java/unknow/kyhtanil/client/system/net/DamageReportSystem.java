@@ -14,7 +14,7 @@ public class DamageReportSystem extends IteratingSystem
 	private static final Logger log=LoggerFactory.getLogger(DamageReportSystem.class);
 	private ComponentMapper<DamageReport> report;
 	private ComponentMapper<BooleanComp> done;
-	private ComponentMapper<CalculatedComp> calculated;
+	private ComponentMapper<MobInfoComp> mob;
 	private UUIDManager manager;
 
 	public DamageReportSystem()
@@ -34,7 +34,7 @@ public class DamageReportSystem extends IteratingSystem
 		Integer e=manager.getEntity(r.uuid);
 		if(e!=null)
 			{
-			CalculatedComp c=calculated.get(e);
+			MobInfoComp c=mob.get(e);
 			c.hp-=r.damage;
 			}
 		}

@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.viewport.*;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.file.*;
 
-public class TilesetEditor extends VisWindow
+public class TilesetEditor extends Actor
 	{
 	private static final Logger log=LoggerFactory.getLogger(TilesetEditor.class);
 
@@ -37,89 +37,88 @@ public class TilesetEditor extends VisWindow
 
 	public TilesetEditor(MapLayout layout, SceneBuilder sceneBuilder)
 		{
-		super("TileSet editor");
 		this.layout=layout;
-		mapVp=new ScreenViewport();
-		mapVp.setUnitsPerPixel(Main.pixelToUnit(10));
+//		mapVp=new ScreenViewport();
+//		mapVp.setUnitsPerPixel(Main.pixelToUnit(10));
 
-		sceneBuilder.addActor("tileset.open", new ChangeListener()
-			{
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					fileChooser.setVisible(true);
-					fileChooser.setZIndex(TilesetEditor.this.getZIndex()+1);
-					}
-			});
-		sceneBuilder.addActor("tileset.show", new ChangeListener()
-			{
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					showTileSet();
-					}
-			});
-
-		sceneBuilder.addActor("tileset.close", new ChangeListener()
-			{
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					setVisible(false);
-					}
-			});
-		sceneBuilder.addActor("tileset.save", new ChangeListener()
-			{
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					TilesetEditor.this.layout.setTilesetInfo(tilesetFile.getItems());
-					}
-			});
-
-		sceneBuilder.addListener(new SceneBuilder.Listener()
-			{
-
-				@Override
-				public void end(SceneBuilder builder, Wrapper<?> root)
-					{
-					tileset=builder.getActor("tileset.root");
-
-					tilesetFile=builder.getActor("tileset.file");
-					tilesetFile.setItems(ArrayUtils.newArray(TilesetEditor.this.layout.tilesetInfo()));
-
-					fileChooser=builder.getActor("tileset.fileChooser");
-					fileChooser.setListener(new FileChooserListener()
-						{
-							@Override
-							public void selected(Array<FileHandle> files)
-								{
-								Array<TilesetInfo> items=new Array<TilesetInfo>(tilesetFile.getItems());
-								items.ensureCapacity(files.size);
-								for(FileHandle tex:files)
-									{
-									try
-										{
-										items.add(new TilesetInfo(tex.name(), new TileSet(tex, 32, 32), 32, 32));
-										}
-									catch (Exception e)
-										{
-										log.warn("failed to load texture '"+tex.path()+"'", e);
-										}
-									}
-								tilesetFile.setItems(items);
-								}
-
-							@Override
-							public void selected(FileHandle file)
-								{
-
-								}
-
-							@Override
-							public void canceled()
-								{
-								fileChooser.setVisible(false);
-								}
-						});
-					}
-			});
+//		sceneBuilder.addActor("tileset.open", new ChangeListener()
+//			{
+//			public void changed(ChangeEvent event, Actor actor)
+//				{
+//				fileChooser.setVisible(true);
+//				fileChooser.setZIndex(TilesetEditor.this.getZIndex()+1);
+//				}
+//			});
+//		sceneBuilder.addActor("tileset.show", new ChangeListener()
+//			{
+//			public void changed(ChangeEvent event, Actor actor)
+//				{
+//				showTileSet();
+//				}
+//			});
+//
+//		sceneBuilder.addActor("tileset.close", new ChangeListener()
+//			{
+//			public void changed(ChangeEvent event, Actor actor)
+//				{
+//				setVisible(false);
+//				}
+//			});
+//		sceneBuilder.addActor("tileset.save", new ChangeListener()
+//			{
+//			public void changed(ChangeEvent event, Actor actor)
+//				{
+//				TilesetEditor.this.layout.setTilesetInfo(tilesetFile.getItems());
+//				}
+//			});
+//
+//		sceneBuilder.addListener(new SceneBuilder.Listener()
+//			{
+//
+//			@Override
+//			public void end(SceneBuilder builder, Wrapper<?> root)
+//				{
+//				tileset=builder.getActor("tileset.root");
+//
+//				tilesetFile=builder.getActor("tileset.file");
+//				tilesetFile.setItems(ArrayUtils.newArray(TilesetEditor.this.layout.tilesetInfo()));
+//
+//				fileChooser=builder.getActor("tileset.fileChooser");
+//				fileChooser.setListener(new FileChooserListener()
+//					{
+//					@Override
+//					public void selected(Array<FileHandle> files)
+//						{
+//						Array<TilesetInfo> items=new Array<TilesetInfo>(tilesetFile.getItems());
+//						items.ensureCapacity(files.size);
+//						for(FileHandle tex:files)
+//							{
+//							try
+//								{
+//								items.add(new TilesetInfo(tex.name(), new TileSet(tex, 32, 32), 32, 32));
+//								}
+//							catch (Exception e)
+//								{
+//								log.warn("failed to load texture '"+tex.path()+"'", e);
+//								}
+//							}
+//						tilesetFile.setItems(items);
+//						}
+//
+//					@Override
+//					public void selected(FileHandle file)
+//						{
+//
+//						}
+//
+//					@Override
+//					public void canceled()
+//						{
+//						fileChooser.setVisible(false);
+//						}
+//					});
+//				}
+//			});
 		}
 
 //	public void setup(Scene) throws SAXException, IOException, ParserConfigurationException
@@ -195,15 +194,15 @@ public class TilesetEditor extends VisWindow
 			TilesetInfo tsi=tilesetFile.getSelected();
 			TileSet s=tsi.tileset();
 			tileset.clear();
+			int w=s.width();
 			for(int i=0; i<s.tileCount(); i++)
 				{
-				if(i%6==0)
+				if(i%w==0)
 					tileset.row();
 				TileEditorActor a=new TileEditorActor(tsi, i);
 				a.setSize(33, 33);
 				tileset.add(a);
 				}
-			this.pack();
 			}
 		catch (IOException e)
 			{

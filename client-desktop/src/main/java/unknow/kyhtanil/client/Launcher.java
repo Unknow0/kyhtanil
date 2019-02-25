@@ -191,6 +191,6 @@ class B
 		conf.setResizable(true);
 		conf.useOpenGL3(true, 3, 2);
 		conf.useVsync(true);
-		new Lwjgl3Application(new Main(), conf);
+		Lwjgl3Application a=new Lwjgl3Application(new Main(), conf);
 		}
 	}

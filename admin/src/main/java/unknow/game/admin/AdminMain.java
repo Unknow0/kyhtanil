@@ -1,26 +1,50 @@
 package unknow.game.admin;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 
-import unknow.game.admin.screen.*;
-import unknow.kyhtanil.common.maps.*;
-import unknow.kyhtanil.common.maps.MapLayout.MapEntry;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.VisUI;
+import com.kotcrab.vis.ui.widget.MenuItem;
 
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.backends.lwjgl3.*;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.kotcrab.vis.ui.*;
+import unknow.game.admin.screen.AdminContent;
+import unknow.game.admin.screen.LayoutEditorScreen;
+import unknow.game.admin.screen.TilesetEditor;
+import unknow.kyhtanil.common.maps.MapLayout;
+import unknow.scene.builder.SceneBuilder;
 
 public class AdminMain extends Game
 	{
 	public static AdminMain self;
+	private static Lwjgl3Application application;
 
 	public static Skin skin;
 
-	public MapEditorScreen mapEditor;
-	public LayoutEditorScreen layoutEditor;
+	private Stage stage;
 
 	public MapLayout layout;
+
+//	private Loader loader=new Loader("Update");
+
+	private MenuItem loadMap;
+
+	private TilesetEditor tilesetEditor;
+
+	private SceneBuilder sceneBuilder=new SceneBuilder();
+	private Cell<AdminContent> content;
+
+	private LayoutEditorScreen layoutEditor;
 
 	public void create()
 		{
@@ -38,28 +62,74 @@ public class AdminMain extends Game
 				}
 			else
 				layout=new MapLayout();
-			mapEditor=new MapEditorScreen(layout);
 			layoutEditor=new LayoutEditorScreen(layout);
-			setScreen(layoutEditor);
-//			AdminScreen.loadTileMap();
+
+			stage=new Stage(new ScreenViewport());
+//			stage.setDebugAll(true);
+//			tilesetEditor=new TilesetEditor(layout, sceneBuilder);
+			sceneBuilder.addActor("tilesetedit", tilesetEditor);
+			sceneBuilder.addActor("update", new ChangeListener()
+				{
+				public void changed(ChangeEvent event, Actor actor)
+					{
+//		XXX			loader.update();
+					}
+				});
+			sceneBuilder.addActor("commit", new ChangeListener()
+				{
+				public void changed(ChangeEvent event, Actor actor)
+					{
+//		XXX			loader.commit();
+					}
+				});
+			sceneBuilder.addActor("quit", new ChangeListener()
+				{
+				public void changed(ChangeEvent event, Actor actor)
+					{
+					System.exit(0);
+					}
+				});
+			sceneBuilder.addActor("map.new", new ChangeListener()
+				{
+				public void changed(ChangeEvent event, Actor actor)
+					{
+					// TODO
+					}
+				});
+			sceneBuilder.addActor("tileset.new", new ChangeListener()
+				{
+				public void changed(ChangeEvent event, Actor actor)
+					{
+//		XXX			tilesetEditor.newTileset();
+					}
+				});
+
+			sceneBuilder.build("main.xml", stage.getRoot());
+			content=sceneBuilder.getActor("content");
 			}
 		catch (Exception e)
 			{
 			throw new RuntimeException(e);
 			}
+		Gdx.input.setInputProcessor(stage);
+		content.setActor(layoutEditor);
 		}
 
-	public void showEditor(MapEntry selected)
+	@Override
+	public void render()
 		{
-		try
-			{
-			mapEditor.setEntry(selected);
-			setScreen(mapEditor);
-			}
-		catch (Exception e)
-			{
-			e.printStackTrace();
-			}
+		Gdx.gl.glClearColor(.2f, .2f, .2f, 1f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		stage.getViewport().apply();
+		stage.act(Gdx.graphics.getDeltaTime());
+		stage.draw();
+		}
+
+	@Override
+	public void resize(int width, int height)
+		{
+		stage.getViewport().update(width, height, true);
 		}
 
 	public static float pixelToUnit(int px)
@@ -73,6 +143,6 @@ public class AdminMain extends Game
 		conf.setTitle("Game");
 		conf.setWindowedMode(560, 368);
 		conf.setResizable(true);
-		new Lwjgl3Application(new AdminMain(), conf);
+		application=new Lwjgl3Application(new AdminMain(), conf);
 		}
 	}

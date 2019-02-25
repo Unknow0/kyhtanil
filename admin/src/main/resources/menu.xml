@@ -1,5 +1,5 @@
 <root xmlns="scene-builder">
-	<menuBar>
+	<menuBar id="menubar">
 		<menu name='File'>
 			<menuItem name='Update'>
 				<inject name="addListener" ref-id="update"/>

@@ -10,8 +10,7 @@ new Skill(0, 'default attack') {
 		
 		var ts = api.getMobs(p, 3);
 		if (ts) {
-			for (var i = 0; i < ts.size(); i++) {
-				var t = ts.get(i);
+			for each (var t in ts) {
 				if (t == self)
 					continue;
 				m = api.position(t);

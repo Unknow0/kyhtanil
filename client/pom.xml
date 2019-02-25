@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>client</artifactId>
 	<version>${kyhtanil.version}</version>
@@ -72,7 +71,12 @@
 			<artifactId>unknow-orm</artifactId>
 			<version>1.1-SNAPSHOT</version>
 		</dependency>
-
+		<dependency>
+			<groupId>unknow.scene-builder</groupId>
+			<artifactId>scene-builder</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>com.badlogicgames.gdx</groupId>
 			<artifactId>gdx</artifactId>
@@ -83,11 +87,11 @@
 			<artifactId>gdx-freetype</artifactId>
 			<version>${gdx.version}</version>
 		</dependency>
-	<dependency>
-		<groupId>com.kotcrab.vis</groupId>
-		<artifactId>vis-ui</artifactId>
-		<version>0.9.5</version>
-	</dependency>
+		<dependency>
+			<groupId>com.kotcrab.vis</groupId>
+			<artifactId>vis-ui</artifactId>
+			<version>0.9.5</version>
+		</dependency>
 		<dependency>
 			<groupId>net.onedaybeard.artemis</groupId>
 			<artifactId>artemis-odb</artifactId>

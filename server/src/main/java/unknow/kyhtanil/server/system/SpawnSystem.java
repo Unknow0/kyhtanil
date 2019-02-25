@@ -13,6 +13,7 @@ public class SpawnSystem extends IteratingSystem
 	private ComponentMapper<PositionComp> position;
 	private ComponentMapper<VelocityComp> velocity;
 	private ComponentMapper<MobInfoComp> mobInfo;
+	private ComponentMapper<SpriteComp> sprite;
 
 	private UpdateStatSystem update;
 	private EventSystem event;
@@ -42,11 +43,15 @@ public class SpawnSystem extends IteratingSystem
 
 			VelocityComp v=velocity.get(m);
 			v.direction=0;
-			v.speed=1f;
+			v.speed=0f;
 
 			MobInfoComp mi=mobInfo.get(m);
 			mi.hp=10;
 			mi.name="mob";
+
+			SpriteComp sp=sprite.get(m);
+			sp.h=sp.w=3;
+			sp.tex="data/tex/mob.png";
 
 			update.process(m);
 			event.register(m, new Listener(spawner, e));

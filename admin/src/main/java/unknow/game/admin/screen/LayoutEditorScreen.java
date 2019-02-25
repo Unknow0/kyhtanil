@@ -6,279 +6,268 @@ import java.sql.*;
 import unknow.game.admin.*;
 import unknow.kyhtanil.client.*;
 import unknow.kyhtanil.common.maps.*;
+import unknow.kyhtanil.common.maps.MapLayout.MapEntry;
+import unknow.scene.builder.SceneBuilder;
+import unknow.scene.builder.SceneBuilder.Listener;
+import unknow.scene.builder.Wrapper;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.viewport.*;
 import com.kotcrab.vis.ui.widget.*;
 
-public class LayoutEditorScreen extends AdminScreen implements InputProcessor
+public class LayoutEditorScreen extends VisTable
 	{
 	public static MapLayout.MapEntry selected=null;
 	public static final Texture s=new Texture("selected.png");
 
-	protected ScreenViewport mapVp;
-	protected ShapeRenderer sr=new ShapeRenderer();
+	private MapLayout layout;
 
-	private VisWindow edit;
-	private VisTextField editName;
-	private VisTextField editX;
-	private VisTextField editY;
-	private VisTextField editW;
-	private VisTextField editH;
-
-	private VisTextField x;
-	private VisTextField y;
-	private VisTextField w;
-	private VisTextField h;
+	private Edit edit=new Edit();
+	private Content content=new Content();
 
 	private VisSelectBox<String> tileSetBox;
 
 	public LayoutEditorScreen(MapLayout mapLayout) throws Exception
 		{
-		super(mapLayout);
-		mapVp=new ScreenViewport();
-		mapVp.setUnitsPerPixel(Main.pixelToUnit(10));
-
-		sceneBuilder.addActor("new", new ChangeListener()
+		this.layout=mapLayout;
+		SceneBuilder sceneBuilder=new SceneBuilder();
+		sceneBuilder.addActor("save", new ClickListener()
 			{
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					try
-						{
-						tileSetBox.setItems(layout.tilesets());
-						edit.pack();
-						edit.center();
-						edit.setVisible(true);
-						}
-					catch (Exception e)
-						{
-						e.printStackTrace();
-						}
-					}
 			});
-		sceneBuilder.addActor("save", new ChangeListener()
+		sceneBuilder.addActor("new", new ClickListener()
 			{
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					try
-						{
-						save();
-						}
-					catch (Exception e)
-						{
-						e.printStackTrace();
-						}
-					}
-			});
-		sceneBuilder.addActor("show", new ChangeListener()
-			{
-				@Override
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					AdminMain.self.showEditor(selected);
-					}
-			});
-		sceneBuilder.addActor("edit.ok", new ChangeListener()
-			{
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					layout.add(Integer.parseInt(editX.getText()), Integer.parseInt(editY.getText()), Integer.parseInt(editW.getText()), Integer.parseInt(editH.getText()), editName.getText(), tileSetBox.getSelected());
-					edit.setVisible(false);
-					}
-			});
-		sceneBuilder.addActor("edit.cancel", new ChangeListener()
-			{
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					edit.setVisible(false);
-					}
-			});
-
-		sceneBuilder.build("layout.xml", stage.getRoot());
-
-		edit=sceneBuilder.getActor("edit");
-		edit.pack();
-		editName=sceneBuilder.getActor("edit.name");
-		editX=sceneBuilder.getActor("edit.x");
-		editY=sceneBuilder.getActor("edit.y");
-		editW=sceneBuilder.getActor("edit.w");
-		editH=sceneBuilder.getActor("edit.h");
-
-		x=sceneBuilder.getActor("x");
-		y=sceneBuilder.getActor("y");
-		w=sceneBuilder.getActor("w");
-		h=sceneBuilder.getActor("h");
-
-		tileSetBox=sceneBuilder.getActor("edit.tileset");
-		}
-
-	public void setPos(float x, float y)
-		{
-		float w=mapVp.getWorldWidth();
-		float h=mapVp.getWorldHeight();
-		if(x<w/2)
-			x=w/2;
-
-		if(y<h/2)
-			y=h/2;
-
-		mapVp.getCamera().position.set(x, y, 0);
-		}
-
-	public void move(float x, float y)
-		{
-		Vector3 p=mapVp.getCamera().position;
-		setPos(p.x+x, p.y+y);
-		}
-
-	@Override
-	public void resize(int width, int height)
-		{
-//		map.setSize(width-250, height-50);
-		mapVp.update(width-200, height-34);
-
-		Vector3 p=mapVp.getCamera().position;
-		setPos(p.x, p.y);
-//		stageVp.update(width, height);
-//		stageVp.setScreenX(width-200);
-		stage.getViewport().update(width, height, true);
-		}
-
-	@Override
-	public void render(float delta)
-		{
-		Gdx.gl.glClearColor(.2f, .2f, .2f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		mapVp.apply();
-		sr.setProjectionMatrix(mapVp.getCamera().combined);
-
-		sr.begin(ShapeType.Filled);
-		sr.setColor(Color.LIGHT_GRAY);
-		for(MapLayout.MapEntry e:layout.maps())
-			{
-			if(selected==e)
-				sr.setColor(Color.CHARTREUSE);
-			sr.rect(e.x, e.y, e.w, e.h);
-			if(selected==e)
-				sr.setColor(Color.LIGHT_GRAY);
-			}
-		sr.end();
-
-		sr.begin(ShapeType.Line);
-		sr.setColor(Color.WHITE);
-		for(MapLayout.MapEntry e:layout.maps())
-			{
-			if(selected==e)
-				sr.setColor(Color.RED);
-			sr.rect(e.x, e.y, e.w, e.h);
-			if(selected==e)
-				sr.setColor(Color.WHITE);
-			}
-		sr.end();
-
-		stage.getViewport().apply();
-		stage.act(delta);
-		stage.draw();
-		}
-
-	@Override
-	public void show()
-		{
-		Gdx.input.setInputProcessor(new InputMultiplexer(stage, this));
-		}
-
-	private void save() throws IOException, SQLException
-		{
-		FileOutputStream fos=new FileOutputStream("data/maps.layout");
-		DataOutputStream dos=new DataOutputStream(fos);
-		layout.save(dos);
-		dos.close();
-		}
-
-	@Override
-	public boolean keyDown(int keycode)
-		{
-		if(Keys.ESCAPE==keycode)
-			selected=null;
-		return false;
-		}
-
-	@Override
-	public boolean keyUp(int keycode)
-		{
-		return false;
-		}
-
-	@Override
-	public boolean keyTyped(char character)
-		{
-		return false;
-		}
-
-	private long lastClic=0;
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button)
-		{
-		Vector2 v=mapVp.unproject(new Vector2(screenX, screenY));
-		selected=layout.get((int)v.x, (int)v.y);
-		if(selected!=null)
-			{
-			if(System.currentTimeMillis()-lastClic<200)
+			@Override
+			public void clicked(InputEvent event, float x, float y)
 				{
-				AdminMain.self.showEditor(selected);
-				return true;
+				edit.show();
 				}
-			lastClic=System.currentTimeMillis();
-			x.setText(String.valueOf(selected.x));
-			y.setText(String.valueOf(selected.y));
-			w.setText(String.valueOf(selected.w));
-			h.setText(String.valueOf(selected.h));
-			}
-		else
+			});
+		sceneBuilder.addActor("content", content);
+
+		sceneBuilder.addActor("edit", edit);
+		sceneBuilder.addActor("edit.save", new ClickListener()
 			{
-			}
-		return false;
+			@Override
+			public void clicked(InputEvent event, float x, float y)
+				{
+				edit.save();
+				}
+			});
+		sceneBuilder.addActor("edit.cancel", new ClickListener()
+			{
+			@Override
+			public void clicked(InputEvent event, float x, float y)
+				{
+				edit.cancel();
+				}
+			});
+		sceneBuilder.addListener(edit);
+		sceneBuilder.build("layout.xml", this);
 		}
 
 	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button)
+	protected void setStage(Stage stage)
 		{
-		return false;
+		super.setStage(stage);
+		content.focus();
 		}
 
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer)
-		{
-		move(-Gdx.input.getDeltaX(pointer)*mapVp.getUnitsPerPixel(), Gdx.input.getDeltaY(pointer)*mapVp.getUnitsPerPixel());
-		return true;
-		}
-
-	public boolean mouseMoved(int screenX, int screenY)
-		{
-		return false;
-		}
-
-	@Override
-	public boolean scrolled(int amount)
-		{
-		mapVp.setUnitsPerPixel(mapVp.getUnitsPerPixel()+amount*.01f);
-		mapVp.update(mapVp.getScreenWidth(), mapVp.getScreenHeight(), false);
-		move(0, 0);
-		return true;
-		}
-
-//	@Override
-//	protected void setTileSet(Array<String> tileset)
+//	private void save() throws IOException, SQLException
 //		{
-//		tileSetBox.setItems(tileset);
-//		edit.pack();
+//		FileOutputStream fos=new FileOutputStream("data/maps.layout");
+//		DataOutputStream dos=new DataOutputStream(fos);
+//		layout.save(dos);
+//		dos.close();
 //		}
+
+	private class Content extends Actor implements EventListener
+		{
+		private ShapeRenderer sr=new ShapeRenderer();
+		private long lastClic;
+		private float x, y, scale=1f;
+
+		public Content()
+			{
+			addListener(this);
+			}
+
+		@Override
+		public void draw(Batch batch, float parentAlpha)
+			{
+			batch.end();
+			this.clipBegin();
+			sr.setProjectionMatrix(batch.getProjectionMatrix());
+			sr.setTransformMatrix(batch.getTransformMatrix());
+			sr.translate(getX()+getWidth()/2, getY()+getHeight()/2, 0);
+			sr.translate(x, y, 0);
+			sr.scale(scale, scale, scale);
+
+			sr.begin(ShapeType.Filled);
+			sr.setColor(Color.LIGHT_GRAY);
+			for(MapLayout.MapEntry e:layout.maps())
+				{
+				if(selected==e)
+					sr.setColor(Color.CHARTREUSE);
+				sr.rect(e.x, e.y, e.w, e.h);
+				if(selected==e)
+					sr.setColor(Color.LIGHT_GRAY);
+				}
+			sr.end();
+
+			sr.begin(ShapeType.Line);
+			sr.setColor(Color.WHITE);
+			for(MapLayout.MapEntry e:layout.maps())
+				{
+				if(selected==e)
+					sr.setColor(Color.RED);
+				sr.rect(e.x, e.y, e.w, e.h);
+				if(selected==e)
+					sr.setColor(Color.WHITE);
+				}
+			sr.end();
+			this.clipEnd();
+			batch.begin();
+			}
+
+		@Override
+		public boolean handle(Event event)
+			{
+			if(!(event instanceof InputEvent))
+				return false;
+
+			InputEvent e=(InputEvent)event;
+			switch (e.getType())
+				{
+				case scrolled:
+					float f=-e.getScrollAmount()*.1f;
+					scale+=f;
+					if(scale<.1)
+						scale=.1f;
+					else
+						{
+						x+=x*f;
+						y+=y*f;
+						}
+					return true;
+				case keyDown:
+					if(Keys.ESCAPE==e.getKeyCode())
+						selected=null;
+					break;
+				case touchDown:
+					Vector2 v=new Vector2(e.getStageX(), e.getStageY());
+					stageToLocalCoordinates(v);
+					v.add(-getWidth()/2-x, -getHeight()/2-y);
+					MapEntry last=selected;
+					selected=layout.get((int)v.x, (int)v.y);
+					if(selected!=null&&last==selected)
+						{
+						if(System.currentTimeMillis()-lastClic<200)
+							{
+							edit.show(selected);
+							return true;
+							}
+						lastClic=System.currentTimeMillis();
+						}
+					return true;
+				case touchDragged:
+					x+=Gdx.input.getDeltaX(e.getPointer());
+					y-=Gdx.input.getDeltaY(e.getPointer());
+					return true;
+				default:
+				}
+			return false;
+			}
+
+		public void focus()
+			{
+			if(getStage()==null)
+				return;
+			getStage().setScrollFocus(this);
+			getStage().setKeyboardFocus(this);
+			}
+		}
+
+	private class Edit extends VisWindow implements Listener
+		{
+
+		private VisTextField name;
+		private VisTextField x;
+		private VisTextField y;
+		private VisTextField w;
+		private VisTextField h;
+
+		private MapEntry selected;
+
+		public Edit()
+			{
+			super("Edit");
+			}
+
+		public void show(MapEntry selected)
+			{
+			this.selected=selected;
+			name.setText(selected.name);
+			x.setText(""+selected.x);
+			y.setText(""+selected.y);
+			w.setText(""+selected.w);
+			h.setText(""+selected.h);
+			show();
+			}
+
+		public void show()
+			{
+			getStage().setKeyboardFocus(this);
+			getStage().setScrollFocus(this);
+			pack();
+			centerWindow();
+			setVisible(true);
+			}
+
+		public void cancel()
+			{
+			name.setText("");
+			x.setText("");
+			y.setText("");
+			w.setText("");
+			h.setText("");
+			setVisible(false);
+			content.focus();
+			}
+
+		public void save()
+			{
+			MapEntry e=selected; // TODO
+			if(selected==null)
+				; // create
+			else
+				; // update
+			name.getText();
+			x.getText();
+			y.getText();
+			w.getText();
+			h.getText();
+			cancel();
+			}
+
+		@Override
+		public void end(SceneBuilder builder, Wrapper<?> root)
+			{
+			name=builder.getActor("edit.name");
+			x=builder.getActor("edit.x");
+			y=builder.getActor("edit.y");
+			w=builder.getActor("edit.w");
+			h=builder.getActor("edit.h");
+			pack();
+			cancel();
+			}
+		}
 	}

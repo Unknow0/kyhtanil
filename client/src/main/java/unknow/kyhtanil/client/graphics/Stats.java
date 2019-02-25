@@ -1,12 +1,16 @@
 package unknow.kyhtanil.client.graphics;
 
-import unknow.kyhtanil.client.*;
-import unknow.kyhtanil.common.*;
-import unknow.kyhtanil.common.component.account.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisWindow;
+import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
+import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane;
+import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneAdapter;
 
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.kotcrab.vis.ui.widget.*;
-import com.kotcrab.vis.ui.widget.tabbedpane.*;
+import unknow.kyhtanil.client.State;
+import unknow.kyhtanil.common.component.CalculatedComp;
 
 public class Stats extends VisWindow
 	{
@@ -28,12 +32,12 @@ public class Stats extends VisWindow
 
 		tabbedPane.addListener(new TabbedPaneAdapter()
 			{
-				@Override
-				public void switchedTab(Tab tab)
-					{
-					System.out.println("switch");
-					container.setActor(tab.getContentTable());
-					}
+			@Override
+			public void switchedTab(Tab tab)
+				{
+				System.out.println("switch");
+				container.setActor(tab.getContentTable());
+				}
 			});
 
 		setSize(300, 300);
@@ -100,16 +104,16 @@ public class Stats extends VisWindow
 
 		public void update()
 			{
-			PjInfo pj=State.pj;
+			CalculatedComp stat=State.stat;
 
-			hp.setText(String.format("%d / %d", pj.hp, pj.total.maxHp));
-			mp.setText(String.format("%d / %d", pj.mp, pj.total.maxMp));
+			hp.setText(String.format("%d / %d", stat.hp, stat.maxHp));
+			mp.setText(String.format("%d / %d", stat.mp, stat.maxMp));
 
-			constitution.setText(String.format("%d", pj.total.constitution));
-			strength.setText(String.format("%d", pj.total.strength));
-			concentration.setText(String.format("%d", pj.total.concentration));
-			intelligence.setText(String.format("%d", pj.total.intelligence));
-			dexterity.setText(String.format("%d", pj.total.dexterity));
+			constitution.setText(String.format("%d", stat.constitution));
+			strength.setText(String.format("%d", stat.strength));
+			concentration.setText(String.format("%d", stat.concentration));
+			intelligence.setText(String.format("%d", stat.intelligence));
+			dexterity.setText(String.format("%d", stat.dexterity));
 			}
 		}
 	}

@@ -1,28 +1,54 @@
 package unknow.kyhtanil.server;
 
-import java.io.*;
-import java.sql.*;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.SQLException;
 
-import javax.naming.*;
-import javax.script.*;
+import javax.naming.NamingException;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import unknow.common.*;
-import unknow.json.*;
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.component.net.*;
-import unknow.kyhtanil.common.maps.*;
-import unknow.kyhtanil.common.pojo.*;
-import unknow.kyhtanil.server.component.*;
-import unknow.kyhtanil.server.manager.*;
-import unknow.kyhtanil.server.system.*;
-import unknow.kyhtanil.server.system.net.*;
-import unknow.kyhtanil.server.utils.*;
-import unknow.orm.reflect.*;
+import com.artemis.Archetype;
+import com.artemis.ArchetypeBuilder;
+import com.artemis.Aspect;
+import com.artemis.BaseComponentMapper;
+import com.artemis.World;
+import com.artemis.WorldConfiguration;
+import com.artemis.utils.IntBag;
 
-import com.artemis.*;
-import com.artemis.utils.*;
+import unknow.common.Cfg;
+import unknow.json.JsonException;
+import unknow.kyhtanil.common.component.CalculatedComp;
+import unknow.kyhtanil.common.component.MobInfoComp;
+import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.net.Despawn;
+import unknow.kyhtanil.common.component.net.Spawn;
+import unknow.kyhtanil.common.maps.MapLayout;
+import unknow.kyhtanil.common.pojo.UUID;
+import unknow.kyhtanil.server.component.SpawnerComp;
+import unknow.kyhtanil.server.component.StateComp;
+import unknow.kyhtanil.server.manager.LocalizedManager;
+import unknow.kyhtanil.server.manager.StateManager;
+import unknow.kyhtanil.server.manager.UUIDManager;
+import unknow.kyhtanil.server.system.DamageSystem;
+import unknow.kyhtanil.server.system.DebugSystem;
+import unknow.kyhtanil.server.system.EventSystem;
+import unknow.kyhtanil.server.system.ProjectileSystem;
+import unknow.kyhtanil.server.system.SpawnSystem;
+import unknow.kyhtanil.server.system.UpdateStatSystem;
+import unknow.kyhtanil.server.system.net.AttackSystem;
+import unknow.kyhtanil.server.system.net.LogCharSystem;
+import unknow.kyhtanil.server.system.net.LoginSystem;
+import unknow.kyhtanil.server.system.net.MoveSystem;
+import unknow.kyhtanil.server.utils.Archetypes;
+import unknow.orm.reflect.ReflectException;
 
 public class GameWorld
 	{
@@ -34,29 +60,29 @@ public class GameWorld
 	private final UUIDManager uuidManager;
 	private final LocalizedManager locManager;
 
-	private final ComponentMapper<StateComp> state;
-	private final ComponentMapper<PositionComp> position;
-	private final ComponentMapper<VelocityComp> velocity;
-	private final ComponentMapper<MobInfoComp> mobInfo;
-	private final ComponentMapper<SpawnerComp> spawner;
-	private final ComponentMapper<CalculatedComp> calculated;
+	private final BaseComponentMapper<StateComp> state;
+	private final BaseComponentMapper<PositionComp> position;
+	private final BaseComponentMapper<VelocityComp> velocity;
+	private final BaseComponentMapper<SpriteComp> sprite;
+	private final BaseComponentMapper<MobInfoComp> mobInfo;
+	private final BaseComponentMapper<SpawnerComp> spawner;
+	private final BaseComponentMapper<CalculatedComp> calculated;
 
 	private final Archetype spawnArch;
 
 	public GameWorld() throws ClassNotFoundException, ClassCastException, InstantiationException, IllegalAccessException, JsonException, SQLException, NamingException, ReflectException, ScriptException, FileNotFoundException, IOException
 		{
-
 		database=new Database();
 		uuidManager=new UUIDManager(this);
 		locManager=new LocalizedManager(10f, 10f);
 		MapLayout layout=new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
 
 		AttackSystem attackSystem=new AttackSystem();
-		ApiWorld apiWorld=new ApiWorld();
-		ScriptEngine js=new ScriptEngineManager().getEngineByName("javascript");
-		js.put("api", apiWorld);
 
 		WorldConfiguration cfg=new WorldConfiguration();
+		cfg.setAlwaysDelayComponentRemoval(true);
+		cfg.setSystem(DebugSystem.class);
+
 		cfg.setSystem(uuidManager);
 		cfg.setSystem(locManager);
 		cfg.setSystem(new StateManager());
@@ -70,21 +96,24 @@ public class GameWorld
 		cfg.setSystem(new UpdateStatSystem());
 		cfg.setSystem(new SpawnSystem());
 		cfg.setSystem(new DamageSystem(this));
+		cfg.setSystem(new ProjectileSystem());
 
 		cfg.register(database);
 		cfg.register(layout);
-		cfg.register("javax.script.ScriptEngine", js);
+		cfg.register("javax.script.ScriptEngine", new ScriptEngineManager().getEngineByName("javascript"));
 
 		world=new World(cfg);
 		world.inject(database);
-		world.inject(apiWorld);
 
-		state=ComponentMapper.getFor(StateComp.class, world);
-		position=ComponentMapper.getFor(PositionComp.class, world);
-		velocity=ComponentMapper.getFor(VelocityComp.class, world);
-		mobInfo=ComponentMapper.getFor(MobInfoComp.class, world);
-		spawner=ComponentMapper.getFor(SpawnerComp.class, world);
-		calculated=ComponentMapper.getFor(CalculatedComp.class, world);
+		ApiWorld é=new ApiWorld(world);
+
+		state=BaseComponentMapper.getFor(StateComp.class, world);
+		position=BaseComponentMapper.getFor(PositionComp.class, world);
+		velocity=BaseComponentMapper.getFor(VelocityComp.class, world);
+		sprite=BaseComponentMapper.getFor(SpriteComp.class, world);
+		mobInfo=BaseComponentMapper.getFor(MobInfoComp.class, world);
+		spawner=BaseComponentMapper.getFor(SpawnerComp.class, world);
+		calculated=BaseComponentMapper.getFor(CalculatedComp.class, world);
 
 		spawnArch=new ArchetypeBuilder().add(SpawnerComp.class).build(world);
 
@@ -135,12 +164,20 @@ public class GameWorld
 
 	float range=50;
 
+	private final LocalizedManager.Choose filter=new LocalizedManager.Choose()
+		{
+
+		@Override
+		public boolean choose(int e)
+			{
+			return state.has(e);
+			}
+		};
+
 	public void send(StateComp sender, float x, float y, Object msg)
 		{
 		log.debug("send {} at {} x {} from {}", msg, x, y, sender);
-		IntBag bag=locManager.get(x, y, range, state);
-		if(bag.size()==2)
-			return;
+		IntBag bag=locManager.get(x, y, range, filter);
 		for(int i=0; i<bag.size(); i++)
 			{
 			StateComp s=state.get(bag.get(i));
@@ -159,14 +196,17 @@ public class GameWorld
 		send(sender, p.x, p.y, new Despawn(uuid));
 		}
 
-	public void spawn(StateComp sender, int entityId)
+	public void spawn(StateComp sender, int e)
 		{
-		PositionComp p=position.get(entityId);
-		VelocityComp v=velocity.get(entityId);
-		MobInfoComp m=mobInfo.get(entityId);
-		CalculatedComp c=calculated.get(entityId);
-		UUID uuid=uuidManager.getUuid(entityId);
-		send(sender, p.x, p.y, new Spawn(uuid, "data/tex/mob.png", m.name, c, p.x, p.y, v.direction));
+		PositionComp p=position.get(e);
+		VelocityComp v=velocity.get(e);
+		SpriteComp s=sprite.get(e);
+		MobInfoComp m=mobInfo.get(e);
+		CalculatedComp c=calculated.get(e);
+		if(c!=null)
+			m=new MobInfoComp(m, c);
+		UUID uuid=uuidManager.getUuid(e);
+		send(sender, p.x, p.y, new Spawn(uuid, s, m, p, v));
 		}
 
 	private static Server server;

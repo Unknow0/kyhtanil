@@ -14,16 +14,16 @@ import unknow.kyhtanil.client.screen.*;
 import unknow.kyhtanil.common.maps.*;
 import unknow.scene.builder.*;
 import unknow.sync.*;
+import unknow.game.admin.actor.Menu;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.viewport.*;
 import com.kotcrab.vis.ui.widget.*;
 
 public abstract class AdminScreen extends GameScreen
 	{
-	protected MenuBar menu;
+	protected static final Menu menu=new Menu();
 	protected Loader loader=new Loader("Update");
 
 	protected MenuItem loadMap;
@@ -37,47 +37,12 @@ public abstract class AdminScreen extends GameScreen
 
 	public AdminScreen(MapLayout layout) throws SAXException, IOException, ParserConfigurationException
 		{
-		SceneBuilder.strict=true;
 		stage=new Stage(new ScreenViewport());
 		screens.add(this);
 		this.layout=layout;
 		tilesetEditor=new TilesetEditor(layout, sceneBuilder);
-		sceneBuilder.addActor("tileset.edit", tilesetEditor);
-		sceneBuilder.addActor("update", new ChangeListener()
-			{
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					loader.update();
-					}
-			});
-		sceneBuilder.addActor("commit", new ChangeListener()
-			{
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					loader.commit();
-					}
-			});
-		sceneBuilder.addActor("quit", new ChangeListener()
-			{
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					System.exit(0);
-					}
-			});
-		sceneBuilder.addActor("map.new", new ChangeListener()
-			{
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					// TODO
-					}
-			});
-		sceneBuilder.addActor("tileset.new", new ChangeListener()
-			{
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					tilesetEditor.newTileset();
-					}
-			});
+		sceneBuilder.addActor("tilesetedit", tilesetEditor);
+		sceneBuilder.addActor("menu", menu.getRoot());
 		}
 
 	private static final Pattern data=Pattern.compile("data/.*(?<!db\\.lck)$");

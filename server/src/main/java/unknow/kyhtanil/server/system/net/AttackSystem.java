@@ -1,24 +1,35 @@
 package unknow.kyhtanil.server.system.net;
 
-import java.io.*;
-import java.util.regex.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 
-import javax.script.*;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
 
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import unknow.common.*;
-import unknow.kyhtanil.common.*;
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.component.net.*;
-import unknow.kyhtanil.common.pojo.*;
-import unknow.kyhtanil.server.*;
-import unknow.kyhtanil.server.manager.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
+import com.artemis.annotations.Wire;
+import com.artemis.systems.IteratingSystem;
+import com.esotericsoftware.kryo.util.IntMap;
 
-import com.artemis.*;
-import com.artemis.annotations.*;
-import com.artemis.systems.*;
-import com.esotericsoftware.kryo.util.*;
+import unknow.kyhtanil.common.Skill;
+import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.net.Attack;
+import unknow.kyhtanil.common.component.net.NetComp;
+import unknow.kyhtanil.common.pojo.Point;
+import unknow.kyhtanil.common.pojo.UUID;
+import unknow.kyhtanil.server.Database;
+import unknow.kyhtanil.server.manager.UUIDManager;
 
 public class AttackSystem extends IteratingSystem
 	{
@@ -46,15 +57,43 @@ public class AttackSystem extends IteratingSystem
 		try
 			{
 			database.init();
-			js.put("Skill", js.eval("Java.type('"+Skill.class.getName()+"');"));
-			for(Resource r:Resource.findRessources(Pattern.compile("skills/.*.js")))
+			Path path=Paths.get("data/skills");
+			Files.walkFileTree(path, new FileVisitor<Path>()
 				{
-				try (Reader in=new InputStreamReader(r.url.openStream(), "UTF8"))
+				@Override
+				public FileVisitResult postVisitDirectory(Path arg0, IOException arg1) throws IOException
 					{
-					Skill eval=(Skill)js.eval(in);
-					skills.put(eval.id, eval);
+					return FileVisitResult.CONTINUE;
 					}
-				}
+
+				@Override
+				public FileVisitResult preVisitDirectory(Path arg0, BasicFileAttributes arg1) throws IOException
+					{
+					return FileVisitResult.CONTINUE;
+					}
+
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attr) throws IOException
+					{
+
+					try (Reader in=Files.newBufferedReader(file, StandardCharsets.UTF_8))
+						{
+						Skill eval=(Skill)js.eval(in);
+						skills.put(eval.id, eval);
+						}
+					catch (ScriptException e)
+						{
+						throw new IOException(e);
+						}
+					return FileVisitResult.CONTINUE;
+					}
+
+				@Override
+				public FileVisitResult visitFileFailed(Path arg0, IOException arg1) throws IOException
+					{
+					return FileVisitResult.CONTINUE;
+					}
+				});
 			}
 		catch (Exception e)
 			{

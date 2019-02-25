@@ -1,11 +1,12 @@
 package unknow.kyhtanil.client.system.net;
 
-import unknow.kyhtanil.client.*;
-import unknow.kyhtanil.common.component.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
+import com.artemis.systems.IteratingSystem;
 
-import com.artemis.*;
-import com.artemis.systems.*;
-import com.badlogic.gdx.*;
+import unknow.kyhtanil.client.Main;
+import unknow.kyhtanil.common.component.BooleanComp;
+import unknow.kyhtanil.common.component.ErrorComp;
 
 public class ErrorSystem extends IteratingSystem
 	{
@@ -27,7 +28,6 @@ public class ErrorSystem extends IteratingSystem
 			return;
 		world.delete(entityId);
 
-		Screen screen=main.getScreen();
 		switch (e.code)
 			{
 			case INVALID_LOGIN:

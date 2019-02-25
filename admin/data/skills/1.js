@@ -7,12 +7,13 @@ new Skill(1,"fireball") {
 		var r = Math.atan2(point.y - p.y, point.x - p.x)
 
 		var d = new Damage(0, 0, 0, 0, 0, 0, 5, 10, 0, 0, 0, 0);
-		api.addProj(self, r, 2, function(target) {
+		api.addProj(self, r, 5, function(target) {
 			var p = api.position(target);
 
-			var t = api.getMob(p.x, p.y, 10);
-			for (var i = 0; i < t.length; i++)
-				api.addDamage(self, t.get(i), 0, d);
+			for each (var t in api.getMobs(p, 10)){
+				if(t!=self)
+					api.addDamage(self, d, 0, t);
+			}
 		})
 	}
 }

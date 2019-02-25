@@ -1,11 +1,12 @@
 package unknow.kyhtanil.server.system;
 
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.maps.*;
-import unknow.kyhtanil.server.manager.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
+import com.artemis.systems.IteratingSystem;
 
-import com.artemis.*;
-import com.artemis.systems.*;
+import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.server.manager.LocalizedManager;
 
 public class MovementSystem extends IteratingSystem
 	{

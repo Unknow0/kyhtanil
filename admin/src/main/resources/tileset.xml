@@ -1,5 +1,12 @@
-<root xmlns="scene-builder">
-	<table ref-id='tileset.edit' visible='false' movable='true' setKeepWithinStage='true'>
+<table xmlns="scene-builder">
+	<table grow=''>
+		<row>
+			<scoll>
+				<table id="tileset"/>
+			</scoll>
+		</row>
+	</table>
+	<!--table ref-id='tilesetedit' visible='false' movable='true' setKeepWithinStage='true'>
 		<row expandX='true' center=''>
 			<actor class='com.kotcrab.vis.ui.widget.VisLabel' name='Tileset'/>
 			<actor class='com.kotcrab.vis.ui.widget.VisSelectBox' id='tileset.file'>
@@ -22,6 +29,6 @@
 				<inject name="addListener" ref-id="tileset.save"/>
 			</actor>
 		</row>
-	</table>
+	</table-->
 	<actor class='unknow.game.admin.screen.TilesetEditor$TileSetChooser' width='400' height='200' visible='false' id='tileset.fileChooser'/>
 </root>

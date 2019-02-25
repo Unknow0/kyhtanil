@@ -82,7 +82,6 @@ public class MapLayout
 		MapEntry e=new MapEntry(x, y, w, h, file, tilesetFile);
 		e.map=new MapModel(w, h);
 		maps.add(e);
-
 		}
 
 	public List<MapEntry> maps()

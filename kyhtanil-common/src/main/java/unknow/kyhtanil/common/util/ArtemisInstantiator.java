@@ -55,7 +55,7 @@ public class ArtemisInstantiator implements InstantiatorStrategy
 	private class ArtemisObjectInstantiator implements ObjectInstantiator<Object>
 		{
 		private Archetype arch;
-		private ComponentMapper<?> mapper;
+		private BaseComponentMapper<?> mapper;
 
 		public ArtemisObjectInstantiator(Class<? extends Component> comp)
 			{
@@ -63,7 +63,7 @@ public class ArtemisInstantiator implements InstantiatorStrategy
 			if(additionalComp!=null&&additionalComp.length>0)
 				builder.add(additionalComp);
 			arch=builder.build(world);
-			mapper=ComponentMapper.getFor(comp, world);
+			mapper=BaseComponentMapper.getFor(comp, world);
 			}
 
 		@SuppressWarnings("restriction")

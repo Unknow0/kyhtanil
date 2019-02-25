@@ -1,12 +1,16 @@
 package unknow.kyhtanil.server.system;
 
-import com.artemis.*;
-import com.artemis.utils.*;
-import com.esotericsoftware.kryo.util.*;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.artemis.Aspect;
+import com.artemis.BaseEntitySystem;
+import com.artemis.utils.IntBag;
+import com.esotericsoftware.kryo.util.IntMap;
 
 public class EventSystem extends BaseEntitySystem
 	{
-	private IntMap<EntityListener> listeners=new IntMap<>();
+	private IntMap<Set<EntityListener>> listeners=new IntMap<>();
 
 	public EventSystem(Aspect.Builder aspect)
 		{
@@ -30,15 +34,27 @@ public class EventSystem extends BaseEntitySystem
 		int[] ids=entities.getData();
 		for(int i=0, s=entities.size(); s>i; i++)
 			{
-			EntityListener l=listeners.get(ids[i]);
-			if(l!=null)
+			Set<EntityListener> set=listeners.get(ids[i]);
+			if(set==null)
+				continue;
+			for(EntityListener l:set)
 				l.inserted(ids[i]);
 			}
 		}
 
 	public void register(int entityId, EntityListener listener)
 		{
-		listeners.put(entityId, listener);
+		Set<EntityListener> set=listeners.get(entityId);
+		if(set==null)
+			listeners.put(entityId, set=new HashSet<>());
+		set.add(listener);
+		}
+
+	public void unregister(int entityId, EntityListener listener)
+		{
+		Set<EntityListener> set=listeners.get(entityId);
+		if(set!=null)
+			set.remove(listener);
 		}
 
 	@Override
@@ -47,9 +63,12 @@ public class EventSystem extends BaseEntitySystem
 		int[] ids=entities.getData();
 		for(int i=0, s=entities.size(); s>i; i++)
 			{
-			EntityListener l=listeners.remove(ids[i]);
-			if(l!=null)
-				l.removed(ids[i]);
+			Set<EntityListener> set=listeners.remove(ids[i]);
+			if(set!=null)
+				{
+				for(EntityListener l:set)
+					l.removed(ids[i]);
+				}
 			}
 		}
 

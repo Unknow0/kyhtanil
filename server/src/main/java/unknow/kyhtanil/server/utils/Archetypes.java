@@ -15,7 +15,7 @@ public class Archetypes
 	public static void init(World world)
 		{
 		ArchetypeBuilder builder=new ArchetypeBuilder();
-		builder.add(PositionComp.class, VelocityComp.class);
+		builder.add(PositionComp.class, VelocityComp.class, SpriteComp.class);
 		builder.add(MobInfoComp.class, Body.class);
 		builder.add(DamageListComp.class, CalculatedComp.class);
 		mob=builder.build(world);
@@ -24,7 +24,7 @@ public class Archetypes
 		pj=builder.build(world);
 
 		builder=new ArchetypeBuilder();
-		builder.add(PositionComp.class, VelocityComp.class, Projectile.class);
+		builder.add(PositionComp.class, VelocityComp.class, Projectile.class, SpriteComp.class);
 		proj=builder.build(world);
 		}
 	}

@@ -1,10 +1,12 @@
 package unknow.kyhtanil.server.system;
 
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.server.component.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
+import com.artemis.systems.IteratingSystem;
 
-import com.artemis.*;
-import com.artemis.systems.*;
+import unknow.kyhtanil.common.component.Body;
+import unknow.kyhtanil.common.component.CalculatedComp;
+import unknow.kyhtanil.common.component.MobInfoComp;
 
 public class UpdateStatSystem extends IteratingSystem
 	{

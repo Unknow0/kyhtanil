@@ -1,20 +1,19 @@
 package unknow.kyhtanil.server.component;
 
-import unknow.kyhtanil.server.utils.*;
+import com.artemis.PooledComponent;
 
-import com.artemis.*;
+import unknow.kyhtanil.common.pojo.UUID;
+import unknow.kyhtanil.server.utils.Event;
 
 public class Projectile extends PooledComponent
 	{
-	public int source;
+	public UUID source;
 	public Event onHit;
-	public String tex;
 
 	@Override
 	protected void reset()
 		{
-		source=-1;
+		source=null;
 		onHit=null;
-		tex=null;
 		}
 	}

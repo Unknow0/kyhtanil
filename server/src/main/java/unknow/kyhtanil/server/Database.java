@@ -1,24 +1,35 @@
 package unknow.kyhtanil.server;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import javax.naming.*;
-import javax.script.*;
+import javax.naming.NamingException;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
+import javax.script.ScriptException;
 
-import unknow.common.*;
-import unknow.json.*;
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.pojo.*;
-import unknow.kyhtanil.server.component.*;
+import com.artemis.ComponentMapper;
+import com.esotericsoftware.kryo.util.IntMap;
+
+import unknow.common.Cfg;
+import unknow.json.JsonException;
+import unknow.kyhtanil.common.component.Body;
+import unknow.kyhtanil.common.component.MobInfoComp;
+import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.pojo.CharDesc;
 import unknow.kyhtanil.server.dao.Character;
-import unknow.kyhtanil.server.pojo.*;
-import unknow.orm.*;
-import unknow.orm.criteria.*;
-import unknow.orm.reflect.*;
-
-import com.artemis.*;
-import com.esotericsoftware.kryo.util.*;
+import unknow.kyhtanil.server.pojo.Account;
+import unknow.orm.Mappings;
+import unknow.orm.Query;
+import unknow.orm.QueryResult;
+import unknow.orm.criteria.Criteria;
+import unknow.orm.criteria.Join;
+import unknow.orm.criteria.On;
+import unknow.orm.criteria.Projection;
+import unknow.orm.criteria.Restriction;
+import unknow.orm.reflect.ReflectException;
 
 public class Database
 	{
@@ -125,7 +136,7 @@ public class Database
 	public List<CharDesc> getCharList(int account) throws SQLException
 		{
 		List<CharDesc> list=new ArrayList<CharDesc>();
-		try (Query query=co.createQuery("select id, name, level from characters where account=:account"))
+		try (Query query=co.createQuery("select c.id, name, level from characters c inner join characters_body b on c.body=b.id  where account=:account"))
 			{
 			query.setInt("account", account);
 			try (QueryResult qr=query.execute())

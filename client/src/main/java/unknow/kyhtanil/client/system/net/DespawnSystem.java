@@ -1,14 +1,19 @@
 package unknow.kyhtanil.client.system.net;
 
-import unknow.kyhtanil.client.artemis.*;
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.component.net.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.artemis.*;
-import com.artemis.systems.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
+import com.artemis.systems.IteratingSystem;
+
+import unknow.kyhtanil.client.artemis.UUIDManager;
+import unknow.kyhtanil.common.component.BooleanComp;
+import unknow.kyhtanil.common.component.net.Despawn;
 
 public class DespawnSystem extends IteratingSystem
 	{
+	private static final Logger log=LoggerFactory.getLogger(DespawnSystem.class);
 	private ComponentMapper<Despawn> despawn;
 	private ComponentMapper<BooleanComp> done;
 	private UUIDManager manager;
@@ -24,9 +29,10 @@ public class DespawnSystem extends IteratingSystem
 		BooleanComp b=done.get(entityId);
 		if(!b.value) // entity not finished to be created
 			return;
-
-		world.delete(entityId);
+		log.info("{}", d);
 		int mob=manager.getEntity(d.uuid);
+		manager.remove(mob);
 		world.delete(mob);
+		world.delete(entityId);
 		}
 	}

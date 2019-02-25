@@ -12,7 +12,7 @@ import com.artemis.utils.*;
 @SkipWire
 public abstract class CompositeEntityProcessor<T extends CompositeComponent<C>, C> extends EntitySystem
 	{
-	private ComponentMapper<T> comp;
+	private BaseComponentMapper<T> comp;
 	private Class<T> clazz;
 
 	public CompositeEntityProcessor(Builder aspect, Class<T> comp)
@@ -24,7 +24,7 @@ public abstract class CompositeEntityProcessor<T extends CompositeComponent<C>, 
 	@Override
 	protected void initialize()
 		{
-		comp=ComponentMapper.getFor(clazz, world);
+		comp=BaseComponentMapper.getFor(clazz, world);
 		}
 
 	protected void processSystem()

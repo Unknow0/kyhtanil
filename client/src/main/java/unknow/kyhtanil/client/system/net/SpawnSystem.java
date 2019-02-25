@@ -1,24 +1,30 @@
 package unknow.kyhtanil.client.system.net;
 
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import unknow.kyhtanil.client.*;
-import unknow.kyhtanil.client.artemis.*;
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.component.net.*;
-import unknow.kyhtanil.common.pojo.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
+import com.artemis.systems.IteratingSystem;
 
-import com.artemis.*;
-import com.artemis.systems.*;
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.*;
+import unknow.kyhtanil.client.artemis.Builder;
+import unknow.kyhtanil.client.artemis.UUIDManager;
+import unknow.kyhtanil.common.component.BooleanComp;
+import unknow.kyhtanil.common.component.MobInfoComp;
+import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.net.Spawn;
 
 public class SpawnSystem extends IteratingSystem
 	{
 	private static final Logger log=LoggerFactory.getLogger(SpawnSystem.class);
 	private ComponentMapper<Spawn> spawn;
 	private ComponentMapper<BooleanComp> done;
+	private ComponentMapper<MobInfoComp> info;
+	private ComponentMapper<PositionComp> position;
+	private ComponentMapper<VelocityComp> velocity;
+	private ComponentMapper<SpriteComp> sprite;
 	private UUIDManager manager;
 
 	public SpawnSystem()
@@ -35,31 +41,12 @@ public class SpawnSystem extends IteratingSystem
 		world.delete(entityId);
 		log.info("{}", s);
 
-		Gdx.app.postRunnable(new MobLoader(s, s.type));
-		}
-
-	private class MobLoader implements Runnable
-		{
-		String tex;
-		float x, y;
-		UUID uuid;
-		CalculatedComp total;
-
-		public MobLoader(Spawn s, String tex)
-			{
-			this.uuid=s.uuid;
-			this.x=s.x;
-			this.y=s.y;
-			this.total=s.total;
-			this.tex=tex;
-			}
-
-		public void run()
-			{
-			TextureRegion mobTex=new TextureRegion(new Texture(Gdx.files.internal(tex)));
-
-			int mob=Builder.buildMob(x, y, mobTex, Main.pixelToUnit(mobTex.getRegionWidth()), Main.pixelToUnit(mobTex.getRegionHeight()), total);
-			manager.setUuid(mob, uuid);
-			}
+		int mob=world.create(Builder.mobArch);
+		manager.setUuid(mob, s.uuid);
+		if(s.m!=null)
+			info.get(mob).set(s.m);
+		position.get(mob).set(s.p);
+		velocity.get(mob).set(s.v);
+		sprite.get(mob).set(s.sprite);
 		}
 	}

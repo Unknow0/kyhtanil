@@ -183,7 +183,7 @@ public class InputSystem extends BaseSystem implements InputProcessor
 	protected void processSystem()
 		{
 		// not char logged => nothing to do
-		if(State.pj==null||State.uuid==null)
+		if(State.stat==null||State.uuid==null)
 			return;
 		SpriteComp s=Builder.getSprite(State.entity);
 		PositionComp p=Builder.getPosition(State.entity);

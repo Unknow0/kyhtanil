@@ -25,12 +25,12 @@ public class ReflectFactory extends unknow.orm.reflect.ReflectFactory
 
 	private final class Artemis<T extends Component> extends Instantiator<T>
 		{
-		ComponentMapper<T> mapper;
+		BaseComponentMapper<T> mapper;
 
 		protected Artemis(Class<T> clazz, World world)
 			{
 			super(clazz);
-			mapper=ComponentMapper.getFor(clazz, world);
+			mapper=BaseComponentMapper.getFor(clazz, world);
 			}
 
 		public T newInstance()
