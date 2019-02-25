@@ -23,6 +23,7 @@
 						</goals>
 						<phase>package</phase>
 						<configuration>
+							<archiveBaseDirectory>target/docker</archiveBaseDirectory>
 							<descriptors>
 								<descriptor>assembly.xml</descriptor>
 							</descriptors>
