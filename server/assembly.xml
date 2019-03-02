@@ -8,14 +8,19 @@
 	<dependencySets>
 		<dependencySet>
 			<useProjectArtifact>true</useProjectArtifact>
-			<outputDirectory>.</outputDirectory>
 			<includes>
 				<include>unknow.kyhtanil:server</include>
 			</includes>
 		</dependencySet>
 		<dependencySet>
 			<useProjectArtifact>false</useProjectArtifact>
-			<outputDirectory>/lib</outputDirectory>
+			<outputDirectory>lib</outputDirectory>
 		</dependencySet>
 	</dependencySets>
+	<fileSets>
+		<fileSet>
+			<directory>../admin/data</directory>
+			<outputDirectory>data</outputDirectory>
+		</fileSet>
+	</fileSets>
 </assembly>
