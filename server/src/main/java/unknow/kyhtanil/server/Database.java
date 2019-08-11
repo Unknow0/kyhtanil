@@ -5,16 +5,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
 import javax.script.ScriptException;
 
+import com.artemis.BaseSystem;
 import com.artemis.ComponentMapper;
 import com.esotericsoftware.kryo.util.IntMap;
 
 import unknow.common.Cfg;
-import unknow.json.JsonException;
 import unknow.kyhtanil.common.component.Body;
 import unknow.kyhtanil.common.component.MobInfoComp;
 import unknow.kyhtanil.common.component.PositionComp;
@@ -29,9 +28,8 @@ import unknow.orm.criteria.Join;
 import unknow.orm.criteria.On;
 import unknow.orm.criteria.Projection;
 import unknow.orm.criteria.Restriction;
-import unknow.orm.reflect.ReflectException;
 
-public class Database
+public class Database extends BaseSystem
 	{
 	private unknow.orm.mapping.Database co;
 
@@ -44,12 +42,27 @@ public class Database
 		{
 		}
 
-	public void init() throws ClassNotFoundException, ClassCastException, InstantiationException, IllegalAccessException, ReflectException, JsonException, SQLException, NamingException
+	@Override
+	protected void processSystem()
+		{
+		}
+
+	@Override
+	public void initialize()
 		{
 		if(co!=null)
 			return;
-		Mappings.load(null, Cfg.getSystem());
-		co=Mappings.getDatabase("kyhtanil");
+		try
+			{
+			ReflectFactory.world=world;
+			Mappings.load(null, Cfg.getSystem());
+			co=Mappings.getDatabase("kyhtanil");
+			}
+		catch (Exception e)
+			{
+			e.printStackTrace();
+			System.exit(1);
+			}
 		}
 
 	public boolean loginExist(String login) throws SQLException

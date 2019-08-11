@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.naming.NamingException;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.slf4j.Logger;
@@ -40,6 +39,7 @@ import unknow.kyhtanil.server.manager.UUIDManager;
 import unknow.kyhtanil.server.system.DamageSystem;
 import unknow.kyhtanil.server.system.DebugSystem;
 import unknow.kyhtanil.server.system.EventSystem;
+import unknow.kyhtanil.server.system.MovementSystem;
 import unknow.kyhtanil.server.system.ProjectileSystem;
 import unknow.kyhtanil.server.system.SpawnSystem;
 import unknow.kyhtanil.server.system.UpdateStatSystem;
@@ -77,11 +77,12 @@ public class GameWorld
 		locManager=new LocalizedManager(10f, 10f);
 		MapLayout layout=new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
 
-		AttackSystem attackSystem=new AttackSystem();
+		ApiWorld apiWorld=new ApiWorld();
 
 		WorldConfiguration cfg=new WorldConfiguration();
 		cfg.setAlwaysDelayComponentRemoval(true);
 		cfg.setSystem(DebugSystem.class);
+		cfg.setSystem(database);
 
 		cfg.setSystem(uuidManager);
 		cfg.setSystem(locManager);
@@ -91,21 +92,21 @@ public class GameWorld
 		cfg.setSystem(new LoginSystem(database));
 		cfg.setSystem(new LogCharSystem(database, this));
 		cfg.setSystem(new MoveSystem(this));
-		cfg.setSystem(attackSystem);
+		cfg.setSystem(new AttackSystem());
 
 		cfg.setSystem(new UpdateStatSystem());
 		cfg.setSystem(new SpawnSystem());
 		cfg.setSystem(new DamageSystem(this));
+		cfg.setSystem(new MovementSystem());
 		cfg.setSystem(new ProjectileSystem());
 
-		cfg.register(database);
 		cfg.register(layout);
-		cfg.register("javax.script.ScriptEngine", new ScriptEngineManager().getEngineByName("javascript"));
+		cfg.register("javax.script.ScriptEngine", apiWorld.js());
+		cfg.register(apiWorld);
+		cfg.register(this);
 
 		world=new World(cfg);
-		world.inject(database);
-
-		ApiWorld é=new ApiWorld(world);
+		world.getRegistered(ApiWorld.class).init(world);
 
 		state=BaseComponentMapper.getFor(StateComp.class, world);
 		position=BaseComponentMapper.getFor(PositionComp.class, world);
@@ -120,9 +121,6 @@ public class GameWorld
 		createSpawner(10, 10, 10, 3, 1);
 
 		Archetypes.init(world);
-		ReflectFactory.world=world;
-		database.init();
-		attackSystem.delayedInit();
 		}
 
 	private void createSpawner(float x, float y, float range, int max_count, float speed)
@@ -154,6 +152,7 @@ public class GameWorld
 				world.setDelta((System.currentTimeMillis()-start)/1000f);
 				world.process();
 				start=System.currentTimeMillis();
+				Thread.sleep(500);
 				}
 			catch (Exception e)
 				{

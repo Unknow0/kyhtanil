@@ -1,11 +1,11 @@
 package unknow.kyhtanil.server;
 
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import com.artemis.ComponentMapper;
 import com.artemis.World;
-import com.artemis.annotations.Wire;
 import com.artemis.utils.IntBag;
 
 import unknow.kyhtanil.common.Skill;
@@ -18,7 +18,6 @@ import unknow.kyhtanil.server.component.DamageListComp;
 import unknow.kyhtanil.server.component.Projectile;
 import unknow.kyhtanil.server.manager.LocalizedManager;
 import unknow.kyhtanil.server.manager.UUIDManager;
-import unknow.kyhtanil.server.system.EventSystem;
 import unknow.kyhtanil.server.utils.Archetypes;
 import unknow.kyhtanil.server.utils.Event;
 
@@ -26,10 +25,8 @@ public class ApiWorld
 	{
 	private World world;
 
-	@Wire
-	private ScriptEngine js;
+	private ScriptEngine js=new ScriptEngineManager().getEngineByName("javascript");
 
-	private EventSystem event;
 	private LocalizedManager locManager;
 	private UUIDManager uuid;
 
@@ -40,14 +37,19 @@ public class ApiWorld
 	private ComponentMapper<Projectile> proj;
 	private ComponentMapper<SpriteComp> sprite;
 
-	public ApiWorld(World world) throws ScriptException
+	public ApiWorld() throws ScriptException
 		{
-		this.world=world;
-		world.inject(this);
 		js.put("api", this);
 
 		js.put("Skill", js.eval("Java.type('"+Skill.class.getName()+"');"));
 		js.put("Damage", js.eval("Java.type('"+Damage.class.getName()+"');"));
+		}
+
+	public void init(World world) throws ScriptException
+		{
+		this.world=world;
+		world.inject(this);
+
 		}
 
 	public void addDamage(int source, Damage dmg, float duration, int target)
@@ -140,5 +142,10 @@ public class ApiWorld
 	private int r(int min, int rng)
 		{
 		return min+(int)(Math.random()*rng);
+		}
+
+	protected ScriptEngine js()
+		{
+		return js;
 		}
 	}

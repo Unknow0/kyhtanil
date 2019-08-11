@@ -27,8 +27,6 @@ import unknow.kyhtanil.client.system.net.LogResultSystem;
 import unknow.kyhtanil.client.system.net.MoveSystem;
 import unknow.kyhtanil.client.system.net.PjInfoSystem;
 import unknow.kyhtanil.client.system.net.SpawnSystem;
-import unknow.kyhtanil.common.component.SpriteComp;
-import unknow.kyhtanil.common.component.VelocityComp;
 
 public class Main extends Game
 	{
@@ -71,9 +69,9 @@ public class Main extends Game
 			cfg.setSystem(new LogResultSystem(this, charSelect));
 			cfg.setSystem(new PjInfoSystem(this, worldScreen));
 			cfg.setSystem(new SpawnSystem());
-			cfg.setSystem(new DespawnSystem());
 			cfg.setSystem(new MoveSystem());
 			cfg.setSystem(new DamageReportSystem());
+			cfg.setSystem(new DespawnSystem());
 
 			world=new World(cfg);
 			Builder.init(world);

@@ -11,14 +11,9 @@ public class UUIDManager extends BaseUUIDManager
 		super(Aspect.all());
 		}
 
-	@Override
-	protected void initialize()
-		{
-		}
-
-	@Override
-	public void removed(int entityId)
-		{
-		remove(entityId);
-		}
+//	@Override
+//	public void removed(int entityId)
+//		{
+//		remove(entityId);
+//		}
 	}

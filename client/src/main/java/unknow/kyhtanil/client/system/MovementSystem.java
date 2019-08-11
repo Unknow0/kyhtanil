@@ -16,6 +16,7 @@ public class MovementSystem extends IteratingSystem
 	@Override
 	protected void initialize()
 		{
+//		setEnabled(false);
 		}
 
 	@Override

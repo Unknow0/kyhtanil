@@ -53,7 +53,6 @@ public class DamageSystem extends CompositeEntityProcessor<DamageListComp,Damage
 		gameWorld.send(null, p.x, p.y, new DamageReport(uuid, total));
 		if(mob.hp<=0)
 			{
-			gameWorld.send(null, p.x, p.y, new Despawn(uuid));
 			world.delete(e);
 			return false;
 			}

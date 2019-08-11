@@ -1,25 +1,40 @@
 package unknow.kyhtanil.server;
 
-import io.netty.bootstrap.*;
-import io.netty.buffer.*;
-import io.netty.channel.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.artemis.BaseComponentMapper;
+import com.artemis.Component;
+import com.artemis.World;
+import com.esotericsoftware.kryo.KryoException;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+
+import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufOutputStream;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.channel.nio.*;
-import io.netty.channel.socket.*;
-import io.netty.channel.socket.nio.*;
-import io.netty.handler.codec.*;
-
-import java.util.*;
-
-import org.slf4j.*;
-
-import unknow.common.tools.*;
-import unknow.kyhtanil.common.component.net.*;
-import unknow.kyhtanil.common.util.*;
-
-import com.artemis.*;
-import com.esotericsoftware.kryo.*;
-import com.esotericsoftware.kryo.io.*;
+import io.netty.channel.ChannelHandlerAdapter;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.MessageToByteEncoder;
+import unknow.common.tools.JsonUtils;
+import unknow.kyhtanil.common.component.net.NetComp;
+import unknow.kyhtanil.common.util.ArtemisInstantiator;
+import unknow.kyhtanil.common.util.Kryos;
 
 public class Server
 	{
@@ -39,14 +54,13 @@ public class Server
 				in.getBytes(in.readerIndex(), dst);
 
 				Input input=new Input(dst);
-
 				Object o=kryos.read(input);
+				log.trace("read: {} {}", o.getClass(), JsonUtils.toString(o, true));
 				if(o instanceof Component)
 					{
 					Integer e=ArtemisInstantiator.lastCreated();
 					NetComp netComp=net.get(e);
 					netComp.channel=ctx.channel();
-					log.trace("read: {} {} {}", e, o.getClass(), JsonUtils.toString(o, true));
 					}
 				else if(o instanceof byte[])
 					{
@@ -90,15 +104,18 @@ public class Server
 	@Sharable
 	public static class Handler extends ChannelHandlerAdapter
 		{
+		@Override
 		public void channelActive(ChannelHandlerContext ctx)
 			{
 			ctx.writeAndFlush(kryos.hash());
 			}
 
+		@Override
 		public void channelInactive(ChannelHandlerContext ctx) throws Exception
 			{
 			}
 
+		@Override
 		public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception
 			{
 			}
@@ -114,11 +131,11 @@ public class Server
 	private final Handler handler=new Handler();
 	private final ChannelInitializer<SocketChannel> initializer=new ChannelInitializer<SocketChannel>()
 		{
-			@Override
-			public void initChannel(SocketChannel ch) throws Exception
-				{
-				ch.pipeline().addLast(new Decoder(), encoder, handler);
-				}
+		@Override
+		public void initChannel(SocketChannel ch) throws Exception
+			{
+			ch.pipeline().addLast(new Decoder(), encoder, handler);
+			}
 		};
 
 	public Server(World world) throws Exception

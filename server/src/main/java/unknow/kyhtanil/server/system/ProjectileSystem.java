@@ -5,9 +5,11 @@ import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 import com.artemis.utils.IntBag;
 
+import unknow.kyhtanil.common.component.MobInfoComp;
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.server.component.Projectile;
 import unknow.kyhtanil.server.manager.LocalizedManager;
+import unknow.kyhtanil.server.manager.LocalizedManager.Choose;
 import unknow.kyhtanil.server.manager.UUIDManager;
 
 public class ProjectileSystem extends IteratingSystem
@@ -16,6 +18,15 @@ public class ProjectileSystem extends IteratingSystem
 	private UUIDManager uuid;
 	private ComponentMapper<Projectile> projectile;
 	private ComponentMapper<PositionComp> position;
+	private ComponentMapper<MobInfoComp> mobInfo;
+	private Choose c=new Choose()
+		{
+		@Override
+		public boolean choose(int e)
+			{
+			return mobInfo.has(e);
+			}
+		};
 
 	public ProjectileSystem()
 		{
@@ -32,16 +43,20 @@ public class ProjectileSystem extends IteratingSystem
 		Projectile proj=projectile.get(e);
 		PositionComp p=position.get(e);
 
-		if(uuid.getEntity(proj.source)==null)
+		Integer src=uuid.getEntity(proj.source);
+		if(src==null)
 			{
 			world.delete(e);
 			return;
 			}
 
-		IntBag potential=locManager.get(p.x, p.y, 10, null); // TODO width & collision
+		IntBag potential=locManager.get(p.x, p.y, 10, c); // TODO width & collision
+		System.out.println(potential);
 		for(int i=0; i<potential.size(); i++)
 			{
 			int t=potential.get(i);
+			if(t==src)
+				continue;
 			if(p.distance(position.get(t))<2)
 				{
 				if(proj.onHit!=null)

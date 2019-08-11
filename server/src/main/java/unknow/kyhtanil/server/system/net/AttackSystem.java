@@ -52,11 +52,11 @@ public class AttackSystem extends IteratingSystem
 		super(Aspect.all(Attack.class, NetComp.class));
 		}
 
-	public void delayedInit()
+	@Override
+	protected void initialize()
 		{
 		try
 			{
-			database.init();
 			Path path=Paths.get("data/skills");
 			Files.walkFileTree(path, new FileVisitor<Path>()
 				{

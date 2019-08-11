@@ -1,17 +1,22 @@
 package unknow.kyhtanil.server.manager;
 
-import unknow.common.data.*;
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.server.component.*;
-import unknow.kyhtanil.server.component.StateComp.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.artemis.*;
-import com.artemis.utils.*;
+import com.artemis.Aspect;
+import com.artemis.BaseEntitySystem;
+import com.artemis.ComponentMapper;
+import com.artemis.utils.IntBag;
+import com.badlogic.gdx.utils.IntMap;
+
+import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.server.component.StateComp;
+import unknow.kyhtanil.server.component.StateComp.States;
 
 public class LocalizedManager extends BaseEntitySystem
 	{
-	private BTree<Loc,IntBag> locMap=new BTree<Loc,IntBag>(50);
-	private BTree<Integer,Loc> objects=new BTree<Integer,Loc>(50);
+	private Map<Loc,IntBag> locMap=new HashMap<>();
+	private IntMap<Loc> objects=new IntMap<>();
 
 	private float w, h;
 
@@ -139,12 +144,30 @@ public class LocalizedManager extends BaseEntitySystem
 			this.y=y;
 			}
 
+		@Override
 		public int compareTo(Loc l)
 			{
 			float cmp=l.x-x;
 			if(cmp==0)
 				cmp=l.y-y;
 			return (int)cmp;
+			}
+
+		@Override
+		public boolean equals(Object o)
+			{
+			if(o==this)
+				return true;
+			if(!(o instanceof Loc))
+				return false;
+			Loc l=(Loc)o;
+			return l.x==x&&l.y==y;
+			}
+
+		@Override
+		public int hashCode()
+			{
+			return Float.floatToRawIntBits(31*x+y);
 			}
 		}
 
