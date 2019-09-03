@@ -77,9 +77,9 @@ public class MapLayout
 		return ti.isWall(e.map().get(x-e.x, y-e.y));
 		}
 
-	public void add(int x, int y, int w, int h, String file, String tilesetFile)
+	public void add(int x, int y, int w, int h, String name, String tilesetFile)
 		{
-		MapEntry e=new MapEntry(x, y, w, h, file, tilesetFile);
+		MapEntry e=new MapEntry(x, y, w, h, name, tilesetFile);
 		e.map=new MapModel(w, h);
 		maps.add(e);
 		}
@@ -241,13 +241,13 @@ public class MapLayout
 		public String name;
 		private MapModel map;
 
-		public MapEntry(int x, int y, int w, int h, String file, String tileset)
+		public MapEntry(int x, int y, int w, int h, String name, String tileset)
 			{
 			this.x=x;
 			this.y=y;
 			this.w=w;
 			this.h=h;
-			this.name=file;
+			this.name=name;
 			this.tileset=tileset;
 			}
 
@@ -259,6 +259,26 @@ public class MapLayout
 			h=in.readInt();
 			name=in.readUTF();
 			tileset=in.readUTF();
+			}
+
+		public void set(int x, int y, int w, int h, String name)
+			{
+			this.x=x;
+			this.y=y;
+			this.name=name;
+			if(this.w!=w||this.h!=h)
+				{
+				try
+					{
+					MapModel m=map();
+					m.setSize(w, h);
+					}
+				catch (Exception e)
+					{
+					}
+				}
+			this.w=w;
+			this.h=h;
 			}
 
 		public void write(DataOutputStream out) throws IOException

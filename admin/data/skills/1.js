@@ -7,7 +7,7 @@ new Skill(1,"fireball") {
 		var r = Math.atan2(point.y - p.y, point.x - p.x)
 
 		var d = new Damage(0, 0, 0, 0, 0, 0, 5, 10, 0, 0, 0, 0);
-		api.addProj(self, r, 5, function(target) {
+		api.addProj(self, r, 5, 5, function(target) {
 			var p = api.position(target);
 
 			for each (var t in api.getMobs(p, 10)){

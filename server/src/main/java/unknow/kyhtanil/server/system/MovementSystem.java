@@ -32,6 +32,8 @@ public class MovementSystem extends IteratingSystem
 		{
 		}
 
+	private float f=0;
+
 	@Override
 	protected void process(int e)
 		{
@@ -46,6 +48,11 @@ public class MovementSystem extends IteratingSystem
 		// notify move ?
 
 		UUID uuid=uuidManager.getUuid(e);
-		gameWorld.send(null, p.x, p.y, new Move(uuid, p.x, p.y, v.direction));
+		f+=world.delta;
+		if(f>=100) // TODO update to avoid flooding event to client
+			{
+			f-=100;
+			gameWorld.send(null, p.x, p.y, new Move(uuid, p.x, p.y, v.direction));
+			}
 		}
 	}

@@ -50,8 +50,14 @@ public class ProjectileSystem extends IteratingSystem
 			return;
 			}
 
+		proj.ttl-=world.delta;
+		if(proj.ttl<=0)
+			{
+			world.delete(e);
+			return;
+			}
+
 		IntBag potential=locManager.get(p.x, p.y, 10, c); // TODO width & collision
-		System.out.println(potential);
 		for(int i=0; i<potential.size(); i++)
 			{
 			int t=potential.get(i);

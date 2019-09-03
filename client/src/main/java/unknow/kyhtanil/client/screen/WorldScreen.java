@@ -1,32 +1,36 @@
 package unknow.kyhtanil.client.screen;
 
-import java.io.*;
-import java.util.*;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.LinkedList;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.slf4j.*;
 import org.xml.sax.SAXException;
 
-import unknow.kyhtanil.client.*;
-import unknow.kyhtanil.client.artemis.*;
-import unknow.kyhtanil.client.graphics.*;
-import unknow.kyhtanil.client.system.*;
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.maps.*;
-import unknow.scene.builder.SceneBuilder;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kotcrab.vis.ui.widget.VisWindow;
 
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.utils.viewport.*;
-import com.kotcrab.vis.ui.widget.*;
+import unknow.kyhtanil.client.Main;
+import unknow.kyhtanil.client.State;
+import unknow.kyhtanil.client.artemis.Builder;
+import unknow.kyhtanil.client.artemis.UUIDManager;
+import unknow.kyhtanil.client.graphics.HpBarActor;
+import unknow.kyhtanil.client.graphics.Stats;
+import unknow.kyhtanil.client.system.InputSystem;
+import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.maps.MapLayout;
+import unknow.scene.builder.SceneBuilder;
 
 public class WorldScreen extends GameScreen
 	{
-	private static final Logger log=LoggerFactory.getLogger(WorldScreen.class);
-	protected TileSet tileset;
+//	private static final Logger log=LoggerFactory.getLogger(WorldScreen.class);
 	protected MapLayout layout;
 
 	protected Viewport vp;
@@ -35,8 +39,6 @@ public class WorldScreen extends GameScreen
 	protected InputSystem inputSystem;
 
 	protected SpriteBatch batch;
-
-//	private boolean loadMap=false;
 
 	private Stats stat=new Stats();
 

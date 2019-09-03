@@ -9,7 +9,7 @@ public class Projectile extends PooledComponent
 	{
 	public UUID source;
 	public Event onHit;
-	public int ttl;
+	public float ttl;
 
 	@Override
 	protected void reset()

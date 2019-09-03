@@ -1,40 +1,36 @@
 package unknow.game.admin.screen;
 
-import java.io.*;
-import java.sql.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextField;
+import com.kotcrab.vis.ui.widget.VisWindow;
 
-import unknow.game.admin.*;
-import unknow.kyhtanil.client.*;
-import unknow.kyhtanil.common.maps.*;
+import unknow.kyhtanil.common.maps.MapLayout;
 import unknow.kyhtanil.common.maps.MapLayout.MapEntry;
 import unknow.scene.builder.SceneBuilder;
 import unknow.scene.builder.SceneBuilder.Listener;
 import unknow.scene.builder.Wrapper;
 
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.*;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.*;
-import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.*;
-import com.badlogic.gdx.utils.viewport.*;
-import com.kotcrab.vis.ui.widget.*;
-
 public class LayoutEditorScreen extends VisTable
 	{
 	public static MapLayout.MapEntry selected=null;
-	public static final Texture s=new Texture("selected.png");
 
 	private MapLayout layout;
 
 	private Edit edit=new Edit();
 	private Content content=new Content();
-
-	private VisSelectBox<String> tileSetBox;
 
 	public LayoutEditorScreen(MapLayout mapLayout) throws Exception
 		{
@@ -198,7 +194,6 @@ public class LayoutEditorScreen extends VisTable
 
 	private class Edit extends VisWindow implements Listener
 		{
-
 		private VisTextField name;
 		private VisTextField x;
 		private VisTextField y;
@@ -245,16 +240,15 @@ public class LayoutEditorScreen extends VisTable
 
 		public void save()
 			{
+			int x=Integer.parseInt(this.x.getText());
+			int y=Integer.parseInt(this.y.getText());
+			int w=Integer.parseInt(this.w.getText());
+			int h=Integer.parseInt(this.h.getText());
 			MapEntry e=selected; // TODO
-			if(selected==null)
-				; // create
+			if(e==null)
+				layout.add(x, y, w, h, name.getText(), null);
 			else
-				; // update
-			name.getText();
-			x.getText();
-			y.getText();
-			w.getText();
-			h.getText();
+				e.set(x, y, w, h, name.getText()); // update
 			cancel();
 			}
 

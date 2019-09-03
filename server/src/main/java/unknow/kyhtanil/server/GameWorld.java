@@ -149,10 +149,11 @@ public class GameWorld
 			{
 			try
 				{
-				world.setDelta((System.currentTimeMillis()-start)/1000f);
+				long s=System.currentTimeMillis();
+				world.setDelta((s-start)/1000f);
 				world.process();
-				start=System.currentTimeMillis();
-				Thread.sleep(500);
+				start=s;
+				Thread.sleep(1);
 				}
 			catch (Exception e)
 				{

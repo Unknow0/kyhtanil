@@ -58,7 +58,7 @@ public class ApiWorld
 		d.add(new DamageListComp.Damage(source, 0, r(dmg.slashingMin, dmg.slashingRng), r(dmg.bluntMin, dmg.bluntRng), r(dmg.piercingMin, dmg.piercingRng), r(dmg.lightningMin, dmg.lightningRng), r(dmg.fireMin, dmg.fireRng), r(dmg.iceMin, dmg.iceRng), duration));
 		}
 
-	public void addProj(int source, float dir, float speed, Event onHit)
+	public void addProj(int source, float dir, float speed, float ttl, Event onHit)
 		{
 		final int e=world.create(Archetypes.proj);
 		pos.get(e).set(pos.get(source));
@@ -66,6 +66,7 @@ public class ApiWorld
 		v.direction=dir;
 		v.speed=speed;
 		Projectile p=proj.get(e);
+		p.ttl=ttl;
 		p.onHit=onHit;
 		p.source=uuid.getUuid(source);
 
