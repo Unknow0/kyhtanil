@@ -66,7 +66,7 @@
 		<dependency>
 			<groupId>unknow.kyhtanil</groupId>
 			<artifactId>client</artifactId>
-			<version>${kyhtanil.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>unknow.scene-builder</groupId>

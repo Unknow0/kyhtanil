@@ -63,7 +63,7 @@
 		<dependency>
 			<groupId>unknow.kyhtanil</groupId>
 			<artifactId>kyhtanil-common</artifactId>
-			<version>${kyhtanil.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>unknow.orm</groupId>
