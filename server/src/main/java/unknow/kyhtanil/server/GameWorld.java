@@ -80,7 +80,6 @@ public class GameWorld
 		ApiWorld apiWorld=new ApiWorld();
 
 		WorldConfiguration cfg=new WorldConfiguration();
-		cfg.setAlwaysDelayComponentRemoval(true);
 		cfg.setSystem(DebugSystem.class);
 		cfg.setSystem(database);
 

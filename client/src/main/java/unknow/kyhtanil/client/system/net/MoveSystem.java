@@ -28,7 +28,7 @@ public class MoveSystem extends IteratingSystem
 		if(!b.value) // entity not finished to be created
 			return;
 		world.delete(entityId);
-		log.debug("move {}", m);
+		log.info("move {}", m);
 		Builder.update(manager.getEntity(m.uuid), m);
 		}
 	}

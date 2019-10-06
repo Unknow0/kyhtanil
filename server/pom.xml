@@ -63,11 +63,6 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.beanshell</groupId>
-			<artifactId>bsh</artifactId>
-			<version>2.0b5</version>
-		</dependency>
-		<dependency>
 			<groupId>net.onedaybeard.artemis</groupId>
 			<artifactId>artemis-odb</artifactId>
 			<version>${artemis.version}</version>

@@ -30,9 +30,12 @@ public class DespawnSystem extends IteratingSystem
 		if(!b.value) // entity not finished to be created
 			return;
 		log.info("{}", d);
-		int mob=manager.getEntity(d.uuid);
-		manager.remove(mob);
-		world.delete(mob);
+		Integer mob=manager.getEntity(d.uuid);
+		if(mob!=null)
+			{
+			manager.remove(mob);
+			world.delete(mob);
+			}
 		world.delete(entityId);
 		}
 	}

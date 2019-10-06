@@ -34,12 +34,6 @@ public class LocalizedManager extends BaseEntitySystem
 		}
 
 	@Override
-	protected void initialize()
-		{
-//		position=BaseComponentMapper.getFor(PositionComp.class, world);
-		}
-
-	@Override
 	public void inserted(int entityId)
 		{
 		PositionComp p=position.get(entityId);
@@ -79,7 +73,7 @@ public class LocalizedManager extends BaseEntitySystem
 		if(nloc.x==loc.x&&nloc.y==loc.y)
 			return;
 
-		bag.remove(entityId);
+		bag.removeValue(entityId);
 
 		bag=locMap.get(nloc);
 		if(bag==null)
