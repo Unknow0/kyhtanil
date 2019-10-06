@@ -4,6 +4,8 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 
+import unknow.kyhtanil.common.Stats;
+import unknow.kyhtanil.common.component.AggregatedStat;
 import unknow.kyhtanil.common.component.Body;
 import unknow.kyhtanil.common.component.CalculatedComp;
 import unknow.kyhtanil.common.component.MobInfoComp;
@@ -29,6 +31,9 @@ public class UpdateStatSystem extends IteratingSystem
 		{
 		MobInfoComp info=mobInfo.get(e);
 		Body b=body.get(e);
+		
+		// TODO get AggregatedStat instead
+
 		CalculatedComp calc=calculated.get(e);
 
 		calc.hp=info.hp;

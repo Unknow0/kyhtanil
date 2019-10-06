@@ -1,13 +1,18 @@
 package unknow.kyhtanil.client.screen;
 
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.utils.*;
-import com.badlogic.gdx.utils.viewport.*;
-import com.kotcrab.vis.ui.widget.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.kotcrab.vis.ui.widget.VisWindow;
 
 public class GameScreen implements Screen
 	{
@@ -61,10 +66,10 @@ public class GameScreen implements Screen
 		error.add(new VisLabel(e.getMessage()));
 		error.add(new VisTextButton("Quit", new ChangeListener()
 			{
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					System.exit(1);
-					}
+			public void changed(ChangeEvent event, Actor actor)
+				{
+				System.exit(1);
+				}
 			}));
 		}
 	}

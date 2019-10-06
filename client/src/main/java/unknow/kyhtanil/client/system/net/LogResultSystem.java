@@ -1,13 +1,14 @@
 package unknow.kyhtanil.client.system.net;
 
-import unknow.kyhtanil.client.*;
-import unknow.kyhtanil.client.artemis.*;
-import unknow.kyhtanil.client.screen.*;
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.component.account.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
+import com.artemis.systems.IteratingSystem;
 
-import com.artemis.*;
-import com.artemis.systems.*;
+import unknow.kyhtanil.client.Main;
+import unknow.kyhtanil.client.State;
+import unknow.kyhtanil.client.screen.CharSelectScreen;
+import unknow.kyhtanil.common.component.BooleanComp;
+import unknow.kyhtanil.common.component.account.LogResult;
 
 public class LogResultSystem extends IteratingSystem
 	{
@@ -15,7 +16,6 @@ public class LogResultSystem extends IteratingSystem
 	private ComponentMapper<BooleanComp> done;
 	private Main main;
 	private CharSelectScreen charSelect;
-	private UUIDManager manager;
 
 	public LogResultSystem(Main main, CharSelectScreen charSelect)
 		{
@@ -33,7 +33,6 @@ public class LogResultSystem extends IteratingSystem
 		world.delete(entityId);
 
 		State.uuid=logResult.uuid;
-		manager.setUuid(State.entity, State.uuid);
 		charSelect.setCharList(logResult.characters);
 		main.show(charSelect);
 		}

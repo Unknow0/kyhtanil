@@ -96,15 +96,6 @@ public class Builder
 		return e;
 		}
 
-	public static void update(int mob, Move move)
-		{
-		PositionComp p=getPosition(mob);
-		p.x=move.x;
-		p.y=move.y;
-
-		// TODO velocity
-		}
-
 	public static boolean isTarget(int e)
 		{
 		return target.has(e);

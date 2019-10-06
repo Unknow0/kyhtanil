@@ -21,7 +21,7 @@ public class HpBarActor extends Actor
 	public void draw(Batch batch, float parentAlpha)
 		{
 		CalculatedComp total=State.stat;
-		float r=total.hp/total.maxHp;
-		batch.draw(tex, getX(), getY(), getWidth()*r, getHeight()*r);
+		float r=(float)(total.hp*1./total.maxHp);
+		batch.draw(tex, getX(), getY(), getWidth(), getHeight()*r);
 		}
 	}

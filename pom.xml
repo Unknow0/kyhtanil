@@ -3,16 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>unknow.kyhtanil</groupId>
 	<artifactId>root</artifactId>
-	<version>1.0</version>
 	<packaging>pom</packaging>
+	<version>0.0.1-SNAPSHOT</version>
 
 	<name>Kyhtanil root</name>
 	<description>root pom</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<kyhtanil.version>0.0.1-SNAPSHOT</kyhtanil.version>
-
 		<slf4j.version>1.7.16</slf4j.version>
 		<gdx.version>1.9.1</gdx.version>
 		<artemis.version>2.2.0</artemis.version>
@@ -33,7 +31,7 @@
 		<module>kyhtanil-common</module>
 		<module>client</module>
 		<module>client-desktop</module>
-		<!--module>kyhtanil-data</module-->
+		<module>kyhtanil-data</module>
 	</modules>
 
 	<build>
@@ -43,8 +41,8 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.1</version>
 					<configuration>
-						<source>7</source>
-						<target>7</target>
+						<source>8</source>
+						<target>8</target>
 					</configuration>
 				</plugin>
 			</plugins>

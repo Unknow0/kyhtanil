@@ -2,6 +2,7 @@ package unknow.kyhtanil.client.system.net;
 
 import unknow.kyhtanil.client.*;
 import unknow.kyhtanil.client.artemis.Builder;
+import unknow.kyhtanil.client.artemis.UUIDManager;
 import unknow.kyhtanil.client.screen.*;
 import unknow.kyhtanil.common.component.*;
 import unknow.kyhtanil.common.component.account.*;
@@ -15,6 +16,7 @@ public class PjInfoSystem extends IteratingSystem
 	private ComponentMapper<BooleanComp> done;
 	private Main main;
 	private WorldScreen worldScreen;
+	private UUIDManager manager;
 
 	private ComponentMapper<PositionComp> position;
 	private ComponentMapper<SpriteComp> sprite;
@@ -37,6 +39,8 @@ public class PjInfoSystem extends IteratingSystem
 		world.delete(entityId);
 
 		State.entity=world.create(Builder.pjArch);
+		manager.setUuid(State.entity, State.uuid);
+
 		VelocityComp v=Builder.getVelocity(State.entity);
 		v.speed=0f;
 		PositionComp p=position.get(State.entity);

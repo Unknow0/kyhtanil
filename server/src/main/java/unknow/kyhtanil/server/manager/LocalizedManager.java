@@ -2,6 +2,7 @@ package unknow.kyhtanil.server.manager;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.artemis.Aspect;
 import com.artemis.BaseEntitySystem;
@@ -167,6 +168,17 @@ public class LocalizedManager extends BaseEntitySystem
 
 	protected void processSystem()
 		{
+		for(Entry<Loc,IntBag> e:locMap.entrySet())
+			{
+			Loc key=e.getKey();
+			IntBag bag=e.getValue();
+			int[] data=bag.getData();
+			for(int i=0; i<bag.size(); i++)
+				{
+				if(!key.equals(objects.get(data[i])))
+					throw new RuntimeException("inconsistancy");
+				}
+			}
 		}
 
 	public static interface Choose
