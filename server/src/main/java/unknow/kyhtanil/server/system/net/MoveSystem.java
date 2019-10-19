@@ -28,8 +28,8 @@ public class MoveSystem extends IteratingSystem
 	private ComponentMapper<VelocityComp> velocity;
 	private ComponentMapper<CalculatedComp> calculated;
 	private ComponentMapper<StateComp> state;
+	private ComponentMapper<Dirty> dirty;
 
-	private GameWorld gameWorld;
 	private LocalizedManager locManager;
 
 	@Wire
@@ -38,7 +38,6 @@ public class MoveSystem extends IteratingSystem
 	public MoveSystem(GameWorld gameWorld)
 		{
 		super(Aspect.all(Move.class, NetComp.class));
-		this.gameWorld=gameWorld;
 		}
 
 	protected void process(int entityId)
@@ -85,6 +84,6 @@ public class MoveSystem extends IteratingSystem
 		v.direction=m.direction;
 //			}
 
-		gameWorld.send(sender, p.x, p.y, m);
+		dirty.get(e).dirty=true;
 		}
 	}

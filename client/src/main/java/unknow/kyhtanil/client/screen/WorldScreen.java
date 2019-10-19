@@ -21,7 +21,6 @@ import unknow.kyhtanil.client.Main;
 import unknow.kyhtanil.client.State;
 import unknow.kyhtanil.client.artemis.Builder;
 import unknow.kyhtanil.client.artemis.UUIDManager;
-import unknow.kyhtanil.client.graphics.HpBarActor;
 import unknow.kyhtanil.client.graphics.Stats;
 import unknow.kyhtanil.client.system.InputSystem;
 import unknow.kyhtanil.common.component.PositionComp;
@@ -58,7 +57,8 @@ public class WorldScreen extends GameScreen
 		stage.addActor(stat);
 
 		SceneBuilder sceneBuilder=new SceneBuilder();
-		sceneBuilder.addActor("hpbar", new HpBarActor());
+		sceneBuilder.addValue("width", stage.getWidth());
+		sceneBuilder.addValue("height", stage.getHeight());
 		sceneBuilder.build("layout.xml", stage.getRoot());
 		}
 

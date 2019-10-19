@@ -14,6 +14,8 @@ public abstract class Skill
 		this.name=name;
 		}
 
+	public abstract int cost();
+
 	public abstract void exec(int self, Point p, Integer t);
 
 	public abstract String desc();

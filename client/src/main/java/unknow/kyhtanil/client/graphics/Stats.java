@@ -104,16 +104,16 @@ public class Stats extends VisWindow
 
 		public void update()
 			{
-			CalculatedComp stat=State.stat;
-
-			hp.setText(String.format("%d / %d", stat.hp, stat.maxHp));
-			mp.setText(String.format("%d / %d", stat.mp, stat.maxMp));
-
-			constitution.setText(String.format("%d", stat.constitution));
-			strength.setText(String.format("%d", stat.strength));
-			concentration.setText(String.format("%d", stat.concentration));
-			intelligence.setText(String.format("%d", stat.intelligence));
-			dexterity.setText(String.format("%d", stat.dexterity));
+//			CalculatedComp stat=State.stat;
+//
+//			hp.setText(String.format("%d / %d", stat.hp, stat.maxHp));
+//			mp.setText(String.format("%d / %d", stat.mp, stat.maxMp));
+//
+//			constitution.setText(String.format("%d", stat.constitution));
+//			strength.setText(String.format("%d", stat.strength));
+//			concentration.setText(String.format("%d", stat.concentration));
+//			intelligence.setText(String.format("%d", stat.intelligence));
+//			dexterity.setText(String.format("%d", stat.dexterity));
 			}
 		}
 	}

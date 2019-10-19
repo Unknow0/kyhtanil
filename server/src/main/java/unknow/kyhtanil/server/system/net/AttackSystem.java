@@ -23,6 +23,7 @@ import com.artemis.systems.IteratingSystem;
 import com.esotericsoftware.kryo.util.IntMap;
 
 import unknow.kyhtanil.common.Skill;
+import unknow.kyhtanil.common.component.MobInfoComp;
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.common.component.net.Attack;
 import unknow.kyhtanil.common.component.net.NetComp;
@@ -39,6 +40,7 @@ public class AttackSystem extends IteratingSystem
 	private ComponentMapper<Attack> attack;
 	private ComponentMapper<NetComp> net;
 	private ComponentMapper<PositionComp> position;
+	private ComponentMapper<MobInfoComp> mobInfo;
 
 	@Wire
 	private ScriptEngine js;
@@ -136,6 +138,13 @@ public class AttackSystem extends IteratingSystem
 //		js.put("target", t);
 //		js.put("self", self);
 		Skill script=skills.get(a.id);
+
+		int cost=script.cost();
+		MobInfoComp info=mobInfo.get(self);
+		if(info.mp<cost)
+			return;
+
+		info.mp-=cost;
 		script.exec(self, p, t);
 		}
 	}

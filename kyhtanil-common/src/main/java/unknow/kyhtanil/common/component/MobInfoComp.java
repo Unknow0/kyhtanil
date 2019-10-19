@@ -36,4 +36,12 @@ public class MobInfoComp extends PooledComponent
 		this.mp=m.mp;
 		this.maxMp=m.maxMp;
 		}
+
+	public void set(CalculatedComp m)
+		{
+		this.hp=m.hp;
+		this.maxHp=m.maxHp;
+		this.mp=m.mp;
+		this.maxMp=m.maxMp;
+		}
 	}

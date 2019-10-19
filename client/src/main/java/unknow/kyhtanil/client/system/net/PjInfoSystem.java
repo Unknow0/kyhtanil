@@ -20,7 +20,7 @@ public class PjInfoSystem extends IteratingSystem
 
 	private ComponentMapper<PositionComp> position;
 	private ComponentMapper<SpriteComp> sprite;
-	private ComponentMapper<CalculatedComp> calculated;
+	private ComponentMapper<MobInfoComp> info;
 
 	public PjInfoSystem(Main main, WorldScreen worldScreen)
 		{
@@ -49,7 +49,7 @@ public class PjInfoSystem extends IteratingSystem
 		SpriteComp s=sprite.get(State.entity);
 		s.tex="data/tex/char.png";
 		s.w=s.h=3;
-		CalculatedComp c=calculated.get(State.entity);
+		MobInfoComp c=info.get(State.entity);
 		c.set(pj.total);
 		State.stat=c;
 

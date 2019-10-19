@@ -38,6 +38,7 @@ import unknow.kyhtanil.server.manager.StateManager;
 import unknow.kyhtanil.server.manager.UUIDManager;
 import unknow.kyhtanil.server.system.DamageSystem;
 import unknow.kyhtanil.server.system.DebugSystem;
+import unknow.kyhtanil.server.system.DirtySystem;
 import unknow.kyhtanil.server.system.EventSystem;
 import unknow.kyhtanil.server.system.MovementSystem;
 import unknow.kyhtanil.server.system.ProjectileSystem;
@@ -98,6 +99,8 @@ public class GameWorld
 		cfg.setSystem(new DamageSystem(this));
 		cfg.setSystem(new MovementSystem());
 		cfg.setSystem(new ProjectileSystem());
+		
+		cfg.setSystem(new DirtySystem());
 
 		cfg.register(layout);
 		cfg.register("javax.script.ScriptEngine", apiWorld.js());
@@ -106,7 +109,7 @@ public class GameWorld
 
 		world=new World(cfg);
 		world.getRegistered(ApiWorld.class).init(world);
-
+		
 		state=BaseComponentMapper.getFor(StateComp.class, world);
 		position=BaseComponentMapper.getFor(PositionComp.class, world);
 		velocity=BaseComponentMapper.getFor(VelocityComp.class, world);

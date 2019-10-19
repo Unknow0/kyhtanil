@@ -16,8 +16,9 @@ public class Archetypes
 		{
 		ArchetypeBuilder builder=new ArchetypeBuilder();
 		builder.add(PositionComp.class, VelocityComp.class, SpriteComp.class);
-		builder.add(MobInfoComp.class, Body.class);
+		builder.add(MobInfoComp.class, Body.class, AggregatedStat.class);
 		builder.add(DamageListComp.class, CalculatedComp.class);
+		builder.add(Dirty.class);
 		mob=builder.build(world);
 
 		builder.add(StateComp.class);

@@ -28,6 +28,7 @@ public class Kryos extends KryoWrap
 		addClass(Spawn.class);
 		addClass(Despawn.class);
 		addClass(Move.class);
+		addClass(UpdateInfo.class);
 		addClass(Attack.class);
 		addClass(Point.class);
 		addClass(DamageReport.class);

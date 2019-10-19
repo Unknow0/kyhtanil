@@ -10,32 +10,38 @@ import unknow.kyhtanil.common.component.net.*;
 import com.artemis.*;
 import com.artemis.systems.*;
 
-public class MoveSystem extends IteratingSystem
+public class UpdateInfoSystem extends IteratingSystem
 	{
-	private static final Logger log=LoggerFactory.getLogger(MoveSystem.class);
-	private ComponentMapper<Move> move;
+	private static final Logger log=LoggerFactory.getLogger(UpdateInfoSystem.class);
+	private ComponentMapper<UpdateInfo> update;
 	private ComponentMapper<BooleanComp> done;
 
 	private ComponentMapper<PositionComp> position;
+	private ComponentMapper<MobInfoComp> info;
 	private UUIDManager manager;
 
-	public MoveSystem()
+	public UpdateInfoSystem()
 		{
-		super(Aspect.all(Move.class, BooleanComp.class));
+		super(Aspect.all(UpdateInfo.class, BooleanComp.class));
 		}
 
 	protected void process(int entityId)
 		{
-		Move m=move.get(entityId);
+		UpdateInfo u=update.get(entityId);
 		BooleanComp b=done.get(entityId);
 		if(!b.value) // entity not finished to be created
 			return;
 		world.delete(entityId);
-		log.info("move {}", m);
-		int e=manager.getEntity(m.uuid);
+		log.info("update {}", u);
+		int e=manager.getEntity(u.uuid);
 		log.info("=> {} / {}", e, State.entity);
 		PositionComp p=position.get(e);
-		p.x=m.x;
-		p.y=m.y;
+		p.x=u.x;
+		p.y=u.y;
+		MobInfoComp i=info.get(e);
+		i.hp=u.hp;
+		i.maxHp=u.maxHp;
+		i.mp=u.mp;
+		i.maxMp=u.maxMp;
 		}
 	}
