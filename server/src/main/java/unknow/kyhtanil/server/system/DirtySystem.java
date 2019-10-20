@@ -6,7 +6,9 @@ import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 
 import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.StatPerso;
 import unknow.kyhtanil.common.component.StatShared;
+import unknow.kyhtanil.common.component.VelocityComp;
 import unknow.kyhtanil.common.component.net.UpdateInfo;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.server.component.Dirty;
@@ -41,13 +43,9 @@ public class DirtySystem extends IteratingSystem
 
 		StateComp s=state.get(e);
 		if(s!=null)
-			s.channel.writeAndFlush(new UpdateInfo(u, d.changed()));
-
-		if(d.map.containsKey(StatShared.class))
-			{
-			PositionComp p=pos.get(e);
-			clients.send(s, p.x, p.y, new UpdateInfo(u, new Component[] {(Component)d.map.get(StatShared.class)}));
-			}
+			s.channel.writeAndFlush(new UpdateInfo(u, d.changed(VelocityComp.class)));
+		PositionComp p=pos.get(e);
+		clients.send(s, p.x, p.y, new UpdateInfo(u, d.changed(StatPerso.class)));
 		d.reset();
 		}
 	}

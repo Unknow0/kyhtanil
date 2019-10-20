@@ -23,12 +23,18 @@ public class Dirty extends PooledComponent
 		map.put(c.getClass(), c);
 		}
 
-	public Component[] changed()
+	public Component[] changed(Class<?> exclude)
 		{
-		Component[] t=new Component[map.size()];
-		int i=0;
+		int i=map.size();
+		if(map.containsKey(exclude))
+			i--;
+		Component[] t=new Component[i];
+		i=0;
 		for(Setable<?> c:map.values())
-			t[i++]=(Component)c;
+			{
+			if(exclude!=c.getClass())
+				t[i++]=(Component)c;
+			}
 		return t;
 		}
 	}
