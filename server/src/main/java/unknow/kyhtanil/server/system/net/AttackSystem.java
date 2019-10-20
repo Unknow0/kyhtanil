@@ -23,13 +23,14 @@ import com.artemis.systems.IteratingSystem;
 import com.esotericsoftware.kryo.util.IntMap;
 
 import unknow.kyhtanil.common.Skill;
-import unknow.kyhtanil.common.component.MobInfoComp;
+import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.common.component.net.Attack;
 import unknow.kyhtanil.common.component.net.NetComp;
 import unknow.kyhtanil.common.pojo.Point;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.server.Database;
+import unknow.kyhtanil.server.component.Dirty;
 import unknow.kyhtanil.server.manager.UUIDManager;
 
 public class AttackSystem extends IteratingSystem
@@ -40,7 +41,8 @@ public class AttackSystem extends IteratingSystem
 	private ComponentMapper<Attack> attack;
 	private ComponentMapper<NetComp> net;
 	private ComponentMapper<PositionComp> position;
-	private ComponentMapper<MobInfoComp> mobInfo;
+	private ComponentMapper<StatShared> mobInfo;
+	private ComponentMapper<Dirty> dirty;
 
 	@Wire
 	private ScriptEngine js;
@@ -107,8 +109,6 @@ public class AttackSystem extends IteratingSystem
 		{
 		Attack a=attack.get(entityId);
 		NetComp ctx=net.get(entityId);
-		if(ctx.channel==null) // entity not finished to be created
-			return;
 
 		world.delete(entityId);
 		Integer self=manager.getEntity(a.uuid);
@@ -140,11 +140,15 @@ public class AttackSystem extends IteratingSystem
 		Skill script=skills.get(a.id);
 
 		int cost=script.cost();
-		MobInfoComp info=mobInfo.get(self);
+		StatShared info=mobInfo.get(self);
 		if(info.mp<cost)
 			return;
 
-		info.mp-=cost;
+		if(cost>0)
+			{
+			info.mp-=cost;
+			dirty.get(self).add(info);
+			}
 		script.exec(self, p, t);
 		}
 	}

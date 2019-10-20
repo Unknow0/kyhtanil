@@ -1,48 +1,28 @@
 package unknow.kyhtanil.common.component.net;
 
-import com.artemis.PooledComponent;
+import java.util.Arrays;
 
-import unknow.kyhtanil.common.component.CalculatedComp;
-import unknow.kyhtanil.common.component.MobInfoComp;
-import unknow.kyhtanil.common.component.PositionComp;
+import com.artemis.Component;
+
 import unknow.kyhtanil.common.pojo.UUID;
 
-public class UpdateInfo extends PooledComponent
+public class UpdateInfo extends Component
 	{
 	public UUID uuid=null;
-	public float x=0;
-	public float y=0;
-	public float direction=0;
-	public int hp, maxHp;
-	public int mp, maxMp;
+	public Component[] c;
 
 	public UpdateInfo()
 		{
 		}
 
-	public UpdateInfo(UUID uuid, PositionComp p, CalculatedComp m)
+	public UpdateInfo(UUID uuid, Component[] c)
 		{
 		this.uuid=uuid;
-		this.x=p.x;
-		this.y=p.y;
-		this.direction=0;
-		this.hp=m.hp;
-		this.mp=m.mp;
-		this.maxHp=m.maxHp;
-		this.maxMp=m.maxMp;
-		}
-
-	public void reset()
-		{
-		uuid=null;
-		x=y=0;
-		direction=0;
-		hp=maxHp=0;
-		mp=maxMp=0;
+		this.c=c;
 		}
 
 	public String toString()
 		{
-		return "uuid: "+uuid+", x: "+x+", y: "+y+", direction: "+direction;
+		return "uuid: "+uuid+", changed: "+Arrays.toString(c);
 		}
 	}

@@ -2,16 +2,15 @@ package unknow.kyhtanil.server.system;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
-import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.common.component.VelocityComp;
 import unknow.kyhtanil.common.component.net.Move;
 import unknow.kyhtanil.common.pojo.UUID;
-import unknow.kyhtanil.server.GameWorld;
 import unknow.kyhtanil.server.manager.LocalizedManager;
 import unknow.kyhtanil.server.manager.UUIDManager;
+import unknow.kyhtanil.server.system.net.Clients;
 
 public class MovementSystem extends IteratingSystem
 	{
@@ -20,8 +19,7 @@ public class MovementSystem extends IteratingSystem
 	private ComponentMapper<VelocityComp> velocity;
 	private ComponentMapper<PositionComp> position;
 
-	@Wire
-	private GameWorld gameWorld;
+	private Clients clients;
 
 	public MovementSystem()
 		{
@@ -52,7 +50,7 @@ public class MovementSystem extends IteratingSystem
 		if(f>=100) // TODO update to avoid flooding event to client
 			{
 			f-=100;
-			gameWorld.send(null, p.x, p.y, new Move(uuid, p.x, p.y, v.direction));
+			clients.send(null, p.x, p.y, new Move(uuid, p.x, p.y, v.direction));
 			}
 		}
 	}

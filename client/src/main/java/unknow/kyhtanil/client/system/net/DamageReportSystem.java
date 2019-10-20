@@ -1,40 +1,38 @@
 package unknow.kyhtanil.client.system.net;
 
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import unknow.kyhtanil.client.artemis.*;
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.component.net.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
+import com.artemis.systems.IteratingSystem;
 
-import com.artemis.*;
-import com.artemis.systems.*;
+import unknow.kyhtanil.common.component.StatShared;
+import unknow.kyhtanil.common.component.net.DamageReport;
+import unknow.kyhtanil.common.util.BaseUUIDManager;
 
 public class DamageReportSystem extends IteratingSystem
 	{
 	private static final Logger log=LoggerFactory.getLogger(DamageReportSystem.class);
 	private ComponentMapper<DamageReport> report;
-	private ComponentMapper<BooleanComp> done;
-	private ComponentMapper<MobInfoComp> mob;
-	private UUIDManager manager;
+	private ComponentMapper<StatShared> mob;
+	private BaseUUIDManager manager;
 
 	public DamageReportSystem()
 		{
-		super(Aspect.all(DamageReport.class, BooleanComp.class));
+		super(Aspect.all(DamageReport.class));
 		}
 
 	protected void process(int entityId)
 		{
 		DamageReport r=report.get(entityId);
-		BooleanComp b=done.get(entityId);
-		if(!b.value) // entity not finished to be created
-			return;
 		world.delete(entityId);
 		log.info("{}", r);
 
 		Integer e=manager.getEntity(r.uuid);
 		if(e!=null)
 			{
-			MobInfoComp c=mob.get(e);
+			StatShared c=mob.get(e);
 			c.hp-=r.damage;
 			}
 		}

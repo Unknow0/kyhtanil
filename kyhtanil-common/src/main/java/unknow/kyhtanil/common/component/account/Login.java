@@ -1,27 +1,27 @@
 package unknow.kyhtanil.common.component.account;
 
-import com.artemis.PooledComponent;
 import javax.annotation.Generated;
 
+import com.artemis.Component;
+
 @Generated(value="class unknow.pojo.Generator", date="2017-05-01T19:13:39+0200")
-public class Login extends PooledComponent {
+public class Login extends Component
+	{
 	public String login=null;
 	public byte[] passHash=null;
 
-	public Login() {
-	}
+	public Login()
+		{
+		}
 
-	public Login(String login, byte[] passHash) {
+	public Login(String login, byte[] passHash)
+		{
 		this.login=login;
 		this.passHash=passHash;
-	}
+		}
 
-	public void reset() {
-		login=null;
-		passHash=null;
-	}
-
-	public String toString() {
+	public String toString()
+		{
 		return "login: "+login+", passHash: "+passHash;
+		}
 	}
-}

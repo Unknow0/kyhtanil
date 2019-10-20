@@ -1,23 +1,27 @@
 package unknow.kyhtanil.common.util;
 
-import java.security.*;
+import java.security.NoSuchAlgorithmException;
 
-import unknow.common.kryo.*;
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.component.account.*;
-import unknow.kyhtanil.common.component.net.*;
-import unknow.kyhtanil.common.pojo.*;
-
-import com.artemis.*;
-import com.esotericsoftware.kryo.*;
-import com.esotericsoftware.kryo.io.*;
+import unknow.common.kryo.KryoWrap;
+import unknow.kyhtanil.common.component.ErrorComp;
+import unknow.kyhtanil.common.component.StatPerso;
+import unknow.kyhtanil.common.component.StatShared;
+import unknow.kyhtanil.common.component.account.CreateAccount;
+import unknow.kyhtanil.common.component.account.LogChar;
+import unknow.kyhtanil.common.component.account.LogResult;
+import unknow.kyhtanil.common.component.account.Login;
+import unknow.kyhtanil.common.component.account.PjInfo;
+import unknow.kyhtanil.common.component.net.Attack;
+import unknow.kyhtanil.common.component.net.DamageReport;
+import unknow.kyhtanil.common.component.net.Despawn;
+import unknow.kyhtanil.common.component.net.Move;
+import unknow.kyhtanil.common.component.net.Spawn;
+import unknow.kyhtanil.common.component.net.UpdateInfo;
+import unknow.kyhtanil.common.pojo.Point;
 
 public class Kryos extends KryoWrap
 	{
-	private ArtemisInstantiator instantiator;
-
-	@SafeVarargs
-	public Kryos(World world, Class<? extends Component>... comp) throws NoSuchAlgorithmException
+	public Kryos() throws NoSuchAlgorithmException
 		{
 		addClass(ErrorComp.class);
 		addClass(Login.class);
@@ -32,21 +36,8 @@ public class Kryos extends KryoWrap
 		addClass(Attack.class);
 		addClass(Point.class);
 		addClass(DamageReport.class);
+		addClass(StatPerso.class);
+		addClass(StatShared.class);
 		doneInit();
-
-		instantiator=new ArtemisInstantiator(world, comp);
-		}
-
-	protected void init(Kryo kryo)
-		{
-		super.init(kryo);
-		kryo.setInstantiatorStrategy(instantiator);
-		}
-
-	public Object read(Input input)
-		{
-		// reset uuidEntity
-		ArtemisInstantiator.reset();
-		return super.read(input);
 		}
 	}

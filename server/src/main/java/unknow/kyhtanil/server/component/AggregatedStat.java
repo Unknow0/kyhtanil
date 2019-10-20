@@ -1,4 +1,4 @@
-package unknow.kyhtanil.common.component;
+package unknow.kyhtanil.server.component;
 
 import com.artemis.PooledComponent;
 

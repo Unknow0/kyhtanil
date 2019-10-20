@@ -9,7 +9,7 @@ public class StateComp extends PooledComponent
 	{
 	public static enum States
 		{
-		NOT_LOGGED, LOGGED, IN_GAME;
+	NOT_LOGGED, LOGGED, IN_GAME;
 		}
 
 	public Account account;
@@ -21,5 +21,12 @@ public class StateComp extends PooledComponent
 		account=null;
 		channel=null;
 		state=null;
+		}
+
+	public void set(StateComp s)
+		{
+		account=s.account;
+		channel=s.channel;
+		state=s.state;
 		}
 	}

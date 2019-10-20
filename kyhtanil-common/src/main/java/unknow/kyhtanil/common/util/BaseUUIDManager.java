@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.artemis.Aspect.Builder;
+import com.artemis.Aspect;
 import com.artemis.BaseEntitySystem;
 import com.artemis.utils.Bag;
 
@@ -17,6 +18,11 @@ public class BaseUUIDManager extends BaseEntitySystem
 	private static final Logger log=LoggerFactory.getLogger(BaseUUIDManager.class);
 	protected final Map<UUID,Integer> uuidToEntity;
 	private final Bag<UUID> entityToUuid;
+
+	public BaseUUIDManager()
+		{
+		this(Aspect.all());
+		}
 
 	protected BaseUUIDManager(Builder aspect)
 		{

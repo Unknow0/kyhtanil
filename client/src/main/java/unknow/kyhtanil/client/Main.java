@@ -10,8 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.VisUI;
 
 import unknow.common.Cfg;
-import unknow.kyhtanil.client.artemis.Builder;
-import unknow.kyhtanil.client.artemis.UUIDManager;
+import unknow.kyhtanil.client.component.Archetypes;
 import unknow.kyhtanil.client.screen.CharSelectScreen;
 import unknow.kyhtanil.client.screen.GameScreen;
 import unknow.kyhtanil.client.screen.LoginScreen;
@@ -20,18 +19,19 @@ import unknow.kyhtanil.client.system.InputSystem;
 import unknow.kyhtanil.client.system.MovementSystem;
 import unknow.kyhtanil.client.system.RenderingSystem;
 import unknow.kyhtanil.client.system.TexManager;
+import unknow.kyhtanil.client.system.net.Connection;
 import unknow.kyhtanil.client.system.net.DamageReportSystem;
 import unknow.kyhtanil.client.system.net.DespawnSystem;
 import unknow.kyhtanil.client.system.net.ErrorSystem;
 import unknow.kyhtanil.client.system.net.LogResultSystem;
-import unknow.kyhtanil.client.system.net.MoveSystem;
 import unknow.kyhtanil.client.system.net.PjInfoSystem;
 import unknow.kyhtanil.client.system.net.SpawnSystem;
+import unknow.kyhtanil.client.system.net.UpdateInfoSystem;
+import unknow.kyhtanil.common.util.BaseUUIDManager;
 
 public class Main extends Game
 	{
 	private static final Logger log=LoggerFactory.getLogger(Main.class);
-	private Connection client;
 	public static Main self;
 
 	public LoginScreen login;
@@ -40,8 +40,6 @@ public class Main extends Game
 	private WorldScreen worldScreen;
 
 	private World world;
-	private UUIDManager manager;
-	private InputSystem inputSystem;
 
 	public void create()
 		{
@@ -50,36 +48,37 @@ public class Main extends Game
 			self=this;
 			VisUI.load();
 
-			manager=new UUIDManager();
+			BaseUUIDManager manager=new BaseUUIDManager();
 
-			worldScreen=new WorldScreen(manager);
-			charSelect=new CharSelectScreen();
-			login=new LoginScreen();
+			Connection co=new Connection(Cfg.getSystemString("game.host"), Cfg.getSystemInt("game.port"));
 
-			inputSystem=new InputSystem(worldScreen.gameViewpoint(), worldScreen, manager);
+			worldScreen=new WorldScreen();
+			charSelect=new CharSelectScreen(co);
+			login=new LoginScreen(co);
+
+			InputSystem inputSystem=new InputSystem(worldScreen.gameViewpoint(), worldScreen, manager);
 			worldScreen.set(inputSystem);
 			WorldConfiguration cfg=new WorldConfiguration();
+			cfg.setSystem(new Archetypes());
 			cfg.setSystem(manager);
 			cfg.setSystem(inputSystem);
 			cfg.setSystem(new TexManager());
+
 			cfg.setSystem(new MovementSystem());
-			cfg.setSystem(new RenderingSystem(worldScreen.gameViewpoint().getCamera()));
+			cfg.setSystem(new RenderingSystem(worldScreen.gameViewpoint()));
+			cfg.setSystem(co);
 
 			cfg.setSystem(new ErrorSystem(this));
 			cfg.setSystem(new LogResultSystem(this, charSelect));
 			cfg.setSystem(new PjInfoSystem(this, worldScreen));
 			cfg.setSystem(new SpawnSystem());
-			cfg.setSystem(new MoveSystem());
+			cfg.setSystem(new UpdateInfoSystem());
 			cfg.setSystem(new DamageReportSystem());
 			cfg.setSystem(new DespawnSystem());
 
 			world=new World(cfg);
-			Builder.init(world);
 
 			setScreen(login);
-
-			client=new Connection(Cfg.getSystemString("game.host"), Cfg.getSystemInt("game.port"), world);
-			client.start();
 			}
 		catch (Exception e)
 			{
@@ -91,15 +90,6 @@ public class Main extends Game
 	public void render()
 		{
 		world.delta=Gdx.graphics.getDeltaTime();
-		if(screen==worldScreen)
-			try
-				{
-				worldScreen.renderMap(world.delta);
-				}
-			catch (Exception e)
-				{
-				e.printStackTrace();
-				}
 		world.process();
 		screen.render(world.delta);
 		}
@@ -107,11 +97,6 @@ public class Main extends Game
 	public static GameScreen screen()
 		{
 		return (GameScreen)self.getScreen();
-		}
-
-	public static Connection co()
-		{
-		return self.client;
 		}
 
 	public void show(final GameScreen screen)

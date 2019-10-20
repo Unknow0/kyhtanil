@@ -4,7 +4,7 @@ import unknow.kyhtanil.common.pojo.*;
 
 import com.artemis.*;
 
-public class Move extends PooledComponent {
+public class Move extends Component {
 	public UUID uuid=null;
 	public float x=0;
 	public float y=0;
@@ -18,13 +18,6 @@ public class Move extends PooledComponent {
 		this.x=x;
 		this.y=y;
 		this.direction=direction;
-	}
-
-	public void reset() {
-		uuid=null;
-		x=0;
-		y=0;
-		direction=0;
 	}
 
 	public String toString() {

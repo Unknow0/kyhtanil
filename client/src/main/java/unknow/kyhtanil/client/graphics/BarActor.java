@@ -9,8 +9,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import unknow.kyhtanil.client.State;
-import unknow.kyhtanil.common.component.CalculatedComp;
-import unknow.kyhtanil.common.component.MobInfoComp;
+import unknow.kyhtanil.common.component.StatShared;
 
 public abstract class BarActor extends Actor
 	{
@@ -48,7 +47,7 @@ public abstract class BarActor extends Actor
 
 		protected float rate()
 			{
-			MobInfoComp total=State.stat;
+			StatShared total=State.stat;
 			return (float)(total.hp*1./total.maxHp);
 			}
 		}
@@ -62,7 +61,7 @@ public abstract class BarActor extends Actor
 
 		protected float rate()
 			{
-			MobInfoComp total=State.stat;
+			StatShared total=State.stat;
 			return (float)(total.mp*1./total.maxMp);
 			}
 		}

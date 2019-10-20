@@ -1,28 +1,27 @@
 package unknow.kyhtanil.server.system;
 
 import com.artemis.Aspect;
+import com.artemis.Component;
 import com.artemis.ComponentMapper;
-import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 
-import unknow.kyhtanil.common.component.CalculatedComp;
 import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.net.UpdateInfo;
 import unknow.kyhtanil.common.pojo.UUID;
-import unknow.kyhtanil.server.GameWorld;
 import unknow.kyhtanil.server.component.Dirty;
+import unknow.kyhtanil.server.component.StateComp;
 import unknow.kyhtanil.server.manager.UUIDManager;
+import unknow.kyhtanil.server.system.net.Clients;
 
 public class DirtySystem extends IteratingSystem
 	{
 	private ComponentMapper<Dirty> dirty;
 	private ComponentMapper<PositionComp> pos;
-	private ComponentMapper<CalculatedComp> info;
+	private ComponentMapper<StateComp> state;
 
 	private UUIDManager uuid;
-
-	@Wire
-	private GameWorld game;
+	private Clients clients;
 
 	public DirtySystem()
 		{
@@ -33,17 +32,22 @@ public class DirtySystem extends IteratingSystem
 	protected void process(int e)
 		{
 		Dirty d=dirty.get(e);
-		if(!d.dirty)
+		if(d.map.isEmpty())
 			return;
-		d.dirty=false;
 
 		UUID u=uuid.getUuid(e);
 		if(u==null)
 			return;
 
-		PositionComp p=pos.get(e);
-		CalculatedComp m=info.get(e);
+		StateComp s=state.get(e);
+		if(s!=null)
+			s.channel.writeAndFlush(new UpdateInfo(u, d.changed()));
 
-		game.send(null, p.x, p.y, new UpdateInfo(u, p, m));
+		if(d.map.containsKey(StatShared.class))
+			{
+			PositionComp p=pos.get(e);
+			clients.send(s, p.x, p.y, new UpdateInfo(u, new Component[] {(Component)d.map.get(StatShared.class)}));
+			}
+		d.reset();
 		}
 	}

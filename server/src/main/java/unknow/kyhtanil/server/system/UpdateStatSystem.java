@@ -2,31 +2,26 @@ package unknow.kyhtanil.server.system;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
-import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 
 import unknow.kyhtanil.common.Stats;
-import unknow.kyhtanil.common.component.AggregatedStat;
 import unknow.kyhtanil.common.component.Body;
-import unknow.kyhtanil.common.component.CalculatedComp;
-import unknow.kyhtanil.common.component.MobInfoComp;
-import unknow.kyhtanil.server.GameWorld;
+import unknow.kyhtanil.common.component.StatPerso;
+import unknow.kyhtanil.common.component.StatShared;
+import unknow.kyhtanil.server.component.AggregatedStat;
 import unknow.kyhtanil.server.component.Dirty;
 
 public class UpdateStatSystem extends IteratingSystem
 	{
-	private ComponentMapper<MobInfoComp> mobInfo;
+	private ComponentMapper<StatShared> mobInfo;
 	private ComponentMapper<AggregatedStat> stats;
 	private ComponentMapper<Body> body;
-	private ComponentMapper<CalculatedComp> calculated;
+	private ComponentMapper<StatPerso> calculated;
 	private ComponentMapper<Dirty> dirty;
-
-	@Wire
-	private GameWorld gameWorld;
 
 	public UpdateStatSystem()
 		{
-		super(Aspect.all(MobInfoComp.class, CalculatedComp.class));
+		super(Aspect.all(StatShared.class, StatPerso.class));
 		}
 
 	@Override
@@ -40,12 +35,12 @@ public class UpdateStatSystem extends IteratingSystem
 	public void process(int e)
 		{
 		d=false;
-		MobInfoComp info=mobInfo.get(e);
+		StatShared info=mobInfo.get(e);
 		AggregatedStat stat=stats.get(e);
 
 		Body b=body.get(e);
 
-		CalculatedComp calc=calculated.get(e);
+		StatPerso calc=calculated.get(e);
 
 		calc.strength=total(calc.strength, stat, Stats.STAT_STRENGTH, b.strength);
 		calc.constitution=total(calc.constitution, stat, Stats.STAT_CONSTITUTION, b.constitution);
@@ -53,21 +48,24 @@ public class UpdateStatSystem extends IteratingSystem
 		calc.concentration=total(calc.concentration, stat, Stats.STAT_CONCENTRATION, b.concentration);
 		calc.dexterity=total(calc.dexterity, stat, Stats.STAT_DEXTERITY, b.dexterity);
 
-		calc.hp=set(calc.hp, info.hp);
-		calc.mp=set(calc.mp, info.mp);
-
-		calc.maxHp=total(calc.maxHp, stat, Stats.HP_MAX, calc.constitution*15+10);
-		calc.maxMp=total(calc.maxMp, stat, Stats.MP_MAX, calc.intelligence*9+10);
-
-		calc.moveSpeed=2.5f;
+		calc.moveSpeed=total(calc.moveSpeed, stat, Stats.MOVE_SPEED, 250);
 
 		calc.dmg.set(1, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-		// TODO add buff
-
-		// TODO only on change
 		if(d)
-			dirty.get(e).dirty=true;
+			{
+			d=false;
+			dirty.get(e).add(calc);
+			}
+
+//		info.hp=set(info.hp, info.hp);
+//		info.mp=set(info.mp, info.mp);
+
+		info.maxHp=total(info.maxHp, stat, Stats.HP_MAX, calc.constitution*15+10);
+		info.maxMp=total(info.maxMp, stat, Stats.MP_MAX, calc.intelligence*9+10);
+
+		if(d)
+			dirty.get(e).add(info);
 		}
 
 	private int set(int last, int n)

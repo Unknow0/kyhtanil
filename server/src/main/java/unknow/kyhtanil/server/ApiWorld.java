@@ -9,9 +9,9 @@ import com.artemis.World;
 import com.artemis.utils.IntBag;
 
 import unknow.kyhtanil.common.Skill;
-import unknow.kyhtanil.common.component.CalculatedComp;
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.StatPerso;
 import unknow.kyhtanil.common.component.VelocityComp;
 import unknow.kyhtanil.common.pojo.Damage;
 import unknow.kyhtanil.server.component.DamageListComp;
@@ -31,7 +31,7 @@ public class ApiWorld
 	private UUIDManager uuid;
 
 	private ComponentMapper<DamageListComp> damage;
-	private ComponentMapper<CalculatedComp> calc;
+	private ComponentMapper<StatPerso> stat;
 	private ComponentMapper<PositionComp> pos;
 	private ComponentMapper<VelocityComp> velocity;
 	private ComponentMapper<Projectile> proj;
@@ -43,13 +43,6 @@ public class ApiWorld
 
 		js.put("Skill", js.eval("Java.type('"+Skill.class.getName()+"');"));
 		js.put("Damage", js.eval("Java.type('"+Damage.class.getName()+"');"));
-		}
-
-	public void init(World world) throws ScriptException
-		{
-		this.world=world;
-		world.inject(this);
-
 		}
 
 	public void addDamage(int source, Damage dmg, float duration, int target)
@@ -130,9 +123,9 @@ public class ApiWorld
 		return r;
 		}
 
-	public CalculatedComp stat(int source)
+	public StatPerso stat(int source)
 		{
-		return calc.get(source);
+		return stat.get(source);
 		}
 
 	public PositionComp position(int source)

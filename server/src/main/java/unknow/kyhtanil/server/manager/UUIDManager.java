@@ -1,26 +1,26 @@
 package unknow.kyhtanil.server.manager;
 
-import unknow.json.*;
-import unknow.kyhtanil.common.component.SpriteComp;
-import unknow.kyhtanil.common.pojo.*;
-import unknow.kyhtanil.common.util.*;
-import unknow.kyhtanil.server.*;
-import unknow.kyhtanil.server.component.*;
-import unknow.kyhtanil.server.component.StateComp.States;
-import unknow.kyhtanil.server.utils.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
 
-import com.artemis.*;
+import unknow.json.JsonException;
+import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.pojo.UUID;
+import unknow.kyhtanil.common.util.BaseUUIDManager;
+import unknow.kyhtanil.server.component.StateComp;
+import unknow.kyhtanil.server.component.StateComp.States;
+import unknow.kyhtanil.server.system.net.Clients;
+import unknow.kyhtanil.server.utils.UUIDGen;
 
 public class UUIDManager extends BaseUUIDManager
 	{
-	private GameWorld gameWorld;
+	private Clients clients;
 	private ComponentMapper<StateComp> state;
 	private UUIDGen uuidGen;
 
-	public UUIDManager(GameWorld gameWorld) throws JsonException
+	public UUIDManager() throws JsonException
 		{
 		super(Aspect.all(SpriteComp.class));
-		this.gameWorld=gameWorld;
 		uuidGen=new UUIDGen();
 		}
 
@@ -40,7 +40,7 @@ public class UUIDManager extends BaseUUIDManager
 
 		if(s==null||s.state==States.IN_GAME)
 			{
-			gameWorld.despawn(null, entityId);
+			clients.despawn(null, entityId);
 			remove(entityId);
 			}
 		}
@@ -51,7 +51,7 @@ public class UUIDManager extends BaseUUIDManager
 		if(getUuid(e)==null) // only mob got here
 			{
 			assignUuid(e);
-			gameWorld.spawn(null, e);
+			clients.spawn(null, e);
 			}
 		}
 

@@ -1,11 +1,17 @@
 package unknow.kyhtanil.client.screen;
 
-import unknow.kyhtanil.client.*;
-
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.utils.*;
-import com.kotcrab.vis.ui.widget.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.kotcrab.vis.ui.widget.VisTextField;
+
+import unknow.kyhtanil.client.system.net.Connection;
 
 public class LoginScreen extends GameScreen
 	{
@@ -13,8 +19,11 @@ public class LoginScreen extends GameScreen
 	private VisTextField login;
 	private VisTextField pass;
 
-	public LoginScreen()
+	private Connection connection;
+
+	public LoginScreen(Connection connection)
 		{
+		this.connection=connection;
 		login=new VisTextField("");
 		pass=new VisTextField("");
 		pass.setPasswordMode(true);
@@ -26,18 +35,18 @@ public class LoginScreen extends GameScreen
 
 		stage.addListener(new EventListener()
 			{
-				public boolean handle(Event event)
+			public boolean handle(Event event)
+				{
+				if(event instanceof InputEvent)
 					{
-					if(event instanceof InputEvent)
+					InputEvent e=(InputEvent)event;
+					if(e.getType()==InputEvent.Type.keyDown&&e.getKeyCode()==Keys.ENTER)
 						{
-						InputEvent e=(InputEvent)event;
-						if(e.getType()==InputEvent.Type.keyDown&&e.getKeyCode()==Keys.ENTER)
-							{
-							login();
-							}
+						login();
 						}
-					return false;
 					}
+				return false;
+				}
 			});
 
 		txt=new VisLabel("");
@@ -54,22 +63,22 @@ public class LoginScreen extends GameScreen
 		VisTextButton button=new VisTextButton("create");
 		button.addListener(new ChangeListener()
 			{
-				@Override
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					create();
-					}
+			@Override
+			public void changed(ChangeEvent event, Actor actor)
+				{
+				create();
+				}
 			});
 
 		t2.add(button);
 		button=new VisTextButton("login");
 		button.addListener(new ChangeListener()
 			{
-				@Override
-				public void changed(ChangeEvent event, Actor actor)
-					{
-					login();
-					}
+			@Override
+			public void changed(ChangeEvent event, Actor actor)
+				{
+				login();
+				}
 			});
 
 		t2.add(button);
@@ -79,7 +88,7 @@ public class LoginScreen extends GameScreen
 		{
 		try
 			{
-			Main.co().login(login.getText(), pass.getText());
+			connection.login(login.getText(), pass.getText());
 			}
 		catch (Exception e)
 			{ // TODO manage error
@@ -91,7 +100,7 @@ public class LoginScreen extends GameScreen
 		{
 		try
 			{
-			Main.co().createAccount(login.getText(), pass.getText());
+			connection.createAccount(login.getText(), pass.getText());
 			}
 		catch (Exception e)
 			{ // TODO manage error

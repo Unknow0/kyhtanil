@@ -1,21 +1,27 @@
 package unknow.kyhtanil.server.system.net;
 
-import java.io.*;
+import java.io.IOException;
 
-import io.netty.channel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.slf4j.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
+import com.artemis.annotations.Wire;
+import com.artemis.systems.IteratingSystem;
 
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.component.net.*;
-import unknow.kyhtanil.common.maps.*;
-import unknow.kyhtanil.server.*;
-import unknow.kyhtanil.server.component.*;
-import unknow.kyhtanil.server.manager.*;
-
-import com.artemis.*;
-import com.artemis.annotations.*;
-import com.artemis.systems.*;
+import io.netty.channel.Channel;
+import unknow.kyhtanil.common.component.ErrorComp;
+import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.StatPerso;
+import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.net.Move;
+import unknow.kyhtanil.common.component.net.NetComp;
+import unknow.kyhtanil.common.maps.MapLayout;
+import unknow.kyhtanil.server.GameWorld;
+import unknow.kyhtanil.server.component.Dirty;
+import unknow.kyhtanil.server.manager.LocalizedManager;
+import unknow.kyhtanil.server.manager.UUIDManager;
 
 public class MoveSystem extends IteratingSystem
 	{
@@ -26,8 +32,7 @@ public class MoveSystem extends IteratingSystem
 	private ComponentMapper<NetComp> net;
 	private ComponentMapper<PositionComp> position;
 	private ComponentMapper<VelocityComp> velocity;
-	private ComponentMapper<CalculatedComp> calculated;
-	private ComponentMapper<StateComp> state;
+	private ComponentMapper<StatPerso> calculated;
 	private ComponentMapper<Dirty> dirty;
 
 	private LocalizedManager locManager;
@@ -44,8 +49,6 @@ public class MoveSystem extends IteratingSystem
 		{
 		Move m=move.get(entityId);
 		NetComp ctx=net.get(entityId);
-		if(ctx.channel==null) // entity not finished to be created
-			return;
 		Channel chan=ctx.channel;
 
 		world.delete(entityId);
@@ -58,15 +61,12 @@ public class MoveSystem extends IteratingSystem
 			return;
 			}
 
-		CalculatedComp c=calculated.get(e);
+		StatPerso c=calculated.get(e);
 		PositionComp p=position.get(e);
-		StateComp sender=state.get(e);
-
 		try
 			{
-			if(layout.isWall((int)(m.x/4), (int)(m.y/4))||p.distance(m.x, m.y)>c.moveSpeed+.1) //TODO
+			if(layout.isWall((int)(m.x/4), (int)(m.y/4))||p.distance(m.x, m.y)>c.moveSpeed/100f+.1) //TODO
 				{
-				sender=null;
 				m=new Move(m.uuid, p.x, p.y, m.direction);
 				}
 			}
@@ -75,15 +75,15 @@ public class MoveSystem extends IteratingSystem
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			}
-//		else
-//			{
+		Dirty d=dirty.get(e);
+		if(p.x!=m.x||p.y!=m.y)
+			d.add(p);
 		p.x=m.x;
 		p.y=m.y;
 		locManager.changed(e);
 		VelocityComp v=velocity.get(e);
+		if(v.direction!=m.direction)
+			d.add(v);
 		v.direction=m.direction;
-//			}
-
-		dirty.get(e).dirty=true;
 		}
 	}

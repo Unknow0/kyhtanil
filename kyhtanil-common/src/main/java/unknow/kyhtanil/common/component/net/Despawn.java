@@ -4,7 +4,7 @@ import unknow.kyhtanil.common.pojo.*;
 
 import com.artemis.*;
 
-public class Despawn extends PooledComponent {
+public class Despawn extends Component {
 	public UUID uuid=null;
 
 	public Despawn() {

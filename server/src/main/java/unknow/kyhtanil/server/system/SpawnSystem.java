@@ -12,7 +12,7 @@ public class SpawnSystem extends IteratingSystem
 	private ComponentMapper<SpawnerComp> spawner;
 	private ComponentMapper<PositionComp> position;
 	private ComponentMapper<VelocityComp> velocity;
-	private ComponentMapper<MobInfoComp> mobInfo;
+	private ComponentMapper<StatShared> mobInfo;
 	private ComponentMapper<SpriteComp> sprite;
 	private ComponentMapper<AggregatedStat> stats;
 
@@ -46,7 +46,7 @@ public class SpawnSystem extends IteratingSystem
 			v.direction=0;
 			v.speed=0f;
 
-			MobInfoComp mi=mobInfo.get(m);
+			StatShared mi=mobInfo.get(m);
 			mi.hp=10;
 			mi.name="mob"; // TODO
 			

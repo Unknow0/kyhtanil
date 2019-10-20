@@ -9,9 +9,6 @@ import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane;
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneAdapter;
 
-import unknow.kyhtanil.client.State;
-import unknow.kyhtanil.common.component.CalculatedComp;
-
 public class Stats extends VisWindow
 	{
 	private BodyStat body;

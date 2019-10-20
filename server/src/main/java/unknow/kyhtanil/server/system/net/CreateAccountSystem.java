@@ -42,8 +42,6 @@ public class CreateAccountSystem extends IteratingSystem
 		{
 		CreateAccount l=create.get(e);
 		NetComp ctx=net.get(e);
-		if(ctx.channel==null) // entity not finished to be created
-			return;
 
 		world.delete(e);
 		try

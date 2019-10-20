@@ -15,7 +15,7 @@ import com.esotericsoftware.kryo.util.IntMap;
 
 import unknow.common.Cfg;
 import unknow.kyhtanil.common.component.Body;
-import unknow.kyhtanil.common.component.MobInfoComp;
+import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.common.pojo.CharDesc;
 import unknow.kyhtanil.server.dao.Character;
@@ -34,9 +34,7 @@ public class Database extends BaseSystem
 	private unknow.orm.mapping.Database co;
 
 	private ComponentMapper<PositionComp> position;
-	private ComponentMapper<MobInfoComp> mobInfo;
-
-//	private BTree<Integer,WeaponStub> weapon=new BTree<Integer,WeaponStub>();
+	private ComponentMapper<StatShared> mobInfo;
 
 	public Database()
 		{
@@ -129,7 +127,7 @@ public class Database extends BaseSystem
 				Character c=qr.getEntity("c");
 				qr.getEntity("b");
 
-				MobInfoComp m=mobInfo.get(e);
+				StatShared m=mobInfo.get(e);
 				m.name=c.name;
 				m.hp=c.hp;
 				m.mp=c.mp;

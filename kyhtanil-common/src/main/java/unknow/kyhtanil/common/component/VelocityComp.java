@@ -2,7 +2,7 @@ package unknow.kyhtanil.common.component;
 
 import com.artemis.*;
 
-public class VelocityComp extends PooledComponent
+public class VelocityComp extends PooledComponent implements Setable<VelocityComp>
 	{
 	public float direction;
 	public float speed;
@@ -17,10 +17,12 @@ public class VelocityComp extends PooledComponent
 		this.speed=speed;
 		}
 
+	@Override
 	protected void reset()
 		{
 		}
 
+	@Override
 	public void set(VelocityComp v)
 		{
 		this.direction=v.direction;

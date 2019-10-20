@@ -7,6 +7,7 @@ import com.artemis.*;
 
 public class Archetypes
 	{
+	public static Archetype login;
 	public static Archetype mob;
 	public static Archetype pj;
 	public static Archetype proj;
@@ -14,10 +15,12 @@ public class Archetypes
 	@SuppressWarnings("unchecked")
 	public static void init(World world)
 		{
+		login=new ArchetypeBuilder().add(StateComp.class).build(world);
+
 		ArchetypeBuilder builder=new ArchetypeBuilder();
 		builder.add(PositionComp.class, VelocityComp.class, SpriteComp.class);
-		builder.add(MobInfoComp.class, Body.class, AggregatedStat.class);
-		builder.add(DamageListComp.class, CalculatedComp.class);
+		builder.add(StatShared.class, Body.class, AggregatedStat.class);
+		builder.add(DamageListComp.class, StatPerso.class);
 		builder.add(Dirty.class);
 		mob=builder.build(world);
 

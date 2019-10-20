@@ -1,14 +1,34 @@
 package unknow.kyhtanil.server.component;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
+
+import com.artemis.Component;
 import com.artemis.PooledComponent;
+
+import unknow.kyhtanil.common.component.Setable;
 
 public class Dirty extends PooledComponent
 	{
-	public boolean dirty;
+	public Map<Class<?>,Setable<?>> map=new IdentityHashMap<>();
 
 	@Override
-	protected void reset()
+	public void reset()
 		{
-		dirty=false;
+		map.clear();
+		}
+
+	public void add(Setable<?> c)
+		{
+		map.put(c.getClass(), c);
+		}
+
+	public Component[] changed()
+		{
+		Component[] t=new Component[map.size()];
+		int i=0;
+		for(Setable<?> c:map.values())
+			t[i++]=(Component)c;
+		return t;
 		}
 	}

@@ -1,44 +1,33 @@
 package unknow.kyhtanil.common.component.account;
 
-import com.artemis.PooledComponent;
-import javax.annotation.Generated;
-import unknow.kyhtanil.common.component.Body;
-import unknow.kyhtanil.common.component.CalculatedComp;
+import com.artemis.Component;
 
-@Generated(value="class unknow.pojo.Generator", date="2017-05-01T19:13:39+0200")
-public class PjInfo extends PooledComponent {
+import unknow.kyhtanil.common.component.Body;
+import unknow.kyhtanil.common.component.StatShared;
+
+public class PjInfo extends Component
+	{
 	public String name=null;
 	public float x=0;
 	public float y=0;
-	public int hp=0;
-	public int mp=0;
 	public Body body=null;
-	public CalculatedComp total=null;
+	public StatShared stats=null;
 
-	public PjInfo() {
-	}
+	public PjInfo()
+		{
+		}
 
-	public PjInfo(String name, float x, float y, int hp, int mp, Body body, CalculatedComp total) {
+	public PjInfo(String name, float x, float y, Body body, StatShared stats)
+		{
 		this.name=name;
 		this.x=x;
 		this.y=y;
-		this.hp=hp;
-		this.mp=mp;
 		this.body=body;
-		this.total=total;
-	}
+		this.stats=stats;
+		}
 
-	public void reset() {
-		name=null;
-		x=0;
-		y=0;
-		hp=0;
-		mp=0;
-		body=null;
-		total=null;
+	public String toString()
+		{
+		return "name: "+name+", x: "+x+", y: "+y+", body: "+body+", total: "+stats;
+		}
 	}
-
-	public String toString() {
-		return "name: "+name+", x: "+x+", y: "+y+", hp: "+hp+", mp: "+mp+", body: "+body+", total: "+total;
-	}
-}

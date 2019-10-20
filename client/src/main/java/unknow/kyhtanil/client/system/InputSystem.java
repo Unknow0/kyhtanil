@@ -1,27 +1,40 @@
 package unknow.kyhtanil.client.system;
 
-import java.io.*;
+import java.io.IOException;
 
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import unknow.kyhtanil.client.*;
-import unknow.kyhtanil.client.artemis.*;
-import unknow.kyhtanil.client.component.*;
-import unknow.kyhtanil.client.screen.*;
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.pojo.*;
+import com.artemis.Aspect;
+import com.artemis.AspectSubscriptionManager;
+import com.artemis.BaseSystem;
+import com.artemis.ComponentMapper;
+import com.artemis.EntityEdit;
+import com.artemis.EntitySubscription;
+import com.artemis.utils.IntBag;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
-import com.artemis.*;
-import com.artemis.utils.*;
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.math.*;
-import com.badlogic.gdx.utils.viewport.*;
+import unknow.kyhtanil.client.State;
+import unknow.kyhtanil.client.component.TargetComp;
+import unknow.kyhtanil.client.screen.WorldScreen;
+import unknow.kyhtanil.client.system.net.Connection;
+import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.StatPerso;
+import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.pojo.UUID;
+import unknow.kyhtanil.common.util.BaseUUIDManager;
 
 public class InputSystem extends BaseSystem implements InputProcessor
 	{
 	private static final Logger log=LoggerFactory.getLogger(InputSystem.class);
 	private Viewport vp;
 
+	/** key bind */
 	public int up=Input.Keys.W;
 	public int down=Input.Keys.S;
 	public int left=Input.Keys.A;
@@ -31,19 +44,26 @@ public class InputSystem extends BaseSystem implements InputProcessor
 
 	public int[] bar=new int[] {Input.Keys.NUM_1, Input.Keys.NUM_2, Input.Keys.NUM_3, Input.Keys.NUM_4, Input.Keys.NUM_5, Input.Keys.NUM_6, Input.Keys.NUM_7, Input.Keys.NUM_8, Input.Keys.NUM_9};
 
+	/** system */
 	protected EntitySubscription allPosition;
+	protected EntitySubscription target;
 
-	private ComponentMapper<CalculatedComp> calculated;
-	private UUIDManager manager;
+	private ComponentMapper<StatPerso> stats;
+	private ComponentMapper<VelocityComp> velocity;
+	private ComponentMapper<PositionComp> position;
+	private ComponentMapper<SpriteComp> sprite;
+	private BaseUUIDManager manager;
 	private WorldScreen screen;
+	private Connection connection;
 
+	/** state */
 	private long lastSend=0;
 	private float lastX;
 	private float lastY;
 	private double dirX=0;
 	private double dirY=0;
 
-	public InputSystem(Viewport vp, WorldScreen screen, UUIDManager manager)
+	public InputSystem(Viewport vp, WorldScreen screen, BaseUUIDManager manager)
 		{
 		this.vp=vp;
 		this.screen=screen;
@@ -54,12 +74,13 @@ public class InputSystem extends BaseSystem implements InputProcessor
 		{
 		AspectSubscriptionManager sm=world.getAspectSubscriptionManager();
 		allPosition=sm.get(Aspect.all(PositionComp.class));
+		target=sm.get(Aspect.all(TargetComp.class));
 		}
 
 	public boolean keyDown(int keycode)
 		{
-		VelocityComp v=Builder.getVelocity(State.entity);
-		CalculatedComp c=calculated.get(State.entity);
+		VelocityComp v=velocity.get(State.entity);
+		StatPerso c=stats.get(State.entity);
 
 		if(up==keycode||down==keycode||left==keycode||right==keycode)
 			{// TODO take pj speed
@@ -72,7 +93,7 @@ public class InputSystem extends BaseSystem implements InputProcessor
 			else if(right==keycode)
 				dirX=1;
 
-			v.speed=c.moveSpeed;
+			v.speed=c.moveSpeed/100f;
 			v.direction=(float)Math.atan2(dirY, dirX);
 			}
 		return true;
@@ -80,7 +101,7 @@ public class InputSystem extends BaseSystem implements InputProcessor
 
 	public boolean keyUp(int keycode)
 		{
-		VelocityComp v=Builder.getVelocity(State.entity);
+		VelocityComp v=velocity.get(State.entity);
 		if(up==keycode||down==keycode||left==keycode||right==keycode)
 			{
 			if(up==keycode||down==keycode)
@@ -104,7 +125,7 @@ public class InputSystem extends BaseSystem implements InputProcessor
 					try
 						{
 						Vector2 vec=vp.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-						IntBag targets=Builder.getTarget();
+						IntBag targets=target.getEntities();
 						UUID uuid=null;
 						if(!targets.isEmpty())
 							{
@@ -112,7 +133,7 @@ public class InputSystem extends BaseSystem implements InputProcessor
 							uuid=manager.getUuid(t);
 							log.info("attaque {} {}", t, uuid);
 							}
-						Main.co().attack(State.uuid, i, uuid, vec.x, vec.y);
+						connection.attack(State.uuid, i, uuid, vec.x, vec.y);
 						}
 					catch (IOException e)
 						{
@@ -134,7 +155,7 @@ public class InputSystem extends BaseSystem implements InputProcessor
 	public boolean touchDown(int screenX, int screenY, int pointer, int button)
 		{
 		Vector2 v=vp.unproject(new Vector2(screenX, screenY));
-		IntBag targets=Builder.getTarget();
+		IntBag targets=target.getEntities();
 		for(int i=0; i<targets.size(); i++)
 			{
 			int e=targets.get(i);
@@ -147,7 +168,7 @@ public class InputSystem extends BaseSystem implements InputProcessor
 		for(int i=0; i<entities.size(); i++)
 			{
 			int e=entities.get(i);
-			PositionComp p=Builder.getPosition(e);
+			PositionComp p=position.get(e);
 			if(p.distance(v.x, v.y)<1)
 				{
 				log.info("target {} ({}, {})", manager.getUuid(e), p.x, p.y);
@@ -180,18 +201,21 @@ public class InputSystem extends BaseSystem implements InputProcessor
 		}
 
 	@Override
+	protected boolean checkProcessing()
+		{
+		return State.entity>=0;
+		}
+
+	@Override
 	protected void processSystem()
 		{
-		// not char logged => nothing to do
-		if(State.stat==null||State.uuid==null)
-			return;
-		SpriteComp s=Builder.getSprite(State.entity);
-		PositionComp p=Builder.getPosition(State.entity);
+		SpriteComp s=sprite.get(State.entity);
+		PositionComp p=position.get(State.entity);
 		Vector2 d=vp.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-		IntBag target=Builder.getTarget();
-		if(!target.isEmpty())
+		IntBag targets=target.getEntities();
+		if(!targets.isEmpty())
 			{
-			PositionComp t=Builder.getPosition(target.get(0));
+			PositionComp t=position.get(targets.get(0));
 			d.set(t.x, t.y);
 			}
 		s.rotation=(float)Math.atan2(d.y-p.y, d.x-p.x);
@@ -199,15 +223,13 @@ public class InputSystem extends BaseSystem implements InputProcessor
 		long now=System.currentTimeMillis();
 		if(now-lastSend>250&&(lastX!=p.x||lastY!=p.y))
 			{
-			VelocityComp v=Builder.getVelocity(State.entity);
+			VelocityComp v=velocity.get(State.entity);
 			try
 				{
-				Main.co().update(State.uuid, p.x, p.y, v.direction);
+				connection.update(State.uuid, p.x, p.y, v.direction);
 				}
 			catch (IOException e)
 				{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 				}
 			lastX=p.x;
 			lastY=p.y;

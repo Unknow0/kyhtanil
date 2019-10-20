@@ -7,7 +7,7 @@ package unknow.kyhtanil.common.component;
 
 import com.artemis.*;
 
-public class ErrorComp extends PooledComponent
+public class ErrorComp extends Component
 	{
 	public static enum ErrorCode
 		{
@@ -29,10 +29,6 @@ public class ErrorComp extends PooledComponent
 	private ErrorComp(ErrorCode code)
 		{
 		this.code=code;
-		}
-
-	protected void reset()
-		{
 		}
 
 	public String toString()

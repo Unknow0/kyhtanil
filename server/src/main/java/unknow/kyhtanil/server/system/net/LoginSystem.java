@@ -1,23 +1,26 @@
 package unknow.kyhtanil.server.system.net;
 
-import java.util.*;
+import java.util.List;
 
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.component.account.*;
-import unknow.kyhtanil.common.component.net.*;
-import unknow.kyhtanil.common.pojo.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
+import com.artemis.systems.IteratingSystem;
+
+import unknow.kyhtanil.common.component.ErrorComp;
+import unknow.kyhtanil.common.component.account.LogResult;
+import unknow.kyhtanil.common.component.account.Login;
+import unknow.kyhtanil.common.component.net.NetComp;
+import unknow.kyhtanil.common.pojo.CharDesc;
 import unknow.kyhtanil.common.pojo.UUID;
-import unknow.kyhtanil.server.*;
-import unknow.kyhtanil.server.component.*;
+import unknow.kyhtanil.server.Database;
+import unknow.kyhtanil.server.component.StateComp;
 import unknow.kyhtanil.server.component.StateComp.States;
-import unknow.kyhtanil.server.manager.*;
-import unknow.kyhtanil.server.pojo.*;
-import unknow.kyhtanil.server.utils.*;
-
-import com.artemis.*;
-import com.artemis.systems.*;
+import unknow.kyhtanil.server.manager.StateManager;
+import unknow.kyhtanil.server.pojo.Account;
+import unknow.kyhtanil.server.utils.Archetypes;
 
 /**
  * manage the login request
@@ -28,16 +31,15 @@ public class LoginSystem extends IteratingSystem
 	private static final Logger log=LoggerFactory.getLogger(LoginSystem.class);
 
 	private StateManager manager;
+	private Database database;
+
 	private ComponentMapper<Login> login;
 	private ComponentMapper<NetComp> net;
 	private ComponentMapper<StateComp> state;
 
-	private Database database;
-
-	public LoginSystem(Database database)
+	public LoginSystem()
 		{
 		super(Aspect.all(Login.class, NetComp.class));
-		this.database=database;
 		}
 
 	@Override
@@ -45,8 +47,6 @@ public class LoginSystem extends IteratingSystem
 		{
 		Login l=login.get(e);
 		NetComp ctx=net.get(e);
-		if(ctx.channel==null) // entity not finished to be created
-			return;
 
 		world.delete(e);
 		try
@@ -54,7 +54,7 @@ public class LoginSystem extends IteratingSystem
 			Account a=database.getAccount(l.login, l.passHash);
 			if(a!=null)
 				{
-				int ns=world.create(Archetypes.pj);
+				int ns=world.create(Archetypes.login);
 				log.info("login {}: {}", l.login, ns);
 				StateComp s=state.get(ns);
 				s.account=a;

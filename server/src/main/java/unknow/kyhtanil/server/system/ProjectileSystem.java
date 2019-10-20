@@ -5,7 +5,7 @@ import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 import com.artemis.utils.IntBag;
 
-import unknow.kyhtanil.common.component.MobInfoComp;
+import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.server.component.Projectile;
 import unknow.kyhtanil.server.manager.LocalizedManager;
@@ -18,7 +18,7 @@ public class ProjectileSystem extends IteratingSystem
 	private UUIDManager uuid;
 	private ComponentMapper<Projectile> projectile;
 	private ComponentMapper<PositionComp> position;
-	private ComponentMapper<MobInfoComp> mobInfo;
+	private ComponentMapper<StatShared> mobInfo;
 	private Choose c=new Choose()
 		{
 		@Override

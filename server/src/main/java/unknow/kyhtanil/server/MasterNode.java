@@ -8,7 +8,6 @@ import com.artemis.systems.*;
 
 public class MasterNode
 	{
-	private static Server server;
 
 	private static class WhoIsSystem extends IteratingSystem
 		{
@@ -20,7 +19,7 @@ public class MasterNode
 		@Override
 		protected void process(int entityId)
 			{
-			
+
 			}
 		}
 

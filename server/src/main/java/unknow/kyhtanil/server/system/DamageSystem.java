@@ -1,32 +1,35 @@
 package unknow.kyhtanil.server.system;
 
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.common.component.net.*;
-import unknow.kyhtanil.common.pojo.*;
-import unknow.kyhtanil.server.*;
-import unknow.kyhtanil.server.component.*;
-import unknow.kyhtanil.server.manager.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
 
-import com.artemis.*;
+import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.StatShared;
+import unknow.kyhtanil.common.pojo.UUID;
+import unknow.kyhtanil.server.component.DamageListComp;
+import unknow.kyhtanil.server.component.Dirty;
+import unknow.kyhtanil.server.manager.UUIDManager;
+import unknow.kyhtanil.server.system.net.Clients;
 
 public class DamageSystem extends CompositeEntityProcessor<DamageListComp,DamageListComp.Damage>
 	{
-	private GameWorld gameWorld;
+	private Clients clients;
 	private UUIDManager manager;
-	private ComponentMapper<MobInfoComp> mobInfo;
+	private ComponentMapper<StatShared> mobInfo;
 	private ComponentMapper<PositionComp> position;
+	private ComponentMapper<Dirty> dirty;
 
-	private MobInfoComp mob;
+	private StatShared mob;
 	private PositionComp p;
+	private Dirty d;
 	private UUID uuid;
 
-	public DamageSystem(GameWorld gameWorld)
+	public DamageSystem()
 		{
-		super(Aspect.all(DamageListComp.class, PositionComp.class, MobInfoComp.class), DamageListComp.class);
-		this.gameWorld=gameWorld;
+		super(Aspect.all(DamageListComp.class, PositionComp.class, StatShared.class), DamageListComp.class);
 		}
 
-	protected MobInfoComp processEntity(int e)
+	protected StatShared processEntity(int e)
 		{
 		return mobInfo.get(e);
 		}
@@ -35,6 +38,7 @@ public class DamageSystem extends CompositeEntityProcessor<DamageListComp,Damage
 		{
 		mob=mobInfo.get(e);
 		p=position.get(e);
+		d=dirty.get(e);
 		uuid=manager.getUuid(e);
 		return true;
 		}
@@ -49,13 +53,12 @@ public class DamageSystem extends CompositeEntityProcessor<DamageListComp,Damage
 			total*=world.delta;
 
 		mob.hp-=total;
-
-		gameWorld.send(null, p.x, p.y, new DamageReport(uuid, total));
 		if(mob.hp<=0)
 			{
 			world.delete(e);
 			return false;
 			}
+		d.add(mob);
 		return true;
 		}
 

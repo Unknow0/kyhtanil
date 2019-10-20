@@ -1,11 +1,12 @@
 package unknow.kyhtanil.common.component;
 
-import com.artemis.*;
+import com.artemis.PooledComponent;
 
-public class PositionComp extends PooledComponent
+public class PositionComp extends PooledComponent implements Setable<PositionComp>
 	{
 	public float x, y;
 
+	@Override
 	protected void reset()
 		{
 		x=y=0;
@@ -16,6 +17,7 @@ public class PositionComp extends PooledComponent
 		return distance(p.x, p.y);
 		}
 
+	@Override
 	public void set(PositionComp p)
 		{
 		this.x=p.x;
