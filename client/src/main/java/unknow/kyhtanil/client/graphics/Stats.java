@@ -4,23 +4,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
-import com.kotcrab.vis.ui.widget.VisWindow;
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane;
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneAdapter;
 
-public class Stats extends VisWindow
+public class Stats extends VisTable
 	{
+	private TabbedPane tabbedPane=new TabbedPane();
 	private BodyStat body;
 	private Cell<?> container;
 
 	public Stats()
 		{
-		super("Char stats");
-
 		body=new BodyStat();
 
-		TabbedPane tabbedPane=new TabbedPane();
 		tabbedPane.add(body);
 		add(tabbedPane.getTable()).expandX().fillX();
 		row();
@@ -32,13 +29,11 @@ public class Stats extends VisWindow
 			@Override
 			public void switchedTab(Tab tab)
 				{
-				System.out.println("switch");
 				container.setActor(tab.getContentTable());
 				}
 			});
 
 		setSize(300, 300);
-		setMovable(true);
 		setVisible(true);
 		}
 

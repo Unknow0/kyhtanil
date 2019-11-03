@@ -1,0 +1,19 @@
+<layout id="root" fillParent="true" xmlns="dynLayout">
+	<table fillParent="true">
+		<row colspan="2">
+			<cell width="$root.getWidth()" align="center">
+				<scroll>
+					<table id="list" class="unknow.kyhtanil.client.graphics.CharList"/>
+				</scroll>
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<button text="Create" onchange="main.show(Screen.CHARCREATE)" />
+			</cell>
+			<cell>
+				<button text="Login" disabled="State.chars==null" onchange="co.logChar(State.uuid, $list.selected())" />
+			</cell>
+		</row>
+	</table>
+</layout>

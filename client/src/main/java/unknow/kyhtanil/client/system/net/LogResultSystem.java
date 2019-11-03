@@ -6,20 +6,18 @@ import com.artemis.systems.IteratingSystem;
 
 import unknow.kyhtanil.client.Main;
 import unknow.kyhtanil.client.State;
-import unknow.kyhtanil.client.screen.CharSelectScreen;
+import unknow.kyhtanil.client.Main.Screen;
 import unknow.kyhtanil.common.component.account.LogResult;
 
 public class LogResultSystem extends IteratingSystem
 	{
 	private ComponentMapper<LogResult> logRes;
 	private Main main;
-	private CharSelectScreen charSelect;
 
-	public LogResultSystem(Main main, CharSelectScreen charSelect)
+	public LogResultSystem(Main main)
 		{
 		super(Aspect.all(LogResult.class));
 		this.main=main;
-		this.charSelect=charSelect;
 		}
 
 	protected void process(int entityId)
@@ -28,7 +26,7 @@ public class LogResultSystem extends IteratingSystem
 		world.delete(entityId);
 
 		State.uuid=logResult.uuid;
-		charSelect.setCharList(logResult.characters);
-		main.show(charSelect);
+		State.chars=logResult.characters;
+		main.show(Screen.CHARSELECT);
 		}
 	}

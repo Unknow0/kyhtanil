@@ -20,7 +20,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import unknow.kyhtanil.client.State;
 import unknow.kyhtanil.client.component.TargetComp;
-import unknow.kyhtanil.client.screen.WorldScreen;
 import unknow.kyhtanil.client.system.net.Connection;
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.common.component.SpriteComp;
@@ -53,7 +52,6 @@ public class InputSystem extends BaseSystem implements InputProcessor
 	private ComponentMapper<PositionComp> position;
 	private ComponentMapper<SpriteComp> sprite;
 	private BaseUUIDManager manager;
-	private WorldScreen screen;
 	private Connection connection;
 
 	/** state */
@@ -63,11 +61,9 @@ public class InputSystem extends BaseSystem implements InputProcessor
 	private double dirX=0;
 	private double dirY=0;
 
-	public InputSystem(Viewport vp, WorldScreen screen, BaseUUIDManager manager)
+	public InputSystem(Viewport vp)
 		{
 		this.vp=vp;
-		this.screen=screen;
-		this.manager=manager;
 		}
 
 	protected void initialize()
@@ -79,6 +75,8 @@ public class InputSystem extends BaseSystem implements InputProcessor
 
 	public boolean keyDown(int keycode)
 		{
+		if(!checkProcessing())
+			return false;
 		VelocityComp v=velocity.get(State.entity);
 		StatPerso c=stats.get(State.entity);
 
@@ -101,6 +99,8 @@ public class InputSystem extends BaseSystem implements InputProcessor
 
 	public boolean keyUp(int keycode)
 		{
+		if(!checkProcessing())
+			return false;
 		VelocityComp v=velocity.get(State.entity);
 		if(up==keycode||down==keycode||left==keycode||right==keycode)
 			{
@@ -112,10 +112,10 @@ public class InputSystem extends BaseSystem implements InputProcessor
 				v.speed=0f;
 			v.direction=(float)Math.atan2(dirY, dirX);
 			}
-		else if(showStat==keycode)
-			screen.toggleStat();
-		else if(Input.Keys.ESCAPE==keycode)
-			screen.closeLast();
+//		else if(showStat==keycode)
+//			screen.toggleStat();
+//		else if(Input.Keys.ESCAPE==keycode)
+//			screen.closeLast();
 		else
 			{
 			for(int i=0; i<bar.length; i++)
@@ -154,6 +154,8 @@ public class InputSystem extends BaseSystem implements InputProcessor
 
 	public boolean touchDown(int screenX, int screenY, int pointer, int button)
 		{
+		if(!checkProcessing())
+			return false;
 		Vector2 v=vp.unproject(new Vector2(screenX, screenY));
 		IntBag targets=target.getEntities();
 		for(int i=0; i<targets.size(); i++)

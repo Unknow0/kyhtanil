@@ -1,11 +1,16 @@
 package unknow.kyhtanil.server.system;
 
-import unknow.kyhtanil.common.component.*;
-import unknow.kyhtanil.server.component.*;
-import unknow.kyhtanil.server.utils.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
+import com.artemis.systems.IteratingSystem;
 
-import com.artemis.*;
-import com.artemis.systems.*;
+import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.StatShared;
+import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.server.component.AggregatedStat;
+import unknow.kyhtanil.server.component.SpawnerComp;
+import unknow.kyhtanil.server.utils.Archetypes;
 
 public class SpawnSystem extends IteratingSystem
 	{
@@ -49,10 +54,9 @@ public class SpawnSystem extends IteratingSystem
 			StatShared mi=mobInfo.get(m);
 			mi.hp=10;
 			mi.name="mob"; // TODO
-			
+
 			AggregatedStat st=stats.get(m);
 			// TODO load mob stats
-			
 
 			SpriteComp sp=sprite.get(m);
 			sp.h=sp.w=3;

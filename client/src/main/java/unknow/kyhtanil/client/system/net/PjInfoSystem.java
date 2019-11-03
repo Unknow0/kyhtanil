@@ -5,9 +5,9 @@ import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 
 import unknow.kyhtanil.client.Main;
+import unknow.kyhtanil.client.Main.Screen;
 import unknow.kyhtanil.client.State;
 import unknow.kyhtanil.client.component.Archetypes;
-import unknow.kyhtanil.client.screen.WorldScreen;
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.common.component.SpriteComp;
 import unknow.kyhtanil.common.component.StatShared;
@@ -19,7 +19,6 @@ public class PjInfoSystem extends IteratingSystem
 	{
 	private ComponentMapper<PjInfo> pjInfo;
 	private Main main;
-	private WorldScreen worldScreen;
 	private BaseUUIDManager manager;
 
 	private ComponentMapper<PositionComp> position;
@@ -28,11 +27,10 @@ public class PjInfoSystem extends IteratingSystem
 	private ComponentMapper<StatShared> info;
 	private Archetypes arch;
 
-	public PjInfoSystem(Main main, WorldScreen worldScreen)
+	public PjInfoSystem(Main main)
 		{
 		super(Aspect.all(PjInfo.class));
 		this.main=main;
-		this.worldScreen=worldScreen;
 		}
 
 	protected void process(int entityId)
@@ -60,6 +58,6 @@ public class PjInfoSystem extends IteratingSystem
 
 		State.stat=c;
 
-		main.show(worldScreen);
+		main.show(Screen.GAME);
 		}
 	}

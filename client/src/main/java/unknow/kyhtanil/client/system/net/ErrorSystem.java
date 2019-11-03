@@ -22,18 +22,6 @@ public class ErrorSystem extends IteratingSystem
 		{
 		ErrorComp e=error.get(entityId);
 		world.delete(entityId);
-
-		switch (e.code)
-			{
-			case INVALID_LOGIN:
-				main.login.setError("Login/pass error");
-				break;
-			case ALREADY_LOGGED:
-				main.login.setError("Account already logged");
-				break;
-			case UNKNOWN_ERROR:
-			default:
-				main.login.setError("Unknown error occured");
-			}
+		main.error(e.code);
 		}
 	}
