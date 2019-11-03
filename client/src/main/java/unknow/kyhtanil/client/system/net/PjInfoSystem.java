@@ -10,6 +10,7 @@ import unknow.kyhtanil.client.State;
 import unknow.kyhtanil.client.component.Archetypes;
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.StatPerso;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.VelocityComp;
 import unknow.kyhtanil.common.component.account.PjInfo;
@@ -25,6 +26,7 @@ public class PjInfoSystem extends IteratingSystem
 	private ComponentMapper<VelocityComp> velocity;
 	private ComponentMapper<SpriteComp> sprite;
 	private ComponentMapper<StatShared> info;
+	private ComponentMapper<StatPerso> perso;
 	private Archetypes arch;
 
 	public PjInfoSystem(Main main)
@@ -55,8 +57,12 @@ public class PjInfoSystem extends IteratingSystem
 
 		StatShared c=info.get(State.entity);
 		c.set(pj.stats);
+		
+		StatPerso d=perso.get(State.entity);
+		d.set(pj.perso);
 
 		State.stat=c;
+		State.perso=d;
 
 		main.show(Screen.GAME);
 		}

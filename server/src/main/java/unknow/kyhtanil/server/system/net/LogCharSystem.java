@@ -13,6 +13,7 @@ import unknow.kyhtanil.common.component.Body;
 import unknow.kyhtanil.common.component.ErrorComp;
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.StatPerso;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.VelocityComp;
 import unknow.kyhtanil.common.component.account.LogChar;
@@ -47,7 +48,8 @@ public class LogCharSystem extends IteratingSystem
 	private ComponentMapper<PositionComp> position;
 	private ComponentMapper<SpriteComp> sprite;
 	private ComponentMapper<VelocityComp> velocity;
-	private ComponentMapper<StatShared> mobInfo;
+	private ComponentMapper<StatShared> stats;
+	private ComponentMapper<StatPerso> perso;
 	private ComponentMapper<Body> body;
 
 	private UpdateStatSystem update;
@@ -70,7 +72,7 @@ public class LogCharSystem extends IteratingSystem
 		Integer login=manager.getEntity(l.uuid);
 		if(login==null)
 			{
-			chan.writeAndFlush(ErrorComp.INVALID_STATE);
+			chan.writeAndFlush(ErrorComp.INVALID_UUID);
 			chan.close();
 			log.debug("failed to get State '{}' on log", l.uuid);
 			return;
@@ -78,7 +80,7 @@ public class LogCharSystem extends IteratingSystem
 		StateComp s=state.get(login);
 		if(s==null)
 			{
-			chan.writeAndFlush(ErrorComp.INVALID_UUID);
+			chan.writeAndFlush(ErrorComp.INVALID_STATE);
 			chan.close();
 			return;
 			}
@@ -110,7 +112,7 @@ public class LogCharSystem extends IteratingSystem
 		s.state=States.IN_GAME;
 
 		PositionComp p=position.get(st);
-		StatShared m=mobInfo.get(st);
+		StatShared m=stats.get(st);
 		log.info("log char {} {}", l.uuid, m.name);
 		Body b=body.get(st);
 
@@ -119,7 +121,7 @@ public class LogCharSystem extends IteratingSystem
 
 		// spawn the new pj in the world
 		clients.spawn(s, st);
-		PjInfo pjInfo=new PjInfo(m.name, p.x, p.y, b, m);
+		PjInfo pjInfo=new PjInfo(m.name, p.x, p.y, b, m, perso.get(st));
 		chan.write(pjInfo);
 
 		// get all surrounding entity and notify the new player with them
@@ -131,7 +133,7 @@ public class LogCharSystem extends IteratingSystem
 				continue;
 			uuid=manager.getUuid(em);
 			p=position.get(em);
-			m=mobInfo.get(em);
+			m=stats.get(em);
 			VelocityComp v=velocity.get(em);
 			chan.write(new Spawn(uuid, sprite.get(em), m, p, v));
 			}

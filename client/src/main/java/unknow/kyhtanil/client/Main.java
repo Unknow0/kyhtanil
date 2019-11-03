@@ -84,7 +84,7 @@ public class Main implements ApplicationListener
 			dynLayout.put("State", dynLayout.js.eval("Java.type('"+State.class.getName()+"')"));
 			dynLayout.put("Screen", dynLayout.js.eval("Java.type('"+Screen.class.getName()+"')"));
 
-			InputSystem inputSystem=new InputSystem(stage.getViewport());
+			InputSystem inputSystem=new InputSystem(gameVp);
 			WorldConfiguration cfg=new WorldConfiguration();
 			cfg.setSystem(new Archetypes());
 			cfg.setSystem(manager);
