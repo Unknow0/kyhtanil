@@ -4,7 +4,8 @@ import java.security.NoSuchAlgorithmException;
 
 import unknow.common.kryo.KryoWrap;
 import unknow.kyhtanil.common.component.ErrorComp;
-import unknow.kyhtanil.common.component.StatPerso;
+import unknow.kyhtanil.common.component.StatAgg;
+import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.account.CreateAccount;
 import unknow.kyhtanil.common.component.account.LogChar;
@@ -19,10 +20,8 @@ import unknow.kyhtanil.common.component.net.Spawn;
 import unknow.kyhtanil.common.component.net.UpdateInfo;
 import unknow.kyhtanil.common.pojo.Point;
 
-public class Kryos extends KryoWrap
-	{
-	public Kryos() throws NoSuchAlgorithmException
-		{
+public class Kryos extends KryoWrap {
+	public Kryos() throws NoSuchAlgorithmException {
 		addClass(ErrorComp.class);
 		addClass(Login.class);
 		addClass(CreateAccount.class);
@@ -36,8 +35,9 @@ public class Kryos extends KryoWrap
 		addClass(Attack.class);
 		addClass(Point.class);
 		addClass(DamageReport.class);
-		addClass(StatPerso.class);
+		addClass(StatBase.class);
 		addClass(StatShared.class);
+		addClass(StatAgg.class);
 		doneInit();
-		}
 	}
+}

@@ -1,32 +1,35 @@
 <root xmlns="scene-builder">
-	<include source='tileset.xml'/>
+	<include source='tileset.xml' />
 	<table fillParent='true'>
 		<row colspan='2' left=''>
-			<actor ref-id='menu'/>
+			<actor ref-id='menu' />
 		</row>
 		<row colspan='2' expandX='true'>
 			<table center=''>
-				<actor class='com.kotcrab.vis.ui.widget.VisLabel' name='Name'/>
-				<actor class='com.kotcrab.vis.ui.widget.VisTextField' id='name'/>
-				<actor class='com.kotcrab.vis.ui.widget.VisTextButton' name='Save'>
-					<inject name="addListener" ref-id="save"/>
+				<actor class='com.kotcrab.vis.ui.widget.VisLabel' name='Name' />
+				<actor class='com.kotcrab.vis.ui.widget.VisTextField'
+					id='name' />
+				<actor class='com.kotcrab.vis.ui.widget.VisTextButton'
+					name='Save'>
+					<inject name="addListener" ref-id="save" />
 				</actor>
 			</table>
 		</row>
 		<row>
 			<cell id='map' grow=''>
-				<actor class='com.badlogic.gdx.scenes.scene2d.Actor'/>
+				<actor class='com.badlogic.gdx.scenes.scene2d.Actor' />
 			</cell>
 			<cell minWidth='210'>
 				<table>
 					<row colspan='6'>
-						<actor class='com.kotcrab.vis.ui.widget.VisSelectBox' id='tilesetBox'>
-							<inject name="addListener" ref-id="tilesetChange"/>
+						<actor class='com.kotcrab.vis.ui.widget.VisSelectBox'
+							id='tilesetBox'>
+							<inject name="addListener" ref-id="tilesetChange" />
 						</actor>
 					</row>
 					<row>
 						<scroll class="com.kotcrab.vis.ui.widget.VisScrollPane">
-							<table id='tileset'/>
+							<table id='tileset' />
 						</scroll>
 					</row>
 				</table>

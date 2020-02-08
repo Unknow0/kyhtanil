@@ -1,175 +1,156 @@
 package unknow.kyhtanil.server;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import javax.script.Compilable;
-import javax.script.CompiledScript;
-import javax.script.ScriptException;
+import javax.sql.DataSource;
 
 import com.artemis.BaseSystem;
 import com.artemis.ComponentMapper;
-import com.esotericsoftware.kryo.util.IntMap;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
-import unknow.common.Cfg;
-import unknow.kyhtanil.common.component.Body;
-import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.StatBase;
+import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.pojo.CharDesc;
-import unknow.kyhtanil.server.dao.Character;
-import unknow.kyhtanil.server.pojo.Account;
-import unknow.orm.Mappings;
-import unknow.orm.Query;
-import unknow.orm.QueryResult;
-import unknow.orm.criteria.Criteria;
-import unknow.orm.criteria.Join;
-import unknow.orm.criteria.On;
-import unknow.orm.criteria.Projection;
-import unknow.orm.criteria.Restriction;
 
-public class Database extends BaseSystem
-	{
-	private unknow.orm.mapping.Database co;
+public class Database extends BaseSystem {
+	private DataSource ds;
 
 	private ComponentMapper<PositionComp> position;
-	private ComponentMapper<StatShared> mobInfo;
+	private ComponentMapper<StatShared> statShared;
+	private ComponentMapper<StatBase> statBase;
 
-	public Database()
-		{
-		}
-
-	@Override
-	protected void processSystem()
-		{
-		}
+	public Database() {
+	}
 
 	@Override
-	public void initialize()
-		{
-		if(co!=null)
-			return;
-		try
-			{
-			ReflectFactory.world=world;
-			Mappings.load(null, Cfg.getSystem());
-			co=Mappings.getDatabase("kyhtanil");
+	protected void processSystem() {
+	}
+
+	@Override
+	public void initialize() {
+		ds = new HikariDataSource(new HikariConfig("/hikari.properties"));
+	}
+
+	private static interface STInit {
+		public void init(PreparedStatement st) throws SQLException;
+	}
+
+	private static interface RSConvert<T> {
+		public T convert(ResultSet rs) throws SQLException;
+	}
+
+	private boolean sqlrun(String sql, STInit init) throws SQLException {
+		try (Connection c = ds.getConnection()) {
+			PreparedStatement st = c.prepareStatement(sql);
+			init.init(st);
+			try (ResultSet rs = st.executeQuery()) {
+				return rs.next();
 			}
-		catch (Exception e)
-			{
-			e.printStackTrace();
-			System.exit(1);
-			}
-		}
-
-	public boolean loginExist(String login) throws SQLException
-		{
-		Query query=co.createQuery("select id from accounts where lower(login)=lower(:login)");
-		query.setString("login", login);
-		QueryResult qr=query.execute();
-		boolean r=qr.next();
-		qr.close();
-		query.close();
-		return r;
-		}
-
-	public Account createAccount(String login, byte[] passHash)
-		{
-		Account a=new Account(login, passHash);
-		try
-			{
-			co.insert(a);
-			return a;
-			}
-		catch (SQLException e)
-			{
-			return null;
-			}
-		}
-
-	public Account getAccount(String login, byte[] passHash) throws SQLException
-		{
-		Account a=null;
-		Query query=co.createQuery("select {a} from accounts a where lower(login)=lower(:login)", new String[] {"a"}, new Class[] {Account.class});
-		query.setString("login", login);
-		QueryResult qr=query.execute();
-		if(qr.next())
-			{
-			a=(Account)qr.getEntity("a");
-			if(!Arrays.equals(passHash, a.getPassHash()))
-				a=null;
-			}
-		qr.close();
-		query.close();
-		return a;
-		}
-
-	public boolean loadPj(int account, Integer id, int e) throws SQLException
-		{
-		Criteria crit=co.createCriteria(Character.class, "c");
-		Join j=crit.addJoin(Body.class, "b");
-		j.on(On.eq("body", "id"));
-		j.setProjection(Projection.all());
-		crit.add(Restriction.eq("id", id));
-		crit.add(Restriction.eq("account", account));
-
-		try (QueryResult qr=crit.execute())
-			{
-			if(qr.next())
-				{
-				ReflectFactory.entity.set(e);
-				PositionComp p=position.get(e);
-//			pj.x=5;
-//			pj.y=5; // TODO
-				p.x=p.y=5;
-
-				Character c=qr.getEntity("c");
-				qr.getEntity("b");
-
-				StatShared m=mobInfo.get(e);
-				m.name=c.name;
-				m.hp=c.hp;
-				m.mp=c.mp;
-
-//				m.level=b.level;
-//				m.constitution=b.constitution;
-//				m.strength=b.strength;
-//				m.concentration=b.concentration;
-//				m.intelligence=b.intelligence;
-//				m.dexterity=b.dexterity;
-				return true;
-				}
-			}
-		return false;
-		}
-
-	public List<CharDesc> getCharList(int account) throws SQLException
-		{
-		List<CharDesc> list=new ArrayList<CharDesc>();
-		try (Query query=co.createQuery("select c.id, name, level from characters c inner join characters_body b on c.body=b.id  where account=:account"))
-			{
-			query.setInt("account", account);
-			try (QueryResult qr=query.execute())
-				{
-				while (qr.next())
-					list.add(new CharDesc(qr.getInt("id"), qr.getString("name"), qr.getInt("level")));
-				}
-			}
-		return list;
-		}
-
-	public IntMap<CompiledScript> processSkill(Compilable jsComp) throws SQLException, ScriptException
-		{
-		IntMap<CompiledScript> ret=new IntMap<>();
-		try (Query query=co.createQuery("select id, code from skills"))
-			{
-			try (QueryResult qr=query.execute())
-				{
-				while (qr.next())
-					ret.put(qr.getInt("id"), jsComp.compile(qr.getString("code")));
-				}
-			}
-		return ret;
 		}
 	}
+
+	private <T> T sqlrun(String sql, STInit stinit, RSConvert<T> convert) throws SQLException {
+		try (Connection c = ds.getConnection()) {
+			PreparedStatement st = c.prepareStatement(sql);
+			stinit.init(st);
+			try (ResultSet rs = st.executeQuery()) {
+				if (!rs.next())
+					return null;
+				return convert.convert(rs);
+			}
+		}
+	}
+
+	private <T> List<T> sqlrunall(String sql, STInit stinit, RSConvert<T> convert) throws SQLException {
+		try (Connection c = ds.getConnection()) {
+			PreparedStatement st = c.prepareStatement(sql);
+			stinit.init(st);
+			try (ResultSet rs = st.executeQuery()) {
+				List<T> list = new ArrayList<>();
+				while (rs.next())
+					list.add(convert.convert(rs));
+				return list;
+			}
+		}
+	}
+
+	private int sqlupdate(String sql, STInit init) throws SQLException {
+		try (Connection c = ds.getConnection()) {
+			PreparedStatement st = c.prepareStatement(sql);
+			init.init(st);
+			return st.executeUpdate();
+		}
+	}
+
+	private <T> T sqlinsert(String sql, STInit init, RSConvert<T> conv) throws SQLException {
+		try (Connection c = ds.getConnection()) {
+			PreparedStatement st = c.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+			init.init(st);
+			st.executeUpdate();
+			ResultSet rs = st.getGeneratedKeys();
+			return conv.convert(rs);
+		}
+	}
+
+	public boolean loginExist(String login) throws SQLException {
+		return sqlrun("select id from accounts where lower(login)=lower(?)", st -> st.setString(1, login));
+	}
+
+	public Integer createAccount(String login, byte[] passHash) throws SQLException {
+		return sqlinsert("insert into account (login, pass_hash) values (?,?)", st -> {
+			st.setString(1, login);
+			st.setBytes(2, passHash);
+		}, rs -> rs.getInt(0));
+	}
+
+	public Integer getAccount(String login, byte[] passHash) throws SQLException {
+		return sqlrun("select * from accounts where lower(login)=lower(?) and pass_hash=?", st -> {
+			st.setString(1, login);
+			st.setBytes(2, passHash);
+		}, rs -> rs.getInt("id"));
+	}
+
+	public boolean loadPj(int account, Integer id, int e) throws SQLException {
+		return null != sqlrun("select" // @formatter:off
+				+ " c.name, c.hp, c.mp, b.strength, b.constitution, b.intelligence, b.concentration, b.dexterity, b.points, b.xp, b.level"
+				+ " from characters c"
+				+ " inner join characters_body b on b.id=c.body"
+				+ " where c.account=? and c.id=?"// @formatter:on
+				, st -> {
+					st.setInt(1, account);
+					st.setInt(2, id);
+				}, rs -> {
+					PositionComp p = position.get(e);
+					// pj.x=5;
+					// pj.y=5; // TODO
+					p.x = p.y = 5;
+
+					StatShared m = statShared.get(e);
+					m.name = rs.getString("name");
+					m.hp = rs.getInt("hp");
+					m.mp = rs.getInt("mp");
+
+					StatBase b = statBase.get(e);
+					b.constitution = rs.getInt("constitution");
+					b.strength = rs.getInt("strength");
+					b.concentration = rs.getInt("concentration");
+					b.intelligence = rs.getInt("intelligence");
+					b.dexterity = rs.getInt("dexterity");
+
+					// b.level = b.level;
+
+					return rs;
+				});
+	}
+
+	public List<CharDesc> getCharList(int account) throws SQLException {
+		return sqlrunall("select c.id, name, level from characters c inner join characters_body b on c.body=b.id  where account=?", st -> st.setInt(1, account), rs -> new CharDesc(rs.getInt("id"), rs.getString("name"), rs.getInt("level")));
+	}
+}

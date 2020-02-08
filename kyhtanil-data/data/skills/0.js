@@ -2,6 +2,7 @@ new Skill(0, 'default attack') {
 	desc : function() {
 		return this.name;
 	},
+	cost: function() { return 0; },
 	exec : function(self, point, target) {
 		var p = api.position(self);
 		var r = Math.atan2(point.y - p.y, point.x - p.x)

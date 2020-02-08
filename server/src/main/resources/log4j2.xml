@@ -6,7 +6,7 @@
 		</Console>
 	</Appenders>
 	<Loggers>
-		<Logger name="unknow.orm" level="trace"/>
+		<Logger name="unknow.orm" level="trace" />
 		<Root level="debug">
 			<AppenderRef ref="Console" />
 		</Root>

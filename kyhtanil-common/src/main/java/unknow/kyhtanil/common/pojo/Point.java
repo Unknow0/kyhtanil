@@ -5,24 +5,21 @@
  */
 package unknow.kyhtanil.common.pojo;
 
-public class Point
-	{
+public class Point {
 	public float x;
 	public float y;
 
 	/**
 	 * Default constructor.
 	 */
-	public Point()
-		{
-		}
+	public Point() {
+	}
 
 	/**
 	 * All-args constructor.
 	 */
-	public Point(java.lang.Float x, java.lang.Float y)
-		{
-		this.x=x;
-		this.y=y;
-		}
+	public Point(java.lang.Float x, java.lang.Float y) {
+		this.x = x;
+		this.y = y;
 	}
+}

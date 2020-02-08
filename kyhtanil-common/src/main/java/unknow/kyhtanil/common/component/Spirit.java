@@ -3,8 +3,7 @@ package unknow.kyhtanil.common.component;
 import com.artemis.*;
 import com.esotericsoftware.kryo.util.*;
 
-public class Spirit extends PooledComponent
-	{
+public class Spirit extends PooledComponent {
 	public transient int id;
 
 	public IntMap<Integer> disciplines;
@@ -14,9 +13,8 @@ public class Spirit extends PooledComponent
 	public int level;
 	public int points;
 
-	protected void reset()
-		{
+	protected void reset() {
 		disciplines.clear();
 		skills.clear();
-		}
 	}
+}

@@ -15,9 +15,8 @@ import unknow.kyhtanil.common.component.VelocityComp;
 import unknow.kyhtanil.common.component.net.Spawn;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 
-public class SpawnSystem extends IteratingSystem
-	{
-	private static final Logger log=LoggerFactory.getLogger(SpawnSystem.class);
+public class SpawnSystem extends IteratingSystem {
+	private static final Logger log = LoggerFactory.getLogger(SpawnSystem.class);
 	private ComponentMapper<Spawn> spawn;
 	private ComponentMapper<StatShared> info;
 	private ComponentMapper<PositionComp> position;
@@ -26,23 +25,21 @@ public class SpawnSystem extends IteratingSystem
 	private BaseUUIDManager manager;
 	private Archetypes arch;
 
-	public SpawnSystem()
-		{
+	public SpawnSystem() {
 		super(Aspect.all(Spawn.class));
-		}
+	}
 
-	protected void process(int entityId)
-		{
-		Spawn s=spawn.get(entityId);
+	protected void process(int entityId) {
+		Spawn s = spawn.get(entityId);
 		world.delete(entityId);
 		log.info("{}", s);
 
-		int mob=world.create(arch.all);
+		int mob = world.create(arch.all);
 		manager.setUuid(mob, s.uuid);
-		if(s.m!=null)
+		if (s.m != null)
 			info.get(mob).set(s.m);
 		position.get(mob).set(s.p);
 		velocity.get(mob).set(s.v);
 		sprite.get(mob).set(s.sprite);
-		}
 	}
+}

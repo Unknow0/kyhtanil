@@ -39,35 +39,31 @@ import unknow.json.JsonException;
 import unknow.kyhtanil.common.component.net.NetComp;
 import unknow.kyhtanil.common.util.Kryos;
 
-public class Server extends BaseSystem
-	{
-	private static final Logger log=LoggerFactory.getLogger(Server.class);
+public class Server extends BaseSystem {
+	private static final Logger log = LoggerFactory.getLogger(Server.class);
 	private Kryos kryos;
 
-	private EventLoopGroup serverGroup=new NioEventLoopGroup();
-	private ServerBootstrap server=new ServerBootstrap();
-	private EventLoopGroup clientGroup=new NioEventLoopGroup();
-	private Bootstrap client=new Bootstrap();
-	private List<ChannelFuture> bind=new ArrayList<ChannelFuture>();
+	private EventLoopGroup serverGroup = new NioEventLoopGroup();
+	private ServerBootstrap server = new ServerBootstrap();
+	private EventLoopGroup clientGroup = new NioEventLoopGroup();
+	private Bootstrap client = new Bootstrap();
+	private List<ChannelFuture> bind = new ArrayList<ChannelFuture>();
 
-	private final Encoder encoder=new Encoder();
-	private final Handler handler=new Handler();
+	private final Encoder encoder = new Encoder();
+	private final Handler handler = new Handler();
 
-	private List<E> list=new ArrayList<>();
-	private List<E> back=new ArrayList<>();
+	private List<E> list = new ArrayList<>();
+	private List<E> back = new ArrayList<>();
 
-	public Server() throws NoSuchAlgorithmException, InterruptedException, JsonException
-		{
-		kryos=new Kryos();
+	public Server() throws NoSuchAlgorithmException, InterruptedException, JsonException {
+		kryos = new Kryos();
 
-		ChannelInitializer<SocketChannel> initializer=new ChannelInitializer<SocketChannel>()
-			{
+		ChannelInitializer<SocketChannel> initializer = new ChannelInitializer<SocketChannel>() {
 			@Override
-			public void initChannel(SocketChannel ch) throws Exception
-				{
+			public void initChannel(SocketChannel ch) throws Exception {
 				ch.pipeline().addLast(new Decoder(), encoder, handler);
-				}
-			};
+			}
+		};
 
 		server.group(serverGroup).channel(NioServerSocketChannel.class);
 		server.childHandler(initializer);
@@ -77,138 +73,111 @@ public class Server extends BaseSystem
 		client.handler(initializer);
 
 		bind(Cfg.getSystemInt("kyhtanil.port"));
-		}
+	}
 
 	@Override
-	protected void processSystem()
-		{
-		synchronized (this)
-			{
-			List<E> o=list;
-			list=back;
-			back=o;
-			}
+	protected void processSystem() {
+		synchronized (this) {
+			List<E> o = list;
+			list = back;
+			back = o;
+		}
 
-		for(E e:back)
-			{
-			int create=world.create();
-			EntityEdit edit=world.edit(create);
+		for (E e : back) {
+			int create = world.create();
+			EntityEdit edit = world.edit(create);
 			edit.add(e.o);
-			edit.create(NetComp.class).channel=e.c;
-			}
+			edit.create(NetComp.class).channel = e.c;
+		}
 		back.clear();
-		}
+	}
 
-	public void bind(int port) throws InterruptedException
-		{
-		ChannelFuture b=server.bind(port).sync();
+	public void bind(int port) throws InterruptedException {
+		ChannelFuture b = server.bind(port).sync();
 		bind.add(b.channel().closeFuture());
-		}
+	}
 
-	public void connect(String host, int port) throws InterruptedException
-		{
-		ChannelFuture connect=client.connect(host, port);
+	public void connect(String host, int port) throws InterruptedException {
+		ChannelFuture connect = client.connect(host, port);
 		connect.sync();
-		}
+	}
 
-	public void waitShutdown() throws InterruptedException
-		{
-		for(int i=0; i<bind.size(); i++)
+	public void waitShutdown() throws InterruptedException {
+		for (int i = 0; i < bind.size(); i++)
 			bind.get(i).sync();
-		}
+	}
 
-	public void close()
-		{
+	public void close() {
 		clientGroup.shutdownGracefully();
 		serverGroup.shutdownGracefully();
-		}
+	}
 
-	protected class E
-		{
+	protected class E {
 		Component o;
 		Channel c;
 
-		public E(Component o, Channel c)
-			{
-			this.o=o;
-			this.c=c;
-			}
+		public E(Component o, Channel c) {
+			this.o = o;
+			this.c = c;
 		}
+	}
 
-	public class Decoder extends ByteToMessageDecoder
-		{
-		protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception
-			{
-			if(in.readableBytes()<1)
+	public class Decoder extends ByteToMessageDecoder {
+		protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+			if (in.readableBytes() < 1)
 				return;
-			try
-				{
-				byte[] dst=new byte[in.readableBytes()];
+			try {
+				byte[] dst = new byte[in.readableBytes()];
 				in.getBytes(in.readerIndex(), dst);
 
-				Input input=new Input(dst);
-				Object o=kryos.read(input);
+				Input input = new Input(dst);
+				Object o = kryos.read(input);
 				log.trace("read: {} {}", o.getClass(), JsonUtils.toString(o, true));
-				if(o instanceof Component)
-					{
-					list.add(new E((Component)o, ctx.channel()));
-					}
-				else if(o instanceof byte[])
-					{
-					if(!Arrays.equals((byte[])o, kryos.hash()))
+				if (o instanceof Component) {
+					list.add(new E((Component) o, ctx.channel()));
+				} else if (o instanceof byte[]) {
+					if (!Arrays.equals((byte[]) o, kryos.hash()))
 						ctx.close();
-					}
+				}
 
 				in.skipBytes(input.position());
-				}
-			catch (KryoException e)
-				{
-				if(!e.getMessage().contains("Buffer underflow"))
-					{
+			} catch (KryoException e) {
+				if (!e.getMessage().contains("Buffer underflow")) {
 					log.error(e.getMessage(), e);
-					}
 				}
-			}
-		}
-
-	@Sharable
-	public class Encoder extends MessageToByteEncoder<Object>
-		{
-		protected void encode(ChannelHandlerContext ctx, Object data, ByteBuf out) throws Exception
-			{
-			log.trace("write: {}: {}", data.getClass(), JsonUtils.toString(data, true));
-
-			try
-				{
-				ByteBufOutputStream buf=new ByteBufOutputStream(out);
-				Output output=new Output(buf);
-				kryos.write(output, data);
-				output.close();
-				}
-			catch (Exception e)
-				{
-				log.error(e.getMessage(), e);
-				}
-			}
-		}
-
-	@Sharable
-	public class Handler extends ChannelHandlerAdapter
-		{
-		@Override
-		public void channelActive(ChannelHandlerContext ctx)
-			{
-			ctx.writeAndFlush(kryos.hash());
-			}
-
-		@Override
-		public void channelInactive(ChannelHandlerContext ctx) throws Exception
-			{
-			}
-
-		@Override
-		public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception
-			{
 			}
 		}
 	}
+
+	@Sharable
+	public class Encoder extends MessageToByteEncoder<Object> {
+		protected void encode(ChannelHandlerContext ctx, Object data, ByteBuf out) throws Exception {
+			log.trace("write: {}: {}", data.getClass(), JsonUtils.toString(data, true));
+
+			try {
+				ByteBufOutputStream buf = new ByteBufOutputStream(out);
+				Output output = new Output(buf);
+				kryos.write(output, data);
+				output.close();
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+			}
+		}
+	}
+
+	@Sharable
+	public class Handler extends ChannelHandlerAdapter {
+		@Override
+		public void channelActive(ChannelHandlerContext ctx) {
+			ctx.writeAndFlush(kryos.hash());
+		}
+
+		@Override
+		public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		}
+
+		@Override
+		public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+		}
+	}
+}

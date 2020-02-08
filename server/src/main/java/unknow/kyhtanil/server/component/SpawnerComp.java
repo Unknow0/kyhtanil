@@ -2,8 +2,7 @@ package unknow.kyhtanil.server.component;
 
 import com.artemis.*;
 
-public class SpawnerComp extends PooledComponent
-	{
+public class SpawnerComp extends PooledComponent {
 	public float x, y;
 	public float range;
 
@@ -13,10 +12,9 @@ public class SpawnerComp extends PooledComponent
 	public float creation_speed;
 	public float current;
 
-	protected void reset()
-		{
-		x=y=range=0;
-		max_count=current_count=0;
-		creation_speed=current=0;
-		}
+	protected void reset() {
+		x = y = range = 0;
+		max_count = current_count = 0;
+		creation_speed = current = 0;
 	}
+}

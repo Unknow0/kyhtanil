@@ -5,26 +5,23 @@
  */
 package unknow.kyhtanil.common.pojo;
 
-public class CharDesc
-	{
+public class CharDesc {
 	public int id;
 	public String name;
 	public int level;
 
 	/**
-	 * Default constructor. 
+	 * Default constructor.
 	 */
-	public CharDesc()
-		{
-		}
+	public CharDesc() {
+	}
 
 	/**
 	 * All-args constructor.
 	 */
-	public CharDesc(java.lang.Integer id, java.lang.String name, java.lang.Integer level)
-		{
-		this.id=id;
-		this.name=name;
-		this.level=level;
-		}
+	public CharDesc(java.lang.Integer id, java.lang.String name, java.lang.Integer level) {
+		this.id = id;
+		this.name = name;
+		this.level = level;
 	}
+}

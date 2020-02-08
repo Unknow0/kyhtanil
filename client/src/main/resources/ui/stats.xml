@@ -1,0 +1,45 @@
+<layout id="root" fillParent="true" xmlns="dynLayout">
+	<table fillParent="true">
+		<row>
+			<cell>
+				<label text="Name" />
+			</cell>
+			<cell>
+				<label text="the name" />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<label text="Hp" />
+			</cell>
+			<cell>
+				<label text="s.hp / s.maxHp" />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<label text="Mp" />
+			</cell>
+			<cell>
+				<label text="s.mp / s.maxMp" />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<label text="Hp" />
+			</cell>
+			<cell>
+				<label text="s.hp / s.maxHp" />
+			</cell>
+		</row>
+
+		<row>
+			<cell>
+				<button text="Ok" onchange="main.show(Screen.CHARCREATE)" />
+			</cell>
+			<cell>
+				<button text="Cancel" disabled="State.chars==null" onchange="co.logChar(State.uuid, $list.selected())" />
+			</cell>
+		</row>
+	</table>
+</layout>

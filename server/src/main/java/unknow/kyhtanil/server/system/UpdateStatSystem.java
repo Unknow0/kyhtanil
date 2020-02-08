@@ -5,78 +5,77 @@ import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 
 import unknow.kyhtanil.common.Stats;
-import unknow.kyhtanil.common.component.Body;
-import unknow.kyhtanil.common.component.StatPerso;
+import unknow.kyhtanil.common.component.StatAgg;
+import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatShared;
-import unknow.kyhtanil.server.component.AggregatedStat;
 import unknow.kyhtanil.server.component.Dirty;
+import unknow.kyhtanil.server.component.StatModAggregator;
 
-public class UpdateStatSystem extends IteratingSystem
-	{
-	private ComponentMapper<StatShared> mobInfo;
-	private ComponentMapper<AggregatedStat> stats;
-	private ComponentMapper<Body> body;
-	private ComponentMapper<StatPerso> calculated;
+public class UpdateStatSystem extends IteratingSystem {
+	private ComponentMapper<StatShared> shared;
+	private ComponentMapper<StatBase> base;
+	private ComponentMapper<StatModAggregator> aggregator;
+	private ComponentMapper<StatAgg> calculated;
 	private ComponentMapper<Dirty> dirty;
 
-	public UpdateStatSystem()
-		{
-		super(Aspect.all(StatShared.class, StatPerso.class));
-		}
+	public UpdateStatSystem() {
+		super(Aspect.all(Dirty.class, StatShared.class, StatAgg.class, StatBase.class, StatModAggregator.class));
+	}
 
 	@Override
-	protected void initialize()
-		{
-		}
+	protected void initialize() {
+	}
 
-	private boolean d=false;
+	private boolean d = false;
 
 	@Override
-	public void process(int e)
-		{
-		d=false;
-		StatShared info=mobInfo.get(e);
-		AggregatedStat stat=stats.get(e);
+	public void process(int e) {
+		d = false;
+		StatShared info = shared.get(e);
+		StatModAggregator stat = aggregator.get(e);
 
-		Body b=body.get(e);
+		StatBase b = base.get(e);
 
-		StatPerso calc=calculated.get(e);
+		StatAgg calc = calculated.get(e);
 
-		calc.strength=total(calc.strength, stat, Stats.STAT_STRENGTH, b.strength);
-		calc.constitution=total(calc.constitution, stat, Stats.STAT_CONSTITUTION, b.constitution);
-		calc.intelligence=total(calc.intelligence, stat, Stats.STAT_INTELLIGENCE, b.intelligence);
-		calc.concentration=total(calc.concentration, stat, Stats.STAT_CONCENTRATION, b.concentration);
-		calc.dexterity=total(calc.dexterity, stat, Stats.STAT_DEXTERITY, b.dexterity);
+		for (Stats s : Stats.values())
+			calc.set(s, total(calc.get(s), stat, s, base(s, b)));
 
-		calc.moveSpeed=total(calc.moveSpeed, stat, Stats.MOVE_SPEED, 250);
-
-		calc.dmg.set(1, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-
-		if(d)
-			{
-			d=false;
+		if (d) {
+			d = false;
 			dirty.get(e).add(calc);
-			}
+		}
 
-//		info.hp=set(info.hp, info.hp);
-//		info.mp=set(info.mp, info.mp);
+		info.maxHp = total(info.maxHp, stat, Stats.HP_MAX, Stats.baseHp(calc.get(Stats.STAT_CONSTITUTION)));
+		info.maxMp = total(info.maxMp, stat, Stats.MP_MAX, Stats.baseMp(calc.get(Stats.STAT_INTELLIGENCE)));
 
-		info.maxHp=total(info.maxHp, stat, Stats.HP_MAX, calc.constitution*15+10);
-		info.maxMp=total(info.maxMp, stat, Stats.MP_MAX, calc.intelligence*9+10);
+		// TODO scale hp/mp
 
-		if(d)
+		if (d)
 			dirty.get(e).add(info);
-		}
+	}
 
-	private int set(int last, int n)
-		{
-		if(last!=n)
-			d=true;
-		return n;
-		}
-
-	private int total(int last, AggregatedStat a, Stats s, int b)
-		{
-		return set(last, (int)((b+a.flat.get(s))*a.add.get(s)*a.more.get(s)));
+	private static int base(Stats s, StatBase b) {
+		switch (s) {
+		case STAT_CONCENTRATION:
+			return b.concentration;
+		case STAT_CONSTITUTION:
+			return b.constitution;
+		case STAT_DEXTERITY:
+			return b.dexterity;
+		case STAT_INTELLIGENCE:
+			return b.intelligence;
+		case STAT_STRENGTH:
+			return b.strength;
+		default:
+			return 0;
 		}
 	}
+
+	private int total(int last, StatModAggregator a, Stats s, int b) {
+		int n = (int) ((b + a.flat.get(s)) * a.add.get(s) * a.more.get(s));
+		if (last != n)
+			d = true;
+		return n;
+	}
+}

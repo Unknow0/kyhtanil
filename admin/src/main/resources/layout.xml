@@ -1,16 +1,19 @@
 <root xmlns="scene-builder">
 	<table fillParent='true'>
 		<row grow=''>
-			<cell grow='' maxWidth='50000000' minWidth='0' maxHeight='50000000' minHeight='0'>
+			<cell grow='' maxWidth='50000000' minWidth='0'
+				maxHeight='50000000' minHeight='0'>
 				<actor ref-id="content" />
 			</cell>
 		</row>
 		<row expandX='true' center=''>
 			<table>
-				<actor class='com.kotcrab.vis.ui.widget.VisTextButton' name='New'>
+				<actor class='com.kotcrab.vis.ui.widget.VisTextButton'
+					name='New'>
 					<inject name="addListener" ref-id="new" />
 				</actor>
-				<actor class='com.kotcrab.vis.ui.widget.VisTextButton' name='Save'>
+				<actor class='com.kotcrab.vis.ui.widget.VisTextButton'
+					name='Save'>
 					<inject name="addListener" ref-id="save" />
 				</actor>
 			</table>
@@ -20,38 +23,48 @@
 		<row>
 			<actor class='com.kotcrab.vis.ui.widget.VisLabel' name='Name' />
 			<cell colspan='2'>
-				<actor id='edit.name' class='com.kotcrab.vis.ui.widget.VisTextField' />
+				<actor id='edit.name'
+					class='com.kotcrab.vis.ui.widget.VisTextField' />
 			</cell>
 		</row>
 		<row>
-			<actor class='com.kotcrab.vis.ui.widget.VisLabel' name='Position' />
+			<actor class='com.kotcrab.vis.ui.widget.VisLabel'
+				name='Position' />
 			<cell width='60'>
-				<actor id='edit.x' class='com.kotcrab.vis.ui.widget.VisTextField' />
+				<actor id='edit.x'
+					class='com.kotcrab.vis.ui.widget.VisTextField' />
 			</cell>
 			<cell width='60'>
-				<actor id='edit.y' class='com.kotcrab.vis.ui.widget.VisTextField' />
+				<actor id='edit.y'
+					class='com.kotcrab.vis.ui.widget.VisTextField' />
 			</cell>
 		</row>
 		<row>
 			<actor class='com.kotcrab.vis.ui.widget.VisLabel' name='Size' />
 			<cell width='60'>
-				<actor id='edit.w' class='com.kotcrab.vis.ui.widget.VisTextField' />
+				<actor id='edit.w'
+					class='com.kotcrab.vis.ui.widget.VisTextField' />
 			</cell>
 			<cell width='60'>
-				<actor id='edit.h' class='com.kotcrab.vis.ui.widget.VisTextField' />
+				<actor id='edit.h'
+					class='com.kotcrab.vis.ui.widget.VisTextField' />
 			</cell>
 		</row>
 		<row>
-			<actor class="com.kotcrab.vis.ui.widget.VisLabel" name="Tileset" />
+			<actor class="com.kotcrab.vis.ui.widget.VisLabel"
+				name="Tileset" />
 			<cell colspan='2'>
-				<actor id="edit.tileset" class="com.kotcrab.vis.ui.widget.VisSelectBox" />
+				<actor id="edit.tileset"
+					class="com.kotcrab.vis.ui.widget.VisSelectBox" />
 			</cell>
 		</row>
 		<row>
-			<actor class='com.kotcrab.vis.ui.widget.VisTextButton' name='Save'>
+			<actor class='com.kotcrab.vis.ui.widget.VisTextButton'
+				name='Save'>
 				<inject name="addListener" ref-id="edit.save" />
 			</actor>
-			<actor class='com.kotcrab.vis.ui.widget.VisTextButton' name='Cancel'>
+			<actor class='com.kotcrab.vis.ui.widget.VisTextButton'
+				name='Cancel'>
 				<inject name="addListener" ref-id="edit.cancel" />
 			</actor>
 		</row>

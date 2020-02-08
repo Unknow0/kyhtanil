@@ -12,50 +12,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.1</version>
-				<dependencies>
-					<dependency>
-						<groupId>com.badlogicgames.gdx</groupId>
-						<artifactId>gdx-tools</artifactId>
-						<version>${gdx.version}</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<execution>
-						<goals>
-							<goal>java</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<includePluginDependencies>true</includePluginDependencies>
-							<mainClass>com.badlogic.gdx.tools.texturepacker.TexturePacker</mainClass>
-							<arguments>
-								<argument>${project.basedir}/src/main/raw/default</argument>
-								<argument>${project.basedir}/src/main/resources/</argument>
-								<argument>default</argument>
-							</arguments>
-						</configuration>
-					</execution>
-					<execution>
-						<id>default-cli</id>
-						<goals>
-							<goal>java</goal>
-						</goals>
-						<configuration>
-							<mainClass>org.apache.derby.tools.ij</mainClass>
-							<systemProperties>
-								<systemProperty>
-									<key>ij.database</key>
-									<value>jdbc:derby:data</value>
-								</systemProperty>
-							</systemProperties>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 

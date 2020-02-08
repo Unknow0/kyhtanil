@@ -4,17 +4,14 @@ import java.util.*;
 
 import com.artemis.*;
 
-public class CompositeComponent<T> extends PooledComponent
-	{
-	public List<T> list=new ArrayList<T>();
+public class CompositeComponent<T> extends PooledComponent {
+	public List<T> list = new ArrayList<T>();
 
-	public void add(T t)
-		{
+	public void add(T t) {
 		list.add(t);
-		}
-
-	protected void reset()
-		{
-		list.clear();
-		}
 	}
+
+	protected void reset() {
+		list.clear();
+	}
+}

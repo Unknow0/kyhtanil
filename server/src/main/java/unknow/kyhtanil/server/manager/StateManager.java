@@ -1,69 +1,63 @@
 package unknow.kyhtanil.server.manager;
 
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import unknow.common.data.*;
-import unknow.kyhtanil.common.pojo.*;
-import unknow.kyhtanil.server.component.*;
+import com.artemis.Aspect;
+import com.artemis.ComponentMapper;
+import com.artemis.systems.IteratingSystem;
 
-import com.artemis.*;
-import com.artemis.systems.*;
+import unknow.common.data.BTree;
+import unknow.kyhtanil.common.pojo.UUID;
+import unknow.kyhtanil.server.component.StateComp;
 
 /**
  * manage the life cycle of State
  */
-public class StateManager extends IteratingSystem
-	{
-	private static final Logger log=LoggerFactory.getLogger(StateManager.class);
-	private final BTree<String,UUID> uuidByLogin=new BTree<String,UUID>(10);
-	private final BTree<UUID,Integer> uuidToEntity=new BTree<UUID,Integer>(10);
+public class StateManager extends IteratingSystem {
+	private static final Logger log = LoggerFactory.getLogger(StateManager.class);
+	private final BTree<Integer, UUID> uuidByLogin = new BTree<>(50);
+	private final BTree<UUID, Integer> uuidToEntity = new BTree<>(50);
 
 	private UUIDManager uuidManager;
 
 	private ComponentMapper<StateComp> state;
 
-	public StateManager()
-		{
+	public StateManager() {
 		super(Aspect.all(StateComp.class));
-		}
+	}
 
 	@Override
-	protected final void initialize()
-		{
-		}
+	protected final void initialize() {
+	}
 
 	@Override
-	public final void removed(int entityId)
-		{
-		}
+	public final void removed(int entityId) {
+	}
 
 	@Override
-	public final void inserted(int e)
-		{
-		}
+	public final void inserted(int e) {
+	}
 
-	public UUID log(int entity, String login)
-		{
-		if(uuidByLogin.containsKey(login))
+	public UUID log(int entity, int accountId) {
+		if (uuidByLogin.containsKey(accountId))
 			return null;
-		UUID uuid=uuidManager.assignUuid(entity);
+		UUID uuid = uuidManager.assignUuid(entity);
 
-		uuidByLogin.put(login, uuid);
+		uuidByLogin.put(accountId, uuid);
 		uuidToEntity.put(uuid, entity);
 
 		return uuid;
-		}
+	}
 
 	@Override
-	protected void process(int entityId)
-		{
-		StateComp s=state.get(entityId);
-		if(!s.channel.isOpen())
-			{
-			log.info("cleaning {}", s.account.getLogin());
-			UUID uuid=uuidByLogin.remove(s.account.getLogin());
+	protected void process(int entityId) {
+		StateComp s = state.get(entityId);
+		if (!s.channel.isOpen()) {
+			log.info("cleaning {}", s.account);
+			UUID uuid = uuidByLogin.remove(s.account);
 			uuidToEntity.remove(uuid);
 			world.delete(entityId);
-			}
 		}
 	}
+}

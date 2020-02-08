@@ -29,7 +29,8 @@
 			</menuBar>
 		</row>
 		<row expand=''>
-			<cell grow='' maxWidth='50000000' minWidth='0' maxHeight='50000000' minHeight='0' id="content" />
+			<cell grow='' maxWidth='50000000' minWidth='0'
+				maxHeight='50000000' minHeight='0' id="content" />
 		</row>
 	</table>
 </root>

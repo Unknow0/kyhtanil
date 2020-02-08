@@ -2,6 +2,7 @@ new Skill(1,"fireball") {
 	desc : function(self) {
 		return this.name;
 	},
+	cost: function() { return 5; },
 	exec : function(self, point, target) {
 		var p = api.position(self);
 		var r = Math.atan2(point.y - p.y, point.x - p.x)

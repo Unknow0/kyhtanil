@@ -5,20 +5,20 @@ import unknow.kyhtanil.common.pojo.*;
 import com.artemis.*;
 
 public class Despawn extends Component {
-	public UUID uuid=null;
+	public UUID uuid = null;
 
 	public Despawn() {
 	}
 
 	public Despawn(UUID uuid) {
-		this.uuid=uuid;
+		this.uuid = uuid;
 	}
 
 	public void reset() {
-		uuid=null;
+		uuid = null;
 	}
 
 	public String toString() {
-		return "uuid: "+uuid;
+		return "uuid: " + uuid;
 	}
 }

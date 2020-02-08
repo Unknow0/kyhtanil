@@ -1,32 +1,27 @@
 package unknow.kyhtanil.server.component;
 
-import io.netty.channel.*;
-import unknow.kyhtanil.server.pojo.*;
+import com.artemis.PooledComponent;
 
-import com.artemis.*;
+import io.netty.channel.Channel;
 
-public class StateComp extends PooledComponent
-	{
-	public static enum States
-		{
-	NOT_LOGGED, LOGGED, IN_GAME;
-		}
+public class StateComp extends PooledComponent {
+	public static enum States {
+		NOT_LOGGED, LOGGED, IN_GAME;
+	}
 
-	public Account account;
+	public int account;
 	public Channel channel;
 	public States state;
 
-	protected void reset()
-		{
-		account=null;
-		channel=null;
-		state=null;
-		}
-
-	public void set(StateComp s)
-		{
-		account=s.account;
-		channel=s.channel;
-		state=s.state;
-		}
+	protected void reset() {
+		account = 0;
+		channel = null;
+		state = null;
 	}
+
+	public void set(StateComp s) {
+		account = s.account;
+		channel = s.channel;
+		state = s.state;
+	}
+}

@@ -1,0 +1,102 @@
+<layout id="root" fillParent="true" xmlns="dynLayout" init="state.create(); $ss=state.shared(); $sb=state.base(); $basePoints=state.points().base; $input={};">
+	<table fillParent="true">
+		<row>
+			<cell>
+				<label text="'Name'" />
+			</cell>
+			<cell>
+				<input text="$ss.name" />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<label text="'Body Level'" />
+			</cell>
+			<cell>
+				<label text="''+$sb.level" />
+			</cell>
+		</row>
+		<row>
+			<cell colspan="2" padTop="10" padBottom="10" padRight="$root.getWidth()*.1" padLeft="$root.getWidth()*.1" fillX="true" expandX="true">
+				<actor class="com.kotcrab.vis.ui.widget.Separator" />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<label text="'Hp'" />
+			</cell>
+			<cell><!-- compute mp/hp -->
+				<label text='$ss.hp+" / "+Stats.baseHp($input.constitution?$input.constitution.getValue():$ss.constitution)' />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<label text="'Mp'" />
+			</cell>
+			<cell>
+				<label text='$ss.mp+" / "+Stats.baseMp($input.intelligence?$input.intelligence.getValue():$ss.intelligence)' />
+			</cell>
+		</row>
+		<row>
+			<cell colspan="2" padTop="10" padBottom="10" padRight="$root.getWidth()*.1" padLeft="$root.getWidth()*.1" fillX="true" expandX="true">
+				<actor class="com.kotcrab.vis.ui.widget.Separator" />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<label text="'Body Points:'" />
+			</cell>
+			<cell>
+				<label id="bodyPointTxt" text="''+$basePoints" />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<label text="i18n.get('stat_strength')" />
+			</cell>
+			<cell>
+				<actor class="unknow.kyhtanil.client.graphics.StatSelector" min="$sb.strength" max="a.getValue()+$basePoints" init="$input.strength=a; a.setValue($sb.strength)" onchange="$basePoints+=e.old-e.current; $root.invalidate()" />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<label text="i18n.get('stat_constitution')" />
+			</cell>
+			<cell>
+				<actor class="unknow.kyhtanil.client.graphics.StatSelector" min="$sb.constitution" max="a.getValue()+$basePoints" init="$input.constitution=a; a.setValue($sb.constitution)" onchange="$basePoints+=e.old-e.current; $root.invalidate()" />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<label text="i18n.get('stat_intelligence')" />
+			</cell>
+			<cell>
+				<actor class="unknow.kyhtanil.client.graphics.StatSelector" min="$sb.intelligence" max="a.getValue()+$basePoints" init="$input.intelligence=a; a.setValue($sb.intelligence)" onchange="$basePoints+=e.old-e.current; $root.invalidate()" />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<label text="i18n.get('stat_concentration')" />
+			</cell>
+			<cell>
+				<actor class="unknow.kyhtanil.client.graphics.StatSelector" min="$sb.concentration" max="a.getValue()+$basePoints" init="$input.concentration=a; a.setValue($sb.concentration)" onchange="$basePoints+=e.old-e.current; $root.invalidate()" />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<label text="i18n.get('stat_dexterity')" />
+			</cell>
+			<cell>
+				<actor class="unknow.kyhtanil.client.graphics.StatSelector" min="$sb.dexterity" max="a.getValue()+$basePoints" init="$input.dexterityn=a; a.setValue($sb.dexterity)" onchange="$basePoints+=e.old-e.current; $root.invalidate()" />
+			</cell>
+		</row>
+		<row>
+			<cell expandX="">
+				<button text="'Cancel'" onchange="main.show(Screen.CHARSELECT)" />
+			</cell>
+			<cell expandX="">
+				<button text="'Ok'" onchange="co.createChar()" />
+			</cell>
+		</row>
+	</table>
+</layout>

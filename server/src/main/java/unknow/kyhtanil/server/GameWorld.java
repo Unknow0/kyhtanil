@@ -14,6 +14,7 @@ import com.artemis.World;
 import com.artemis.WorldConfiguration;
 
 import unknow.kyhtanil.common.maps.MapLayout;
+import unknow.kyhtanil.server.component.Archetypes;
 import unknow.kyhtanil.server.component.SpawnerComp;
 import unknow.kyhtanil.server.manager.LocalizedManager;
 import unknow.kyhtanil.server.manager.StateManager;
@@ -32,11 +33,9 @@ import unknow.kyhtanil.server.system.net.LogCharSystem;
 import unknow.kyhtanil.server.system.net.LoginSystem;
 import unknow.kyhtanil.server.system.net.MoveSystem;
 import unknow.kyhtanil.server.system.net.Server;
-import unknow.kyhtanil.server.utils.Archetypes;
 
-public class GameWorld
-	{
-	private static final Logger log=LoggerFactory.getLogger(GameWorld.class);
+public class GameWorld {
+	private static final Logger log = LoggerFactory.getLogger(GameWorld.class);
 
 	private final Database database;
 
@@ -48,22 +47,22 @@ public class GameWorld
 
 	private final Archetype spawnArch;
 
-	public GameWorld() throws Exception
-		{
-		database=new Database();
-		uuidManager=new UUIDManager();
-		locManager=new LocalizedManager(10f, 10f);
-		MapLayout layout=new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
+	public GameWorld() throws Exception {
+		database = new Database();
+		uuidManager = new UUIDManager();
+		locManager = new LocalizedManager(10f, 10f);
+		MapLayout layout = new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
 
-		ApiWorld apiWorld=new ApiWorld();
+		ApiWorld apiWorld = new ApiWorld();
 
-		WorldConfiguration cfg=new WorldConfiguration();
+		WorldConfiguration cfg = new WorldConfiguration();
 		cfg.setSystem(DebugSystem.class);
 		cfg.setSystem(database);
 
 		cfg.setSystem(uuidManager);
 		cfg.setSystem(locManager);
 		cfg.setSystem(new StateManager());
+		cfg.setSystem(new Archetypes());
 
 		cfg.setSystem(new Server());
 		cfg.setSystem(new Clients());
@@ -86,60 +85,50 @@ public class GameWorld
 		cfg.register("javax.script.ScriptEngine", apiWorld.js());
 		cfg.register(apiWorld);
 
-		world=new World(cfg);
+		world = new World(cfg);
 		world.inject(apiWorld);
 
-		spawner=BaseComponentMapper.getFor(SpawnerComp.class, world);
+		spawner = BaseComponentMapper.getFor(SpawnerComp.class, world);
 
-		spawnArch=new ArchetypeBuilder().add(SpawnerComp.class).build(world);
+		spawnArch = new ArchetypeBuilder().add(SpawnerComp.class).build(world);
 
 		createSpawner(10, 10, 10, 3, 1);
+	}
 
-		Archetypes.init(world);
-		}
+	private void createSpawner(float x, float y, float range, int max_count, float speed) {
+		int e = world.create(spawnArch);
+		SpawnerComp s = spawner.get(e);
+		s.x = x;
+		s.y = y;
+		s.range = range;
+		s.current_count = 0;
+		s.max_count = max_count;
+		s.current = 0;
+		s.creation_speed = speed;
+	}
 
-	private void createSpawner(float x, float y, float range, int max_count, float speed)
-		{
-		int e=world.create(spawnArch);
-		SpawnerComp s=spawner.get(e);
-		s.x=x;
-		s.y=y;
-		s.range=range;
-		s.current_count=0;
-		s.max_count=max_count;
-		s.current=0;
-		s.creation_speed=speed;
-		}
-
-	public World world()
-		{
+	public World world() {
 		return world;
-		}
+	}
 
-	public void run()
-		{
-		long start=System.currentTimeMillis();
+	public void run() {
+		long start = System.currentTimeMillis();
 
-		while (true)
-			{
-			try
-				{
-				long s=System.currentTimeMillis();
-				world.setDelta((s-start)/1000f);
+		while (true) {
+			try {
+				long s = System.currentTimeMillis();
+				world.setDelta((s - start) / 1000f);
 				world.process();
-				start=s;
+				start = s;
 				Thread.sleep(1);
-				}
-			catch (Exception e)
-				{
+			} catch (Exception e) {
 				log.error("", e);
-				}
 			}
 		}
-
-	public static void main(String arg[]) throws Exception
-		{
-		GameWorld world=new GameWorld();
-		world.run();
-		}
 	}
+
+	public static void main(String arg[]) throws Exception {
+		GameWorld world = new GameWorld();
+		world.run();
+	}
+}

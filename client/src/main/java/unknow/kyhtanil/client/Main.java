@@ -1,9 +1,8 @@
 package unknow.kyhtanil.client;
 
 import java.io.InputStream;
+import java.util.Arrays;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 
 import com.artemis.World;
@@ -14,6 +13,8 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -22,9 +23,11 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 
 import unknow.common.Cfg;
 import unknow.kyhtanil.client.component.Archetypes;
+import unknow.kyhtanil.client.graphics.StatSelector;
 import unknow.kyhtanil.client.system.InputSystem;
 import unknow.kyhtanil.client.system.MovementSystem;
 import unknow.kyhtanil.client.system.RenderingSystem;
+import unknow.kyhtanil.client.system.State;
 import unknow.kyhtanil.client.system.TexManager;
 import unknow.kyhtanil.client.system.net.Connection;
 import unknow.kyhtanil.client.system.net.DamageReportSystem;
@@ -34,58 +37,61 @@ import unknow.kyhtanil.client.system.net.LogResultSystem;
 import unknow.kyhtanil.client.system.net.PjInfoSystem;
 import unknow.kyhtanil.client.system.net.SpawnSystem;
 import unknow.kyhtanil.client.system.net.UpdateInfoSystem;
+import unknow.kyhtanil.common.Stats;
 import unknow.kyhtanil.common.component.ErrorComp.ErrorCode;
+import unknow.kyhtanil.common.component.StatBase;
+import unknow.kyhtanil.common.component.StatPoint;
+import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 import unknow.scene.builder.DynLayout;
+import unknow.scene.builder.DynLayout.Attr;
 
-public class Main implements ApplicationListener
-	{
-	private static final Logger log=LoggerFactory.getLogger(Main.class);
+public class Main implements ApplicationListener {
 	public static Main self;
 
 	private World world;
 
-	public static enum Screen
-		{
-	LOGIN("login.xml"), CHARSELECT("charselect.xml"), CREATE("charcreate.xml"), GAME("layout.xml");
+	public static enum Screen {
+		LOGIN("ui/login.xml"), CHARSELECT("ui/charselect.xml"), CHARCREATE("ui/charcreate.xml"), GAME("ui/layout.xml");
 
 		private FileHandle file;
 
-		private Screen(String file)
-			{
-			this.file=Gdx.files.internal(file);
-			}
-
-		public InputStream file()
-			{
-			return file.read();
-			}
+		private Screen(String file) {
+			this.file = Gdx.files.internal(file);
 		}
 
+		public InputStream file() {
+			return file.read();
+		}
+	}
+
 	private Stage stage;
-	private Viewport gameVp=new ExtendViewport(70, 46);
-	private DynLayout dynLayout=new DynLayout();
+	private Viewport gameVp = new ExtendViewport(70, 46);
+	private DynLayout dynLayout = new DynLayout();
+	private I18NBundle i18n;
 
 	@Override
-	public void create()
-		{
-		try
-			{
-			self=this;
+	public void create() {
+		try {
+			self = this;
 			VisUI.load();
 
-			stage=new Stage(new ScreenViewport());
+			i18n = I18NBundle.createBundle(Gdx.files.internal("text"));
+			stage = new Stage(new ScreenViewport());
 
-			BaseUUIDManager manager=new BaseUUIDManager();
+			BaseUUIDManager manager = new BaseUUIDManager();
 
-			Connection co=new Connection(Cfg.getSystemString("game.host"), Cfg.getSystemInt("game.port"));
+			Connection co = new Connection(Cfg.getSystemString("game.host"), Cfg.getSystemInt("game.port"));
 			dynLayout.put("main", this);
 			dynLayout.put("co", co);
-			dynLayout.put("State", dynLayout.js.eval("Java.type('"+State.class.getName()+"')"));
-			dynLayout.put("Screen", dynLayout.js.eval("Java.type('"+Screen.class.getName()+"')"));
+			dynLayout.put("state", State.state);
+			dynLayout.put("i18n", i18n);
+			for (Class<?> c : Arrays.asList(Stats.class, Align.class, State.class, Screen.class, StatBase.class, StatShared.class, StatPoint.class))
+				dynLayout.put(c.getSimpleName(), dynLayout.js.eval("Java.type('" + c.getName() + "')"));
+			dynLayout.addValueBuilder(StatSelector.class, new Attr[] { new Attr("value", "setValue"), new Attr("min", "setMin"), new Attr("max", "setMax") });
 
-			InputSystem inputSystem=new InputSystem(gameVp);
-			WorldConfiguration cfg=new WorldConfiguration();
+			InputSystem inputSystem = new InputSystem(gameVp);
+			WorldConfiguration cfg = new WorldConfiguration();
 			cfg.setSystem(new Archetypes());
 			cfg.setSystem(manager);
 			cfg.setSystem(inputSystem);
@@ -94,6 +100,7 @@ public class Main implements ApplicationListener
 			cfg.setSystem(new MovementSystem());
 			cfg.setSystem(new RenderingSystem(gameVp));
 			cfg.setSystem(co);
+			cfg.setSystem(State.state);
 
 			cfg.setSystem(new ErrorSystem(this));
 			cfg.setSystem(new LogResultSystem(this));
@@ -103,83 +110,70 @@ public class Main implements ApplicationListener
 			cfg.setSystem(new DamageReportSystem());
 			cfg.setSystem(new DespawnSystem());
 
-			world=new World(cfg);
+			world = new World(cfg);
 
 			Gdx.input.setInputProcessor(new InputMultiplexer(inputSystem, stage));
 			stage.addActor(dynLayout);
 			show(Screen.LOGIN);
-			}
-		catch (Exception e)
-			{
+		} catch (Exception e) {
 			throw new RuntimeException(e);
-			}
 		}
+	}
 
-	public void show(Screen screen)
-		{
-		try
-			{
-			dynLayout.load(new InputSource(screen.file()));
-			}
-		catch (Exception e)
-			{
+	public void show(Screen screen) {
+		try (InputStream is = screen.file()) {
+			dynLayout.load(new InputSource(is));
+			System.out.println(dynLayout);
+		} catch (Exception e) {
 			e.printStackTrace();
-			}
 		}
+	}
 
-	public void error(ErrorCode code)
-		{
-		VisLabel info=(VisLabel)dynLayout.get("info");
-		if(info==null)
+	public void error(ErrorCode code) {
+		VisLabel info = (VisLabel) dynLayout.get("info");
+		if (info == null)
 			return;
-		switch (code)
-			{
-			case INVALID_LOGIN:
-				info.setText("Login/pass error");
-				break;
-			case ALREADY_LOGGED:
-				info.setText("Account already logged");
-				break;
-			case UNKNOWN_ERROR:
-			default:
-				info.setText("Unknown error occured");
-			}
+		switch (code) {
+		case INVALID_LOGIN:
+			info.setText("Login/pass error");
+			break;
+		case ALREADY_LOGGED:
+			info.setText("Account already logged");
+			break;
+		case UNKNOWN_ERROR:
+		default:
+			info.setText("Unknown error occured");
 		}
+	}
 
 	@Override
-	public void render()
-		{
+	public void render() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		world.delta=Gdx.graphics.getDeltaTime();
+		world.delta = Gdx.graphics.getDeltaTime();
 		world.process();
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		}
+	}
 
-	public static float pixelToUnit(int px)
-		{
-		return px/8f;
-		}
+	public static float pixelToUnit(int px) {
+		return px / 8f;
+	}
 
 	@Override
-	public void resize(int width, int height)
-		{
+	public void resize(int width, int height) {
 		gameVp.update(width, height);
 		stage.getViewport().update(width, height, true);
-		}
-
-	@Override
-	public void pause()
-		{
-		}
-
-	@Override
-	public void resume()
-		{
-		}
-
-	@Override
-	public void dispose()
-		{
-		}
 	}
+
+	@Override
+	public void pause() {
+	}
+
+	@Override
+	public void resume() {
+	}
+
+	@Override
+	public void dispose() {
+	}
+}

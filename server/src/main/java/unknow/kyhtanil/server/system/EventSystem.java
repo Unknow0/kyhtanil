@@ -8,74 +8,62 @@ import com.artemis.BaseEntitySystem;
 import com.artemis.utils.IntBag;
 import com.esotericsoftware.kryo.util.IntMap;
 
-public class EventSystem extends BaseEntitySystem
-	{
-	private IntMap<Set<EntityListener>> listeners=new IntMap<>();
+public class EventSystem extends BaseEntitySystem {
+	private IntMap<Set<EntityListener>> listeners = new IntMap<>();
 
-	public EventSystem(Aspect.Builder aspect)
-		{
+	public EventSystem(Aspect.Builder aspect) {
 		super(aspect);
-		}
+	}
 
 	@Override
-	protected void processSystem()
-		{
-		}
+	protected void processSystem() {
+	}
 
 	@Override
-	protected boolean checkProcessing()
-		{
+	protected boolean checkProcessing() {
 		return false;
-		}
+	}
 
 	@Override
-	public void inserted(IntBag entities)
-		{
-		int[] ids=entities.getData();
-		for(int i=0, s=entities.size(); s>i; i++)
-			{
-			Set<EntityListener> set=listeners.get(ids[i]);
-			if(set==null)
+	public void inserted(IntBag entities) {
+		int[] ids = entities.getData();
+		for (int i = 0, s = entities.size(); s > i; i++) {
+			Set<EntityListener> set = listeners.get(ids[i]);
+			if (set == null)
 				continue;
-			for(EntityListener l:set)
+			for (EntityListener l : set)
 				l.inserted(ids[i]);
-			}
 		}
+	}
 
-	public void register(int entityId, EntityListener listener)
-		{
-		Set<EntityListener> set=listeners.get(entityId);
-		if(set==null)
-			listeners.put(entityId, set=new HashSet<>());
+	public void register(int entityId, EntityListener listener) {
+		Set<EntityListener> set = listeners.get(entityId);
+		if (set == null)
+			listeners.put(entityId, set = new HashSet<>());
 		set.add(listener);
-		}
+	}
 
-	public void unregister(int entityId, EntityListener listener)
-		{
-		Set<EntityListener> set=listeners.get(entityId);
-		if(set!=null)
+	public void unregister(int entityId, EntityListener listener) {
+		Set<EntityListener> set = listeners.get(entityId);
+		if (set != null)
 			set.remove(listener);
-		}
+	}
 
 	@Override
-	public void removed(IntBag entities)
-		{
-		int[] ids=entities.getData();
-		for(int i=0, s=entities.size(); s>i; i++)
-			{
-			Set<EntityListener> set=listeners.remove(ids[i]);
-			if(set!=null)
-				{
-				for(EntityListener l:set)
+	public void removed(IntBag entities) {
+		int[] ids = entities.getData();
+		for (int i = 0, s = entities.size(); s > i; i++) {
+			Set<EntityListener> set = listeners.remove(ids[i]);
+			if (set != null) {
+				for (EntityListener l : set)
 					l.removed(ids[i]);
-				}
 			}
 		}
+	}
 
-	public static interface EntityListener
-		{
+	public static interface EntityListener {
 		public void inserted(int entityId);
 
 		public void removed(int entityId);
-		}
 	}
+}
