@@ -11,9 +11,10 @@ import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 
 import io.netty.channel.Channel;
+import unknow.kyhtanil.common.Stats;
 import unknow.kyhtanil.common.component.ErrorComp;
 import unknow.kyhtanil.common.component.PositionComp;
-import unknow.kyhtanil.common.component.StatBase;
+import unknow.kyhtanil.common.component.StatAgg;
 import unknow.kyhtanil.common.component.VelocityComp;
 import unknow.kyhtanil.common.component.net.Move;
 import unknow.kyhtanil.common.component.net.NetComp;
@@ -31,7 +32,7 @@ public class MoveSystem extends IteratingSystem {
 	private ComponentMapper<NetComp> net;
 	private ComponentMapper<PositionComp> position;
 	private ComponentMapper<VelocityComp> velocity;
-	private ComponentMapper<StatBase> calculated;
+	private ComponentMapper<StatAgg> calculated;
 	private ComponentMapper<Dirty> dirty;
 
 	private LocalizedManager locManager;
@@ -57,12 +58,13 @@ public class MoveSystem extends IteratingSystem {
 			return;
 		}
 
-		StatBase c = calculated.get(e);
+		int moveSpeed = calculated.get(e).get(Stats.MOVE_SPEED);
 		PositionComp p = position.get(e);
 		try {
-			if (layout.isWall((int) (m.x / 4), (int) (m.y / 4)) || p.distance(m.x, m.y) > c.moveSpeed / 100f + .1) // TODO
+			if (layout.isWall((int) (m.x / 4), (int) (m.y / 4)) || p.distance(m.x, m.y) > moveSpeed / 100f + .1) // TODO
 			{
 				m = new Move(m.uuid, p.x, p.y, m.direction);
+				chan.writeAndFlush(m);
 			}
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block

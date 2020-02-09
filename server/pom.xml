@@ -12,32 +12,9 @@
 
 	<build>
 		<plugins>
-			<!--plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>single</goal>
-						</goals>
-						<phase>package</phase>
-						<configuration>
-							<archiveBaseDirectory>docker</archiveBaseDirectory>
-							<descriptors>
-								<descriptor>assembly.xml</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin-->
 		</plugins>
 	</build>
 	<dependencies>
-		<dependency>
-			<groupId>unknow.json</groupId>
-			<artifactId>json</artifactId>
-			<version>1.2-SNAPSHOT</version>
-		</dependency>
-
 		<dependency>
 			<groupId>unknow.kyhtanil</groupId>
 			<artifactId>kyhtanil-common</artifactId>
@@ -56,14 +33,9 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.onedaybeard.artemis</groupId>
-			<artifactId>artemis-odb</artifactId>
-			<version>${artemis.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.esotericsoftware</groupId>
-			<artifactId>kryo</artifactId>
-			<version>${kryo.version}</version>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>3.4.2</version>
 		</dependency>
 	</dependencies>
 </project>

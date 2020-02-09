@@ -20,9 +20,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import unknow.kyhtanil.client.component.TargetComp;
 import unknow.kyhtanil.client.system.net.Connection;
+import unknow.kyhtanil.common.Stats;
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.common.component.SpriteComp;
-import unknow.kyhtanil.common.component.StatBase;
+import unknow.kyhtanil.common.component.StatAgg;
 import unknow.kyhtanil.common.component.VelocityComp;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
@@ -45,7 +46,7 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 	protected EntitySubscription allPosition;
 	protected EntitySubscription target;
 
-	private ComponentMapper<StatBase> stats;
+	private ComponentMapper<StatAgg> stats;
 	private ComponentMapper<VelocityComp> velocity;
 	private ComponentMapper<PositionComp> position;
 	private ComponentMapper<SpriteComp> sprite;
@@ -74,7 +75,7 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 		if (!checkProcessing())
 			return false;
 		VelocityComp v = velocity.get(state.entity);
-		StatBase c = stats.get(state.entity);
+		int moveSpeed = stats.get(state.entity).get(Stats.MOVE_SPEED);
 
 		if (up == keycode || down == keycode || left == keycode || right == keycode) {// TODO take pj speed
 			if (up == keycode)
@@ -86,7 +87,7 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 			else if (right == keycode)
 				dirX = 1;
 
-			v.speed = c.moveSpeed / 100f;
+			v.speed = moveSpeed / 100f;
 			v.direction = (float) Math.atan2(dirY, dirX);
 		}
 		return true;

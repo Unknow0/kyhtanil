@@ -29,6 +29,8 @@ import unknow.kyhtanil.server.system.SpawnSystem;
 import unknow.kyhtanil.server.system.UpdateStatSystem;
 import unknow.kyhtanil.server.system.net.AttackSystem;
 import unknow.kyhtanil.server.system.net.Clients;
+import unknow.kyhtanil.server.system.net.CreateAccountSystem;
+import unknow.kyhtanil.server.system.net.CreateCharSystem;
 import unknow.kyhtanil.server.system.net.LogCharSystem;
 import unknow.kyhtanil.server.system.net.LoginSystem;
 import unknow.kyhtanil.server.system.net.MoveSystem;
@@ -69,7 +71,9 @@ public class GameWorld {
 
 		cfg.setSystem(new EventSystem(Aspect.all()));
 		cfg.setSystem(new LoginSystem());
+		cfg.setSystem(new CreateAccountSystem());
 		cfg.setSystem(new LogCharSystem());
+		cfg.setSystem(new CreateCharSystem());
 		cfg.setSystem(new MoveSystem(this));
 		cfg.setSystem(new AttackSystem());
 

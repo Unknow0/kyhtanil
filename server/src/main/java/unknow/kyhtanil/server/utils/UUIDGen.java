@@ -1,8 +1,7 @@
 package unknow.kyhtanil.server.utils;
 
-import unknow.common.*;
-import unknow.json.*;
-import unknow.kyhtanil.common.pojo.*;
+import unknow.kyhtanil.common.pojo.UUID;
+import unknow.kyhtanil.server.Cfg;
 
 public class UUIDGen {
 	private final UUID self;
@@ -11,8 +10,8 @@ public class UUIDGen {
 	private final byte nodeId;
 	private final Object monitor = new Object();
 
-	public UUIDGen() throws JsonException {
-		this.nodeId = (byte) Cfg.getSystemInt("kyhtanil.nodeId");
+	public UUIDGen() {
+		this.nodeId = Cfg.nodeId;
 		self = next();
 	}
 

@@ -13,10 +13,8 @@ public class StatBase extends PooledComponent implements Setable<StatBase> {
 	public int intelligence;
 	public int concentration;
 	public int dexterity;
-	
-	public int level;
 
-	public int moveSpeed;
+	public int level;
 
 	/** weapon damage */
 	public Damage dmg = new Damage();
@@ -33,7 +31,11 @@ public class StatBase extends PooledComponent implements Setable<StatBase> {
 		intelligence = t.intelligence;
 		concentration = t.concentration;
 		dexterity = t.dexterity;
-		moveSpeed = t.moveSpeed;
 		dmg = t.dmg;
+	}
+
+	@Override
+	public String toString() {
+		return "strength: " + strength + ", constitution: " + constitution + ", intelligence: " + intelligence + ", concentration: " + concentration + ", dexterity: " + dexterity + ", level: " + level ;
 	}
 }

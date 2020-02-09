@@ -33,9 +33,8 @@ public class CharList extends VisTable {
 		if (State.state.chars != cache) {
 			clearChildren();
 			cache = State.state.chars;
-			for (int i = 0; i < 3; i++)
-				for (CharDesc c : cache)
-					add(new CharActor(c)).row();
+			for (CharDesc c : cache)
+				add(new CharActor(c)).row();
 		}
 		super.validate();
 	}

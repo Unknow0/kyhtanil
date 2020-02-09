@@ -25,4 +25,9 @@ public class PositionComp extends PooledComponent implements Setable<PositionCom
 		float dy = this.y - y;
 		return Math.sqrt(dx * dx + dy * dy);
 	}
+
+	@Override
+	public String toString() {
+		return String.format("%.4fx%.4f", x, y);
+	}
 }

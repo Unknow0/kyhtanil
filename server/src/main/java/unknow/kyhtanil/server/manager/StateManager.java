@@ -1,13 +1,16 @@
 package unknow.kyhtanil.server.manager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
+import com.esotericsoftware.kryo.util.IntMap;
 
-import unknow.common.data.BTree;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.server.component.StateComp;
 
@@ -16,8 +19,8 @@ import unknow.kyhtanil.server.component.StateComp;
  */
 public class StateManager extends IteratingSystem {
 	private static final Logger log = LoggerFactory.getLogger(StateManager.class);
-	private final BTree<Integer, UUID> uuidByLogin = new BTree<>(50);
-	private final BTree<UUID, Integer> uuidToEntity = new BTree<>(50);
+	private final IntMap<UUID> uuidByLogin = new IntMap<>();
+	private final Map<UUID, Integer> uuidToEntity = new HashMap<>();
 
 	private UUIDManager uuidManager;
 

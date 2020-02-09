@@ -34,9 +34,8 @@ public class CreateAccountSystem extends IteratingSystem {
 	private Archetypes arch;
 	private Database database;
 
-	public CreateAccountSystem(Database database) {
+	public CreateAccountSystem() {
 		super(Aspect.all(CreateAccount.class, NetComp.class));
-		this.database = database;
 	}
 
 	@Override

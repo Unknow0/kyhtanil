@@ -153,4 +153,9 @@ public class Database extends BaseSystem {
 	public List<CharDesc> getCharList(int account) throws SQLException {
 		return sqlrunall("select c.id, name, level from characters c inner join characters_body b on c.body=b.id  where account=?", st -> st.setInt(1, account), rs -> new CharDesc(rs.getInt("id"), rs.getString("name"), rs.getInt("level")));
 	}
+
+	public void createChar(int account, String name) throws SQLException {
+		sqlinsert("insert into characters_body default values returning id;" + 
+				"insert into characters (name, account, body) values (?, ?, lastval());", st->{st.setString(1, name); st.setInt(2, account);}, rs->rs.getInt(0));
+	}
 }

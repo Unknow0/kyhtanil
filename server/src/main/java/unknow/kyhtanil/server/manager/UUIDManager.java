@@ -3,7 +3,6 @@ package unknow.kyhtanil.server.manager;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 
-import unknow.json.JsonException;
 import unknow.kyhtanil.common.component.SpriteComp;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
@@ -17,7 +16,7 @@ public class UUIDManager extends BaseUUIDManager {
 	private ComponentMapper<StateComp> state;
 	private UUIDGen uuidGen;
 
-	public UUIDManager() throws JsonException {
+	public UUIDManager() {
 		super(Aspect.all(SpriteComp.class));
 		uuidGen = new UUIDGen();
 	}

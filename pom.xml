@@ -52,8 +52,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>unknow.common</groupId>
-			<artifactId>common</artifactId>
-			<version>1.4-SNAPSHOT</version>
+			<artifactId>unknow-data</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -68,9 +68,15 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>3.4.2</version>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>5.0.0.Alpha2</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.esotericsoftware</groupId>
+			<artifactId>kryo</artifactId>
+			<version>${kryo.version}</version>
 		</dependency>
 	</dependencies>
 </project>

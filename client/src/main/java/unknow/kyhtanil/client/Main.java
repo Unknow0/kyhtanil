@@ -86,7 +86,7 @@ public class Main implements ApplicationListener {
 			dynLayout.put("co", co);
 			dynLayout.put("state", State.state);
 			dynLayout.put("i18n", i18n);
-			for (Class<?> c : Arrays.asList(Stats.class, Align.class, State.class, Screen.class, StatBase.class, StatShared.class, StatPoint.class))
+			for (Class<?> c : Arrays.asList(Stats.class, Align.class, Screen.class, StatBase.class, StatShared.class, StatPoint.class))
 				dynLayout.put(c.getSimpleName(), dynLayout.js.eval("Java.type('" + c.getName() + "')"));
 			dynLayout.addValueBuilder(StatSelector.class, new Attr[] { new Attr("value", "setValue"), new Attr("min", "setMin"), new Attr("max", "setMax") });
 
@@ -135,14 +135,17 @@ public class Main implements ApplicationListener {
 			return;
 		switch (code) {
 		case INVALID_LOGIN:
-			info.setText("Login/pass error");
+			info.setText(i18n.get("error_invalid_login"));
 			break;
 		case ALREADY_LOGGED:
-			info.setText("Account already logged");
+			info.setText(i18n.get("error_already_logged"));
+			break;
+		case NAME_ALREADY_USED:
+			info.setText(i18n.get("error_name_already_used"));
 			break;
 		case UNKNOWN_ERROR:
 		default:
-			info.setText("Unknown error occured");
+			info.setText(i18n.get("error_unknown"));
 		}
 	}
 

@@ -12,7 +12,7 @@
 				<button text="'Create'" onchange="main.show(Screen.CHARCREATE)" />
 			</cell>
 			<cell expandX="">
-				<button text="'Login'" disabled="state.chars==null" onchange="co.logChar(State.uuid, $list.selected())" />
+				<button text="'Login'" disabled="state.chars==null" onchange="co.logChar(state.uuid, $list.selected())" />
 			</cell>
 		</row>
 	</table>

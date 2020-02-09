@@ -33,11 +33,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
-import unknow.common.Cfg;
-import unknow.common.tools.JsonUtils;
-import unknow.json.JsonException;
 import unknow.kyhtanil.common.component.net.NetComp;
 import unknow.kyhtanil.common.util.Kryos;
+import unknow.kyhtanil.server.Cfg;
 
 public class Server extends BaseSystem {
 	private static final Logger log = LoggerFactory.getLogger(Server.class);
@@ -55,7 +53,7 @@ public class Server extends BaseSystem {
 	private List<E> list = new ArrayList<>();
 	private List<E> back = new ArrayList<>();
 
-	public Server() throws NoSuchAlgorithmException, InterruptedException, JsonException {
+	public Server() throws NoSuchAlgorithmException, InterruptedException {
 		kryos = new Kryos();
 
 		ChannelInitializer<SocketChannel> initializer = new ChannelInitializer<SocketChannel>() {
@@ -72,7 +70,7 @@ public class Server extends BaseSystem {
 		client.group(clientGroup).channel(NioSocketChannel.class);
 		client.handler(initializer);
 
-		bind(Cfg.getSystemInt("kyhtanil.port"));
+		bind(Cfg.port);
 	}
 
 	@Override
@@ -132,7 +130,7 @@ public class Server extends BaseSystem {
 
 				Input input = new Input(dst);
 				Object o = kryos.read(input);
-				log.trace("read: {} {}", o.getClass(), JsonUtils.toString(o, true));
+				log.trace("read: {} {}", o.getClass(), o);
 				if (o instanceof Component) {
 					list.add(new E((Component) o, ctx.channel()));
 				} else if (o instanceof byte[]) {
@@ -152,7 +150,7 @@ public class Server extends BaseSystem {
 	@Sharable
 	public class Encoder extends MessageToByteEncoder<Object> {
 		protected void encode(ChannelHandlerContext ctx, Object data, ByteBuf out) throws Exception {
-			log.trace("write: {}: {}", data.getClass(), JsonUtils.toString(data, true));
+			log.trace("write: {}: {}", data.getClass(), data);
 
 			try {
 				ByteBufOutputStream buf = new ByteBufOutputStream(out);

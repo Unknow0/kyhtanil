@@ -19,7 +19,9 @@ import com.badlogic.gdx.net.SocketHints;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
+import unknow.kyhtanil.client.system.State;
 import unknow.kyhtanil.common.component.account.CreateAccount;
+import unknow.kyhtanil.common.component.account.CreateChar;
 import unknow.kyhtanil.common.component.account.LogChar;
 import unknow.kyhtanil.common.component.account.Login;
 import unknow.kyhtanil.common.component.net.Attack;
@@ -39,6 +41,8 @@ public class Connection extends BaseSystem implements Runnable {
 	private Socket co;
 	private Input in;
 	private Output out;
+
+	private State state;
 
 	public Connection(String host, int port) throws Exception {
 		log.info("connecting to {}:{}", host, port);
@@ -66,6 +70,10 @@ public class Connection extends BaseSystem implements Runnable {
 		md.update((byte) ':');
 		md.update(pass.getBytes("UTF8"));
 		kryo.write(out, new CreateAccount(login, md.digest()));
+	}
+
+	public void createChar(String name) {
+		kryo.write(out, new CreateChar(state.uuid, name));
 	}
 
 	public void login(String login, String pass) throws IOException, NoSuchAlgorithmException {
