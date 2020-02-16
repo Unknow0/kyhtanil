@@ -14,25 +14,6 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>2.4.1</version>
 				<executions>
@@ -43,11 +24,11 @@
 						</goals>
 						<configuration>
 							<minimizeJar>true</minimizeJar>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<shadedArtifactAttached>true</shadedArtifactAttached>
 							<artifactSet>
 								<includes>
-									<include>unknow:sync</include>
-									<include>unknow.common:common</include>
-									<include>unknow.json:json</include>
+									<include>unknow.sync:sync-client</include>
 									<include>com.esotericsoftware:kryo</include>
 									<include>com.esotericsoftware:reflectasm</include>
 									<include>org.ow2.asm:asm</include>
@@ -73,7 +54,6 @@
 									<mainClass>unknow.kyhtanil.client.Launcher</mainClass>
 								</transformer>
 							</transformers>
-							<finalName>client</finalName>
 						</configuration>
 					</execution>
 				</executions>

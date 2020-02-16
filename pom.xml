@@ -45,6 +45,16 @@
 						<target>8</target>
 					</configuration>
 				</plugin>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<configuration>
+						<finalName>bundle</finalName>
+						<descriptors>
+							<descriptor>assembly/server.xml</descriptor>
+							<descriptor>assembly/sync.xml</descriptor>
+						</descriptors>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>

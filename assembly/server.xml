@@ -1,0 +1,30 @@
+<assembly>
+	<id>server</id>
+	<formats>
+		<format>tar.gz</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+
+	<moduleSets>
+		<moduleSet>
+			<includes>
+				<include>unknow.kyhtanil:server</include>
+			</includes>
+			<binaries>
+				<unpack>false</unpack>
+				<includeDependencies>true</includeDependencies>
+				<dependencySets>
+					<dependencySet>
+						<outputDirectory>lib</outputDirectory>
+					</dependencySet>
+				</dependencySets>
+			</binaries>
+		</moduleSet>
+	</moduleSets>
+	<fileSets>
+		<fileSet>
+			<outputDirectory>data</outputDirectory>
+			<directory>kyhtanil-data/data</directory>
+		</fileSet>
+	</fileSets>
+</assembly>

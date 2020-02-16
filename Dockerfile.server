@@ -1,0 +1,6 @@
+FROM openjdk:8-jre-alpine
+
+WORKDIR /opt/server
+ENTRYPOINT ["java", "-cp", "*:lib/*", "unknow.kyhtanil.server.GameWorld"]
+
+ADD bundle-server.tar.gz /opt/server

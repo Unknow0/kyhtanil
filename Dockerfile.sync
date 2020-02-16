@@ -1,0 +1,6 @@
+FROM openjdk:8-jre-alpine
+
+WORKDIR /opt/sync
+ENTRYPOINT ["java", "-cp", "*", "unknow.sync.server.SyncServ"]
+
+ADD bundle-sync.tar.gz /opt/sync
