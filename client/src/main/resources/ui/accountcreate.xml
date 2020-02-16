@@ -1,0 +1,39 @@
+<layout fillParent="true" xmlns="dynLayout" onkeypress="if(e.getKeyCode()==com.badlogic.gdx.Input.Keys.ENTER) {co.login($login.getText(), $pass.getText());}">
+	<table fillParent="true" id="table" init="$table.defaults().pad(1)">
+		<row>
+			<cell colspan="2">
+				<label id="info" />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<label text="'Login'" />
+			</cell>
+			<cell>
+				<input id="login" />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<label text="'Pass'" />
+			</cell>
+			<cell>
+				<input id="pass" password="true" />
+			</cell>
+		</row>
+		<row>
+			<cell colspan="2" fill="">
+				<table>
+					<row>
+						<cell expandX="">
+							<button text="'Back'" onchange="main.show(Screen.LOGIN)" />
+						</cell>
+						<cell expandX="">
+							<button id="l" text="'Ok'" onchange="co.createAccount($login.getText(), $pass.getText());" />
+						</cell>
+					</row>
+				</table>
+			</cell>
+		</row>
+	</table>
+</layout>

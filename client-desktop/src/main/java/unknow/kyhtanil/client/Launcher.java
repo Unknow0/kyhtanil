@@ -1,29 +1,36 @@
 package unknow.kyhtanil.client;
 
-import java.awt.*;
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
+import java.awt.GridLayout;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 
-import unknow.common.*;
-import unknow.common.cli.*;
-import unknow.sync.*;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
-import com.badlogic.gdx.backends.lwjgl3.*;
+import unknow.sync.SyncClient;
+import unknow.sync.SyncListener;
 
 public class Launcher {
 	public static void main(String[] arg) throws Exception {
 		boolean update = true;
 		boolean fork = true;
-		Args args = new Args(arg);
-		String a;
-		while ((a = args.next()) != null) {
-			if ("noupdate".equals(a))
+		for (String a : arg) {
+			if ("--noupdate".equals(a))
 				update = false;
-			if ("nofork".equals(a))
+			if ("--nofork".equals(a))
 				fork = false;
 		}
 
@@ -103,10 +110,14 @@ class A extends JFrame implements SyncListener {
 
 	public static boolean update() throws Exception {
 		A a = new A();
-		try (SyncClient sync = new SyncClient(Cfg.getSystemString("updater.host"), Cfg.getSystemInt("updater.port"), "./")) {
+		Properties p = new Properties();
+		try (InputStream is = ClassLoader.getSystemResource("/updater.properties").openStream()) {
+			p.load(is);
+		}
+		try (SyncClient sync = new SyncClient(p.getProperty("host"), Integer.parseInt(p.getProperty("port")), "./")) {
 			sync.setListener(a);
 
-			sync.update(Cfg.getSystemString("updater.login"), Cfg.getSystemString("updater.pass"), Cfg.getSystemString("updater.project"), false, null);
+			sync.update(p.getProperty("login"), p.getProperty("pass"), p.getProperty("project"), false, null);
 			sync.close();
 			return true;
 		} finally {

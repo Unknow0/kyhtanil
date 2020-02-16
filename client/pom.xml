@@ -22,11 +22,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>unknow.orm</groupId>
-			<artifactId>unknow-orm</artifactId>
-			<version>1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>unknow.scene-builder</groupId>
 			<artifactId>scene-builder</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
@@ -46,26 +41,6 @@
 			<groupId>com.kotcrab.vis</groupId>
 			<artifactId>vis-ui</artifactId>
 			<version>0.9.5</version>
-		</dependency>
-		<dependency>
-			<groupId>net.onedaybeard.artemis</groupId>
-			<artifactId>artemis-odb</artifactId>
-			<version>${artemis.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derby</artifactId>
-			<version>10.11.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derbytools</artifactId>
-			<version>10.11.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.esotericsoftware</groupId>
-			<artifactId>kryo</artifactId>
-			<version>${kryo.version}</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -31,11 +31,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--plugin> <groupId>unknow.commons</groupId> <artifactId>unknow-data</artifactId> 
-				<version>0.0.1-SNAPSHOT</version> <executions> <execution> <id>build-data</id> 
-				<goals> <goal>package</goal> </goals> <phase>package</phase> <configuration> 
-				<source>data</source> <output>${project.build.directory}/data</output> </configuration> 
-				</execution> </executions> </plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -61,14 +56,8 @@
 									<include>org.slf4j:slf4j-api</include>
 									<include>org.slf4j:slf4j-simple</include>
 								</includes>
-								<!--excludes> <exclude>unknow.kyhtanil:client</exclude> <exclude>unknow.kyhtanil:kyhtanil-common</exclude> 
-									<exclude>unknow.orm:unknow-orm</exclude> <exclude>io.netty</exclude> <exclude>com.badlogicgames.gdx</exclude> 
-									<exclude>com.kotcrab.vis</exclude> <exclude>net.onedaybeard.artemis</exclude> 
-									</excludes -->
 							</artifactSet>
 							<filters>
-								<!--filter> <artifact>org.slf4j</artifact> <includes> <include>*</include> 
-									</includes> </filter -->
 								<filter>
 									<artifact>*</artifact>
 									<excludes>
@@ -99,8 +88,8 @@
 			<version>1.7.12</version>
 		</dependency>
 		<dependency>
-			<groupId>unknow</groupId>
-			<artifactId>sync</artifactId>
+			<groupId>unknow.sync</groupId>
+			<artifactId>sync-client</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>

@@ -26,7 +26,7 @@
 				<table>
 					<row>
 						<cell expandX="">
-							<button text="'Create'" disabled="true" />
+							<button text="'Create'" onchange="main.show(Screen.ACCOUNTCREATE)" />
 						</cell>
 						<cell expandX="">
 							<button id="l" text="'Ok'" onchange="co.login($login.getText(), $pass.getText());" />

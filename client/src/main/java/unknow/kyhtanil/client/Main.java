@@ -21,7 +21,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
 
-import unknow.common.Cfg;
 import unknow.kyhtanil.client.component.Archetypes;
 import unknow.kyhtanil.client.graphics.StatSelector;
 import unknow.kyhtanil.client.system.InputSystem;
@@ -52,7 +51,7 @@ public class Main implements ApplicationListener {
 	private World world;
 
 	public static enum Screen {
-		LOGIN("ui/login.xml"), CHARSELECT("ui/charselect.xml"), CHARCREATE("ui/charcreate.xml"), GAME("ui/layout.xml");
+		LOGIN("ui/login.xml"), ACCOUNTCREATE("ui/accountcreate.xml"), CHARSELECT("ui/charselect.xml"), CHARCREATE("ui/charcreate.xml"), GAME("ui/layout.xml");
 
 		private FileHandle file;
 
@@ -81,7 +80,7 @@ public class Main implements ApplicationListener {
 
 			BaseUUIDManager manager = new BaseUUIDManager();
 
-			Connection co = new Connection(Cfg.getSystemString("game.host"), Cfg.getSystemInt("game.port"));
+			Connection co = new Connection(Cfg.host, Cfg.port);
 			dynLayout.put("main", this);
 			dynLayout.put("co", co);
 			dynLayout.put("state", State.state);

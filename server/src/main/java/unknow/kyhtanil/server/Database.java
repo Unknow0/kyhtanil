@@ -104,7 +104,7 @@ public class Database extends BaseSystem {
 	}
 
 	public Integer createAccount(String login, byte[] passHash) throws SQLException {
-		return sqlinsert("insert into account (login, pass_hash) values (?,?)", st -> {
+		return sqlinsert("insert into accounts (login, pass_hash) values (?,?)", st -> {
 			st.setString(1, login);
 			st.setBytes(2, passHash);
 		}, rs -> rs.getInt(0));
