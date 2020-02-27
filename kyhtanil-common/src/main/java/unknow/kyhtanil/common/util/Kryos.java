@@ -3,6 +3,7 @@ package unknow.kyhtanil.common.util;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.pool.KryoFactory;
 import com.esotericsoftware.kryo.pool.KryoPool;
-import com.esotericsoftware.minlog.Log;
 
 import unknow.kyhtanil.common.component.ErrorComp;
 import unknow.kyhtanil.common.component.StatAgg;
@@ -86,28 +86,24 @@ public class Kryos implements KryoFactory {
 	public void addClass(Class<?> c) {
 		if (initDone)
 			throw new IllegalStateException("can't add class after a kryo was created");
-		if (clazz.contains(c))
+		if (c == Object.class || c == null || c == Enum.class || c.isPrimitive() || c == String.class || clazz.contains(c))
 			return;
 		log.debug("Register '{}'", c.getSimpleName());
 		clazz.add(c);
 		if (c.isArray()) {
 			addClass(c.getComponentType());
-			return; // don't hash array
+			md.update(c.getName().getBytes(StandardCharsets.UTF_8));
+			return;
 		}
-		long h = 0;
-		try {
-			h = hash(c, 0);
-		} catch (UnsupportedEncodingException e) {
-			Log.warn("Unsuported encoding 'UTF8' protocol integrity won't be checked");
+		Field[] fields = c.getDeclaredFields();
+		Arrays.sort(fields, (a, b) -> a.getName().compareTo(b.getName()));
+		for (Field f : fields) {
+			if ((f.getModifiers() & STATIC_TRANSIANT) != 0)
+				continue;
+			addClass(f.getType());
+			md.update(f.toString().getBytes(StandardCharsets.UTF_8));
 		}
-		md.update((byte) (h & 0xFF));
-		md.update((byte) ((h >> 8) & 0xFF));
-		md.update((byte) ((h >> 16) & 0xFF));
-		md.update((byte) ((h >> 24) & 0xFF));
-		md.update((byte) ((h >> 32) & 0xFF));
-		md.update((byte) ((h >> 40) & 0xFF));
-		md.update((byte) ((h >> 48) & 0xFF));
-		md.update((byte) ((h >> 56) & 0xFF));
+		addClass(c.getSuperclass());
 	}
 
 	public byte[] hash() {
@@ -121,12 +117,15 @@ public class Kryos implements KryoFactory {
 	}
 
 	protected long hash(Class<?> c, long h) throws UnsupportedEncodingException {
-		if (c == Object.class || c == null || c == Enum.class || c.isPrimitive() || c==String.class || clazz.contains(c))
+		if (c == Object.class || c == null || c == Enum.class || c.isPrimitive() || c == String.class)
 			return h;
 		Field[] fields = c.getDeclaredFields();
 		Arrays.sort(fields, (a, b) -> a.getName().compareTo(b.getName()));
 		for (Field f : fields) {
+			Class<?> type = f.getType();
 			if ((f.getModifiers() & STATIC_TRANSIANT) != 0)
+				continue;
+			if (type == Object.class || type == null || type == Enum.class || type.isPrimitive() || type == String.class || clazz.contains(type))
 				continue;
 			addClass(f.getType());
 			h = 17 * h + hash(f.toString().getBytes("UTF8"));
