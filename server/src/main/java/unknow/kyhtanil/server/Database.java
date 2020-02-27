@@ -107,7 +107,10 @@ public class Database extends BaseSystem {
 		return sqlinsert("insert into accounts (login, pass_hash) values (?,?)", st -> {
 			st.setString(1, login);
 			st.setBytes(2, passHash);
-		}, rs -> rs.getInt(0));
+		}, rs -> {
+			rs.next();
+			return rs.getInt(0);
+		});
 	}
 
 	public Integer getAccount(String login, byte[] passHash) throws SQLException {
@@ -155,7 +158,9 @@ public class Database extends BaseSystem {
 	}
 
 	public void createChar(int account, String name) throws SQLException {
-		sqlinsert("insert into characters_body default values returning id;" + 
-				"insert into characters (name, account, body) values (?, ?, lastval());", st->{st.setString(1, name); st.setInt(2, account);}, rs->rs.getInt(0));
+		sqlinsert("insert into characters_body default values returning id;" + "insert into characters (name, account, body) values (?, ?, lastval());", st -> {
+			st.setString(1, name);
+			st.setInt(2, account);
+		}, rs -> rs.getInt(0));
 	}
 }

@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -120,9 +121,11 @@ public class Kryos implements KryoFactory {
 	}
 
 	protected long hash(Class<?> c, long h) throws UnsupportedEncodingException {
-		if (c == Object.class || c == null)
+		if (c == Object.class || c == null || c == Enum.class || c.isPrimitive() || c==String.class || clazz.contains(c))
 			return h;
-		for (Field f : c.getDeclaredFields()) {
+		Field[] fields = c.getDeclaredFields();
+		Arrays.sort(fields, (a, b) -> a.getName().compareTo(b.getName()));
+		for (Field f : fields) {
 			if ((f.getModifiers() & STATIC_TRANSIANT) != 0)
 				continue;
 			addClass(f.getType());

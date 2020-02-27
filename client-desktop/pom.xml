@@ -29,6 +29,7 @@
 							<artifactSet>
 								<includes>
 									<include>unknow.sync:sync-client</include>
+									<include>unknow.sync:sync-common</include>
 									<include>com.esotericsoftware:kryo</include>
 									<include>com.esotericsoftware:reflectasm</include>
 									<include>org.ow2.asm:asm</include>

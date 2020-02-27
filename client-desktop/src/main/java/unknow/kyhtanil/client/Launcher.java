@@ -17,6 +17,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.impl.SimpleLoggerFactory;
+
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
@@ -25,6 +28,8 @@ import unknow.sync.SyncListener;
 
 public class Launcher {
 	public static void main(String[] arg) throws Exception {
+		System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
+		System.setProperty("org.slf4j.simpleLogger.logFile", "log");
 		boolean update = true;
 		boolean fork = true;
 		for (String a : arg) {
@@ -48,8 +53,8 @@ public class Launcher {
 			System.exit(0);
 		}
 
-		if (update)
-			A.update();
+		if (update && !A.update())
+			System.exit(1);
 
 		File f = new File(client.getParent().toFile(), "lib/");
 		File[] libs = f.listFiles();
@@ -110,19 +115,23 @@ class A extends JFrame implements SyncListener {
 
 	public static boolean update() throws Exception {
 		A a = new A();
-		Properties p = new Properties();
-		try (InputStream is = ClassLoader.getSystemResource("/updater.properties").openStream()) {
-			p.load(is);
-		}
-		try (SyncClient sync = new SyncClient(p.getProperty("host"), Integer.parseInt(p.getProperty("port")), "./")) {
-			sync.setListener(a);
+		try {
+			Properties p = new Properties();
+			try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("updater.properties")) {
+				p.load(is);
+			}
+			try (SyncClient sync = new SyncClient(p.getProperty("host"), Integer.parseInt(p.getProperty("port")), "./")) {
+				sync.setListener(a);
 
-			sync.update(p.getProperty("login"), p.getProperty("pass"), p.getProperty("project"), false, null);
-			sync.close();
-			return true;
-		} finally {
-			a.dispose();
+				sync.update(p.getProperty("login"), p.getProperty("pass"), p.getProperty("project"), false, null);
+				a.dispose();
+				return true;
+			}
+		} catch (Throwable e) {
+			e.printStackTrace();
+			a.label.setText(e.toString());
 		}
+		return false;
 	}
 
 	public void startUpdate(String project, int modified, int news, int delete) {
@@ -173,7 +182,7 @@ class B {
 	public static void main(String arg[]) {
 		Lwjgl3ApplicationConfiguration conf = new Lwjgl3ApplicationConfiguration();
 		conf.setTitle("Game");
-		conf.setWindowedMode(560, 368);
+		conf.setWindowedMode(1024, 768);
 		conf.setResizable(true);
 		conf.useOpenGL3(true, 3, 2);
 		conf.useVsync(true);
