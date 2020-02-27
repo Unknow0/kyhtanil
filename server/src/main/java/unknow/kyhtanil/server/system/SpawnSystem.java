@@ -58,7 +58,7 @@ public class SpawnSystem extends IteratingSystem {
 
 			SpriteComp sp = sprite.get(m);
 			sp.h = sp.w = 3;
-			sp.tex = "data/tex/mob.png";
+			sp.tex = "mob";
 
 			update.process(m); // XXX ??
 			event.register(m, new Listener(spawner, e));

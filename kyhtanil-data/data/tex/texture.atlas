@@ -1,0 +1,82 @@
+
+texture.png
+size: 64,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+char
+  rotate: false
+  xy: 2, 2
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+hp
+  rotate: false
+  xy: 28, 25
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+mob
+  rotate: false
+  xy: 36, 36
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+target
+  rotate: false
+  xy: 2, 28
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+
+texture2.png
+size: 16,32
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+hud/bar
+  rotate: false
+  xy: 2, 2
+  size: 12, 27
+  split: 1, 1, 0, 0
+  orig: 12, 27
+  offset: 0, 0
+  index: -1
+
+texture3.png
+size: 256,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+skills/fire
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 0
+skills/fire
+  rotate: false
+  xy: 36, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 1
+skills/fire
+  rotate: false
+  xy: 70, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 2
+skills/fire
+  rotate: false
+  xy: 104, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 3

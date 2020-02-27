@@ -17,7 +17,9 @@
 					<execution>
 						<id>copy</id>
 						<phase>package</phase>
-						<goals><goal>copy-dependencies</goal></goals>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
 						<configuration>
 							<outputDirectory>${project.build.directory}/sync/</outputDirectory>
 						</configuration>
@@ -36,7 +38,7 @@
 					</dependency>
 				</dependencies>
 				<executions>
-					<!--execution>
+					<execution>
 						<goals>
 							<goal>java</goal>
 						</goals>
@@ -45,12 +47,12 @@
 							<includePluginDependencies>true</includePluginDependencies>
 							<mainClass>com.badlogic.gdx.tools.texturepacker.TexturePacker</mainClass>
 							<arguments>
-								<argument>${project.basedir}/src/main/raw/default</argument>
 								<argument>${project.basedir}/src/main/resources/</argument>
-								<argument>default</argument>
+								<argument>${project.basedir}/data/tex/</argument>
+								<argument>texture</argument>
 							</arguments>
 						</configuration>
-					</execution-->
+					</execution>
 				</executions>
 			</plugin>
 			<!--plugin>

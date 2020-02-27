@@ -50,7 +50,7 @@ public class PjInfoSystem extends IteratingSystem {
 		p.y = pj.y;
 
 		SpriteComp s = sprite.get(state.entity);
-		s.tex = "data/tex/char.png";
+		s.tex = "char";
 		s.w = s.h = 3;
 
 		StatShared c = info.get(state.entity);

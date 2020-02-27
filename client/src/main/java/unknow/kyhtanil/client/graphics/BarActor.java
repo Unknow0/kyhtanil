@@ -1,22 +1,21 @@
 package unknow.kyhtanil.client.graphics;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import unknow.kyhtanil.client.system.State;
+import unknow.kyhtanil.client.system.TexManager;
+import unknow.kyhtanil.client.system.TexManager.NineDrawable;
 import unknow.kyhtanil.common.component.StatShared;
 
 public abstract class BarActor extends Actor {
-	private final NinePatch nine;
+	private static final NineDrawable nine = (NineDrawable) TexManager.get("hud/bar");
 	private final Texture back;
 
 	public BarActor(int color) {
-		nine = new NinePatch(new Texture(Gdx.files.internal("data/tex/bar.png")), 1, 1, 0, 0);
 		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
 		pixmap.setColor(color);
 		pixmap.fill();

@@ -63,7 +63,7 @@ public class ApiWorld {
 		SpriteComp s = sprite.get(e);
 		s.w = s.h = 1;
 		s.rotation = dir;
-		s.tex = "data/tex/proj.png";
+		s.tex = "skills/fire";
 	}
 
 	public int[] getMobs(PositionComp p, float r) {

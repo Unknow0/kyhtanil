@@ -8,16 +8,19 @@ import java.io.IOException;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import unknow.kyhtanil.client.Main;
 import unknow.kyhtanil.client.component.TargetComp;
+import unknow.kyhtanil.client.system.TexManager.Drawable;
+import unknow.kyhtanil.client.system.TexManager.RegionDrawable;
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.common.component.SpriteComp;
 import unknow.kyhtanil.common.component.StatShared;
@@ -33,7 +36,7 @@ public class RenderingSystem extends IteratingSystem {
 	private ComponentMapper<PositionComp> position;
 	private ComponentMapper<SpriteComp> sprite;
 
-	private Texture targetTex;
+	private RegionDrawable targetTex;
 	private Vector2 targetSize;
 	private Texture hpTex;
 
@@ -43,9 +46,12 @@ public class RenderingSystem extends IteratingSystem {
 		super(Aspect.all(PositionComp.class, SpriteComp.class, StatShared.class));
 		this.vp = vp;
 		this.layout = new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
-		targetTex = new Texture(Gdx.files.internal("data/tex/target.png"));
+		targetTex = (RegionDrawable) TexManager.get("target");
 		targetSize = new Vector2(Main.pixelToUnit(targetTex.getWidth()), Main.pixelToUnit(targetTex.getHeight()));
-		hpTex = new Texture(Gdx.files.internal("data/tex/hp.png"));
+		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
+		pixmap.setColor(Color.RED);
+		pixmap.fill();
+		hpTex = new Texture(pixmap);
 	}
 
 	@Override
@@ -84,7 +90,7 @@ public class RenderingSystem extends IteratingSystem {
 	protected void process(int id) {
 		PositionComp pos = position.get(id);
 		SpriteComp s = sprite.get(id);
-		TextureRegion tex = TexManager.get(s.tex);
+		Drawable tex = TexManager.get(s.tex);
 		if (tex != null) {
 			if (s.rotation != 0) {
 				batch.end();
@@ -93,16 +99,16 @@ public class RenderingSystem extends IteratingSystem {
 				batch.getTransformMatrix().rotateRad(0, 0, 1, s.rotation);
 
 				batch.begin();
-				batch.draw(tex, -s.w / 2, -s.h / 2, s.w, s.h);
+				tex.draw(batch, -s.w / 2, -s.h / 2, s.w, s.h);
 				batch.end();
 
 				batch.setTransformMatrix(cpy);
 				batch.begin();
 			} else
-				batch.draw(tex, pos.x - s.w / 2, pos.y - s.h / 2, s.w, s.h);
+				tex.draw(batch, pos.x - s.w / 2, pos.y - s.h / 2, s.w, s.h);
 		}
 		if (target.has(id))
-			batch.draw(targetTex, pos.x - targetSize.x / 2, pos.y - targetSize.y / 2, targetSize.x, targetSize.y);
+			targetTex.draw(batch, pos.x - targetSize.x / 2, pos.y - targetSize.y / 2, targetSize.x, targetSize.y);
 
 		StatShared c = info.get(id);
 
