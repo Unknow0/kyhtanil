@@ -67,6 +67,8 @@ public class UpdateStatSystem extends IteratingSystem {
 			return b.intelligence;
 		case STAT_STRENGTH:
 			return b.strength;
+		case WPN_DMG_BLUNT:
+			return 2;
 		case MOVE_SPEED:
 			return 20;
 		default:

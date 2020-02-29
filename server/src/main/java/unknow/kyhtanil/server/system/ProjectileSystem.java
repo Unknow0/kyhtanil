@@ -49,12 +49,12 @@ public class ProjectileSystem extends IteratingSystem {
 			return;
 		}
 
-		IntBag potential = locManager.get(p.x, p.y, 10, c); // TODO width & collision
+		IntBag potential = locManager.get(p.x, p.y, 50, c); // TODO width & collision
 		for (int i = 0; i < potential.size(); i++) {
 			int t = potential.get(i);
 			if (t == src)
 				continue;
-			if (p.distance(position.get(t)) < 2) {
+			if (p.distance(position.get(t)) < 16) {
 				if (proj.onHit != null)
 					proj.onHit.run(t);
 				world.delete(e);

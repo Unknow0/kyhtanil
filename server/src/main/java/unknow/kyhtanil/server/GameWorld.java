@@ -55,8 +55,6 @@ public class GameWorld {
 		locManager = new LocalizedManager(10f, 10f);
 		MapLayout layout = new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
 
-		ApiWorld apiWorld = new ApiWorld();
-
 		WorldConfiguration cfg = new WorldConfiguration();
 		cfg.setSystem(DebugSystem.class);
 		cfg.setSystem(database);
@@ -86,11 +84,8 @@ public class GameWorld {
 		cfg.setSystem(new DirtySystem());
 
 		cfg.register(layout);
-		cfg.register("javax.script.ScriptEngine", apiWorld.js());
-		cfg.register(apiWorld);
 
 		world = new World(cfg);
-		world.inject(apiWorld);
 
 		spawner = BaseComponentMapper.getFor(SpawnerComp.class, world);
 

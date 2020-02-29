@@ -154,7 +154,8 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 		for (int i = 0; i < entities.size(); i++) {
 			int e = entities.get(i);
 			PositionComp p = position.get(e);
-			if (p.distance(v.x, v.y) < 1) {
+			SpriteComp s = sprite.get(e);
+			if (p.distance(v.x, v.y) < s.w) {
 				log.info("target {} ({}, {})", manager.getUuid(e), p.x, p.y);
 				EntityEdit edit = world.getEntity(e).edit();
 				edit.create(TargetComp.class);

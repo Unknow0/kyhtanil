@@ -57,7 +57,7 @@ public class SpawnSystem extends IteratingSystem {
 			// TODO load mob stats
 
 			SpriteComp sp = sprite.get(m);
-			sp.h = sp.w = 24;
+			sp.h = sp.w = 16;
 			sp.tex = "mob";
 
 			update.process(m); // XXX ??

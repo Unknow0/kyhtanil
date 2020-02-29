@@ -7,7 +7,7 @@ import com.artemis.PooledComponent;
 import unknow.kyhtanil.common.Stats;
 
 /**
- * Stat all off visible entity
+ * Aggregated stat
  * 
  * @author unknow
  */
