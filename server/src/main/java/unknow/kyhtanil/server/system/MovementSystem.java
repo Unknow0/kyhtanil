@@ -1,12 +1,16 @@
 package unknow.kyhtanil.server.system;
 
+import java.io.IOException;
+
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
+import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.common.component.VelocityComp;
 import unknow.kyhtanil.common.component.net.Move;
+import unknow.kyhtanil.common.maps.MapLayout;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.server.manager.LocalizedManager;
 import unknow.kyhtanil.server.manager.UUIDManager;
@@ -19,6 +23,9 @@ public class MovementSystem extends IteratingSystem {
 	private ComponentMapper<PositionComp> position;
 
 	private Clients clients;
+
+	@Wire
+	private MapLayout layout;
 
 	public MovementSystem() {
 		super(Aspect.all(PositionComp.class, VelocityComp.class));
@@ -36,8 +43,16 @@ public class MovementSystem extends IteratingSystem {
 			return;
 
 		PositionComp p = position.get(e);
-		p.x += Math.cos(v.direction) * v.speed * world.delta;
-		p.y += Math.sin(v.direction) * v.speed * world.delta;
+		double x = p.x + Math.cos(v.direction) * v.speed * world.delta;
+		double y = p.y + Math.sin(v.direction) * v.speed * world.delta;
+		try {
+			if (layout.isWall(x, y))
+				return;
+		} catch (IOException ex) {
+		}
+		p.x=(float) x;
+		p.y=(float) y;
+
 		locManager.changed(e);
 		// notify move ?
 

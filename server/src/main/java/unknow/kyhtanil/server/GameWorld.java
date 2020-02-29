@@ -96,7 +96,7 @@ public class GameWorld {
 
 		spawnArch = new ArchetypeBuilder().add(SpawnerComp.class).build(world);
 
-		createSpawner(100, 100, 80, 3, 1);
+		createSpawner(200, 200, 100, 3, 1);
 	}
 
 	private void createSpawner(float x, float y, float range, int max_count, float speed) {

@@ -46,8 +46,8 @@ public class SpawnSystem extends IteratingSystem {
 			p.y = (float) (s.y + Math.random() * s.range * 2 - s.range);
 
 			VelocityComp v = velocity.get(m);
-			v.direction = 0;
-			v.speed = 0f;
+			v.direction = .5f;
+			v.speed = 0;
 
 			StatShared mi = mobInfo.get(m);
 			mi.hp = 10;

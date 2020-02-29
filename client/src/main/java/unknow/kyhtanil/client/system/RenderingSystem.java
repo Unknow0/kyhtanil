@@ -17,10 +17,10 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import unknow.kyhtanil.client.Main;
 import unknow.kyhtanil.client.component.TargetComp;
-import unknow.kyhtanil.client.system.TexManager.Drawable;
-import unknow.kyhtanil.client.system.TexManager.RegionDrawable;
+import unknow.kyhtanil.common.TexManager;
+import unknow.kyhtanil.common.TexManager.Drawable;
+import unknow.kyhtanil.common.TexManager.RegionDrawable;
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.common.component.SpriteComp;
 import unknow.kyhtanil.common.component.StatShared;

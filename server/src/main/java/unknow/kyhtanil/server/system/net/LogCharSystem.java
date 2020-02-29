@@ -52,7 +52,7 @@ public class LogCharSystem extends IteratingSystem {
 
 	private UpdateStatSystem update;
 
-	private static final float range = 50f;
+	private static final float range = 500f;
 
 	public LogCharSystem() {
 		super(Aspect.all(LogChar.class, NetComp.class));

@@ -68,7 +68,7 @@ public class UpdateStatSystem extends IteratingSystem {
 		case STAT_STRENGTH:
 			return b.strength;
 		case MOVE_SPEED:
-			return 200;
+			return 20;
 		default:
 			return 0;
 		}

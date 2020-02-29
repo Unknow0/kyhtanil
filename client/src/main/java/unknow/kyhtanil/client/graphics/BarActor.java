@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import unknow.kyhtanil.client.system.State;
-import unknow.kyhtanil.client.system.TexManager;
-import unknow.kyhtanil.client.system.TexManager.NineDrawable;
+import unknow.kyhtanil.common.TexManager;
+import unknow.kyhtanil.common.TexManager.NineDrawable;
 import unknow.kyhtanil.common.component.StatShared;
 
 public abstract class BarActor extends Actor {

@@ -12,7 +12,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.I18NBundle;
@@ -28,7 +27,6 @@ import unknow.kyhtanil.client.system.InputSystem;
 import unknow.kyhtanil.client.system.MovementSystem;
 import unknow.kyhtanil.client.system.RenderingSystem;
 import unknow.kyhtanil.client.system.State;
-import unknow.kyhtanil.client.system.TexManager;
 import unknow.kyhtanil.client.system.net.Connection;
 import unknow.kyhtanil.client.system.net.DamageReportSystem;
 import unknow.kyhtanil.client.system.net.DespawnSystem;
@@ -38,6 +36,7 @@ import unknow.kyhtanil.client.system.net.PjInfoSystem;
 import unknow.kyhtanil.client.system.net.SpawnSystem;
 import unknow.kyhtanil.client.system.net.UpdateInfoSystem;
 import unknow.kyhtanil.common.Stats;
+import unknow.kyhtanil.common.TexManager;
 import unknow.kyhtanil.common.component.ErrorComp.ErrorCode;
 import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatPoint;
@@ -75,6 +74,7 @@ public class Main implements ApplicationListener {
 		try {
 			self = this;
 			VisUI.load();
+			TexManager.init();
 
 			i18n = I18NBundle.createBundle(Gdx.files.internal("text"));
 			stage = new Stage(new ScreenViewport());
@@ -95,7 +95,6 @@ public class Main implements ApplicationListener {
 			cfg.setSystem(new Archetypes());
 			cfg.setSystem(manager);
 			cfg.setSystem(inputSystem);
-			cfg.setSystem(new TexManager());
 
 			cfg.setSystem(new MovementSystem());
 			cfg.setSystem(new RenderingSystem(gameVp));

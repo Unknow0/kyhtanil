@@ -87,7 +87,7 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 			else if (right == keycode)
 				dirX = 1;
 
-			v.speed = moveSpeed / 100f;
+			v.speed = moveSpeed;
 			v.direction = (float) Math.atan2(dirY, dirX);
 		}
 		return true;

@@ -16,26 +16,24 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import unknow.kyhtanil.common.TexManager;
+import unknow.kyhtanil.common.TexManager.Drawable;
 
 public class MapLayout {
 	private static final int size = 16;
 	private static final int h = (int) (size * Math.sqrt(3) / 2);
+	private static final float width = 29f;
+	private static final float heigth = 33f;
+
 	private Map<String, TilesetInfo> tileset;
 	private List<MapEntry> maps;
-	// private float tileWidth = 32, tileHeight = 32;
-	private AtlasRegion t0;
-	private AtlasRegion t1;
 
 	public MapLayout() {
 		maps = new ArrayList<MapEntry>();
 		tileset = new HashMap<String, TilesetInfo>();
-		t0 = new TextureAtlas(Gdx.files.internal("data/tex/texture.atlas")).findRegion("tileset/0");
-		t1 = new TextureAtlas(Gdx.files.internal("data/tex/texture.atlas")).findRegion("tileset/1");
 	}
 
 	public MapLayout(DataInputStream in) throws IOException {
@@ -50,8 +48,6 @@ public class MapLayout {
 			TilesetInfo ti = new TilesetInfo(in);
 			tileset.put(ti.name, ti);
 		}
-		t0 = new TextureAtlas(Gdx.files.internal("data/tex/texture.atlas")).findRegion("tileset/0");
-		t1 = new TextureAtlas(Gdx.files.internal("data/tex/texture.atlas")).findRegion("tileset/1");
 	}
 
 	public void save(DataOutputStream out) throws IOException {
@@ -105,7 +101,7 @@ public class MapLayout {
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean isWall(float x, float y) throws IOException {
+	public boolean isWall(double x, double y) throws IOException {
 		double my = y / (size * 1.5);
 		double yr = my % 1;
 
@@ -160,7 +156,6 @@ public class MapLayout {
 
 		for (MapEntry e : get(sx, sy, ex, ey)) {
 			MapModel m = e.map();
-			TileSet tileset = tileset(e.tileset);
 			float mxe = e.x + e.w;
 			float mye = e.y + e.h;
 
@@ -168,13 +163,12 @@ public class MapLayout {
 			while (x <= ex && x < mxe) {
 				int y = e.y < sy ? sy : e.y;
 				while (y <= ey && y < mye) {
-					// TextureRegion tex = tileset.get(m.get(x - e.x, y - e.y));
-
 					int px = x * h * 2;
 					if (y % 2 == 0)
 						px += h;
-					TextureRegion r = m.get(x - e.x, y - e.y) == 1 ? t1 : t0;
-					batch.draw(r, px, y * size * 1.5f, r.getRegionWidth(), r.getRegionHeight());
+					Drawable drawable = TexManager.get("tileset/" + m.get(x - e.x, y - e.y));
+					if (drawable != null)
+						drawable.draw(batch, px, y * size * 1.5f, width, heigth);
 					y++;
 				}
 				x++;

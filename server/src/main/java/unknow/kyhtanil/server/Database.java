@@ -39,6 +39,9 @@ public class Database extends BaseSystem {
 	}
 
 	private static interface STInit {
+		public static final STInit EMPTY = st -> {
+		};
+
 		public void init(PreparedStatement st) throws SQLException;
 	}
 
@@ -95,6 +98,8 @@ public class Database extends BaseSystem {
 			init.init(st);
 			st.executeUpdate();
 			ResultSet rs = st.getGeneratedKeys();
+			if (!rs.next())
+				return null;
 			return conv.convert(rs);
 		}
 	}
@@ -133,7 +138,7 @@ public class Database extends BaseSystem {
 					PositionComp p = position.get(e);
 					// pj.x=5;
 					// pj.y=5; // TODO
-					p.x = p.y = 30;
+					p.x = p.y = 60;
 
 					StatShared m = statShared.get(e);
 					m.name = rs.getString("name");
@@ -158,9 +163,18 @@ public class Database extends BaseSystem {
 	}
 
 	public void createChar(int account, String name) throws SQLException {
-		sqlinsert("insert into characters_body default values returning id;" + "insert into characters (name, account, body) values (?, ?, lastval());", st -> {
+		sqlinsert("insert into characters (name,account) values (?,?)", st -> {
 			st.setString(1, name);
 			st.setInt(2, account);
-		}, rs -> rs.getInt(0));
+		}, rs -> {
+			int c = rs.getInt(1);
+			int b = sqlinsert("insert into characters_body default values", STInit.EMPTY, rsi -> rsi.getInt(1));
+			sqlupdate("update characters set body=? where id=?", st -> {
+				st.setInt(1, b);
+				st.setInt(2, c);
+			});
+			return null;
+		});
+
 	}
 }

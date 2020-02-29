@@ -57,19 +57,19 @@ public class MoveSystem extends IteratingSystem {
 			chan.close();
 			return;
 		}
+		Dirty d = dirty.get(e);
 
 		int moveSpeed = calculated.get(e).get(Stats.MOVE_SPEED);
 		PositionComp p = position.get(e);
 		try {
-			if (p.distance(m.x, m.y) > moveSpeed / 100f + .1 || layout.isWall(p.x, p.y)) {
+			if (p.distance(m.x, m.y) > moveSpeed || layout.isWall(m.x, m.y)) {
 				m = new Move(m.uuid, p.x, p.y, m.direction);
-				chan.writeAndFlush(m);
+				d.add(p);
 			}
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		Dirty d = dirty.get(e);
 		if (p.x != m.x || p.y != m.y)
 			d.add(p);
 		p.x = m.x;
