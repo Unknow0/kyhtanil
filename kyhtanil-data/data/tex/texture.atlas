@@ -80,3 +80,30 @@ skills/fire
   orig: 32, 32
   offset: 0, 0
   index: 3
+
+texture4.png
+size: 128,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+tileset/0
+  rotate: false
+  xy: 2, 2
+  size: 29, 33
+  orig: 29, 33
+  offset: 0, 0
+  index: -1
+tileset/1
+  rotate: false
+  xy: 33, 2
+  size: 29, 33
+  orig: 29, 33
+  offset: 0, 0
+  index: -1
+tileset/base
+  rotate: false
+  xy: 64, 2
+  size: 29, 33
+  orig: 29, 33
+  offset: 0, 0
+  index: -1

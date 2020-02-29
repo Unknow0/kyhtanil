@@ -47,7 +47,7 @@ public class RenderingSystem extends IteratingSystem {
 		this.vp = vp;
 		this.layout = new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
 		targetTex = (RegionDrawable) TexManager.get("target");
-		targetSize = new Vector2(Main.pixelToUnit(targetTex.getWidth()), Main.pixelToUnit(targetTex.getHeight()));
+		targetSize = new Vector2(targetTex.getWidth(), targetTex.getHeight());
 		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
 		pixmap.setColor(Color.RED);
 		pixmap.fill();
@@ -80,7 +80,7 @@ public class RenderingSystem extends IteratingSystem {
 		batch.setProjectionMatrix(vp.getCamera().combined);
 		batch.begin();
 		try {
-			layout.draw(batch, Main.pixelToUnit(1), vp);
+			layout.draw(batch, vp);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

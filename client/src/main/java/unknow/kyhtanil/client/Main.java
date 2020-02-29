@@ -66,7 +66,7 @@ public class Main implements ApplicationListener {
 	}
 
 	private Stage stage;
-	private Viewport gameVp = new ExtendViewport(70, 46);
+	private Viewport gameVp = new ExtendViewport(560, 368);
 	private DynLayout dynLayout = new DynLayout();
 	private I18NBundle i18n;
 
@@ -156,10 +156,6 @@ public class Main implements ApplicationListener {
 		world.process();
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-	}
-
-	public static float pixelToUnit(int px) {
-		return px / 8f;
 	}
 
 	@Override

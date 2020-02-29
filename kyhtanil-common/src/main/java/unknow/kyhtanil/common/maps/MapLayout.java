@@ -1,22 +1,41 @@
 package unknow.kyhtanil.common.maps;
 
-import java.io.*;
-import java.util.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.files.*;
-import com.badlogic.gdx.graphics.g2d.*;
-import com.badlogic.gdx.math.*;
-import com.badlogic.gdx.utils.viewport.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MapLayout {
+	private static final int size = 16;
+	private static final int h = (int) (size * Math.sqrt(3) / 2);
 	private Map<String, TilesetInfo> tileset;
 	private List<MapEntry> maps;
-	private float tileWidth = 32, tileHeight = 32;
+	// private float tileWidth = 32, tileHeight = 32;
+	private AtlasRegion t0;
+	private AtlasRegion t1;
 
 	public MapLayout() {
 		maps = new ArrayList<MapEntry>();
 		tileset = new HashMap<String, TilesetInfo>();
+		t0 = new TextureAtlas(Gdx.files.internal("data/tex/texture.atlas")).findRegion("tileset/0");
+		t1 = new TextureAtlas(Gdx.files.internal("data/tex/texture.atlas")).findRegion("tileset/1");
 	}
 
 	public MapLayout(DataInputStream in) throws IOException {
@@ -31,6 +50,8 @@ public class MapLayout {
 			TilesetInfo ti = new TilesetInfo(in);
 			tileset.put(ti.name, ti);
 		}
+		t0 = new TextureAtlas(Gdx.files.internal("data/tex/texture.atlas")).findRegion("tileset/0");
+		t1 = new TextureAtlas(Gdx.files.internal("data/tex/texture.atlas")).findRegion("tileset/1");
 	}
 
 	public void save(DataOutputStream out) throws IOException {
@@ -61,10 +82,52 @@ public class MapLayout {
 		return list;
 	}
 
+	/**
+	 * check wall in map coordinate
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 * @throws IOException
+	 */
 	public boolean isWall(int x, int y) throws IOException {
 		MapEntry e = get(x, y);
 		TilesetInfo ti = tileset.get(e.tileset);
 		return ti.isWall(e.map().get(x - e.x, y - e.y));
+	}
+
+	/**
+	 * check wall in game coordinate
+	 * 
+	 * @param x
+	 * @param y
+	 * @param unitsPerPixel
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean isWall(float x, float y) throws IOException {
+		double my = y / (size * 1.5);
+		double yr = my % 1;
+
+		boolean shift = (int) my % 2 == 0;
+
+		double mx = (x - (shift ? h : 0)) / 2. / h;
+		double xr = mx % 1;
+
+		if (yr < .3) { // we are in the pointy part
+			if (xr < .5) {
+				if (yr < -.6 * xr + .3) {
+					my -= 1;
+					if (!shift)
+						mx -= 1;
+				}
+			} else if (yr < .6 * xr - .3) {
+				my -= 1;
+				if (shift)
+					mx += 1;
+			}
+		}
+		return isWall((int) mx, (int) my);
 	}
 
 	public void add(int x, int y, int w, int h, String name, String tilesetFile) {
@@ -77,19 +140,19 @@ public class MapLayout {
 		return maps;
 	}
 
-	public void draw(Batch batch, float unitsPerPixel, Viewport vp) throws IOException {
-		float tw = tileWidth * unitsPerPixel;
-		float th = tileHeight * unitsPerPixel;
+	public void draw(Batch batch, Viewport vp) throws IOException {
+		float h2 = 2 * h;
+		float s15 = size * 1.5f;
 
 		Vector3 v = vp.getCamera().position;
-		int sx = (int) ((v.x - vp.getWorldWidth() / 2) / tw);
-		int sy = (int) ((v.y - vp.getWorldHeight() / 2) / th);
+		int sx = (int) ((v.x - vp.getWorldWidth() / 2) / h2) - 1;
+		int sy = (int) ((v.y - vp.getWorldHeight() / 2) / s15) - 1;
 		// if(sx<minX)
 		// sx=minX;
 		// if(sy<minY)
 		// sy=minY;
-		int ex = sx + 1 + (int) ((vp.getWorldWidth()) / tw);
-		int ey = sy + 1 + (int) ((vp.getWorldHeight()) / th);
+		int ex = sx + 2 + (int) ((vp.getWorldWidth()) / h2);
+		int ey = sy + 2 + (int) ((vp.getWorldHeight()) / s15);
 		// if(ex>maxX)
 		// ex=maxX;
 		// if(ey>maxY)
@@ -105,8 +168,13 @@ public class MapLayout {
 			while (x <= ex && x < mxe) {
 				int y = e.y < sy ? sy : e.y;
 				while (y <= ey && y < mye) {
-					TextureRegion tex = tileset.get(m.get(x - e.x, y - e.y));
-					batch.draw(tex, x * tw, y * th, tw, th);
+					// TextureRegion tex = tileset.get(m.get(x - e.x, y - e.y));
+
+					int px = x * h * 2;
+					if (y % 2 == 0)
+						px += h;
+					TextureRegion r = m.get(x - e.x, y - e.y) == 1 ? t1 : t0;
+					batch.draw(r, px, y * size * 1.5f, r.getRegionWidth(), r.getRegionHeight());
 					y++;
 				}
 				x++;
@@ -114,13 +182,13 @@ public class MapLayout {
 		}
 	}
 
-	public float tileWidth() {
-		return tileWidth;
-	}
-
-	public float tileHeight() {
-		return tileHeight;
-	}
+	// public float tileWidth() {
+	// return tileWidth;
+	// }
+	//
+	// public float tileHeight() {
+	// return tileHeight;
+	// }
 
 	public TileSet tileset(String name) throws IOException {
 		TilesetInfo ti = tileset.get(name);

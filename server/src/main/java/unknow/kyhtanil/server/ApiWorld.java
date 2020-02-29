@@ -61,7 +61,7 @@ public class ApiWorld {
 		p.source = uuid.getUuid(source);
 
 		SpriteComp s = sprite.get(e);
-		s.w = s.h = 1;
+		s.w = s.h = 8;
 		s.rotation = dir;
 		s.tex = "skills/fire";
 	}

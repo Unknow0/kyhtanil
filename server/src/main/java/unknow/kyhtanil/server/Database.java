@@ -133,7 +133,7 @@ public class Database extends BaseSystem {
 					PositionComp p = position.get(e);
 					// pj.x=5;
 					// pj.y=5; // TODO
-					p.x = p.y = 5;
+					p.x = p.y = 30;
 
 					StatShared m = statShared.get(e);
 					m.name = rs.getString("name");

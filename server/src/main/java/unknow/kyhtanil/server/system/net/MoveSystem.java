@@ -61,8 +61,7 @@ public class MoveSystem extends IteratingSystem {
 		int moveSpeed = calculated.get(e).get(Stats.MOVE_SPEED);
 		PositionComp p = position.get(e);
 		try {
-			if (layout.isWall((int) (m.x / 4), (int) (m.y / 4)) || p.distance(m.x, m.y) > moveSpeed / 100f + .1) // TODO
-			{
+			if (p.distance(m.x, m.y) > moveSpeed / 100f + .1 || layout.isWall(p.x, p.y)) {
 				m = new Move(m.uuid, p.x, p.y, m.direction);
 				chan.writeAndFlush(m);
 			}
