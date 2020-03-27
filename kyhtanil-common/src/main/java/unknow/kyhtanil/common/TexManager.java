@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -17,11 +19,13 @@ public class TexManager {
 		public void draw(Batch batch, float x, float y, float width, float height) {
 		}
 	};
+	private static Graphics graphics;
 	private static TextureAtlas atlas;
 
 	private static Map<String, Drawable> cache = new WeakHashMap<>();
 
 	public static final void init() {
+		graphics = Gdx.graphics;
 		atlas = new TextureAtlas(Gdx.files.internal("data/tex/texture.atlas"));
 	}
 
@@ -38,7 +42,7 @@ public class TexManager {
 			return patch;
 		}
 		if (region.index > -1) {
-			// TODO animation
+			return new AnimationDrawable(regions);
 		}
 		return new RegionDrawable(region);
 	}
@@ -79,6 +83,22 @@ public class TexManager {
 
 		public int getHeight() {
 			return region.getRegionHeight();
+		}
+	}
+
+	public static class AnimationDrawable implements Drawable {
+		private Animation a;
+		private float t;
+
+		public AnimationDrawable(Array<AtlasRegion> regions) {
+			this.a = new Animation(1f, regions, Animation.PlayMode.LOOP);
+			this.t = 0;
+		}
+
+		@Override
+		public void draw(Batch batch, float x, float y, float width, float height) {
+			t += graphics.getDeltaTime();
+			batch.draw(a.getKeyFrame(t), x, y, width, height);
 		}
 	}
 }
