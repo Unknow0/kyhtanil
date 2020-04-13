@@ -26,10 +26,10 @@
 				<table>
 					<row>
 						<cell expandX="">
-							<button text="'Create'" onchange="main.show(Screen.ACCOUNTCREATE)" />
+							<button text="i18n.get('dialog_create')" onchange="main.show(Screen.ACCOUNTCREATE)" />
 						</cell>
 						<cell expandX="">
-							<button id="l" text="'Ok'" onchange="co.login($login.getText(), $pass.getText());" />
+							<button id="l" text="i18n.get('dialog_login')" onchange="co.login($login.getText(), $pass.getText());" />
 						</cell>
 					</row>
 				</table>

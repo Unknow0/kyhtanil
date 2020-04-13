@@ -166,7 +166,7 @@ public class MapLayout {
 					int px = x * h * 2;
 					if (y % 2 == 0)
 						px += h;
-					Drawable drawable = TexManager.get("tileset/" + m.get(x - e.x, y - e.y));
+					Drawable drawable = TexManager.get("tileset/" + e.tileset + "/" + m.get(x - e.x, y - e.y));
 					if (drawable != null)
 						drawable.draw(batch, px, y * size * 1.5f, width, heigth);
 					y++;
@@ -174,21 +174,6 @@ public class MapLayout {
 				x++;
 			}
 		}
-	}
-
-	// public float tileWidth() {
-	// return tileWidth;
-	// }
-	//
-	// public float tileHeight() {
-	// return tileHeight;
-	// }
-
-	public TileSet tileset(String name) throws IOException {
-		TilesetInfo ti = tileset.get(name);
-		if (ti == null)
-			throw new IOException("no tileset found");
-		return ti.tileset();
 	}
 
 	public Collection<TilesetInfo> tilesetInfo() {
@@ -212,11 +197,9 @@ public class MapLayout {
 		public String name;
 		public int width, height;
 		private BitSet wall;
-		private TileSet tileset = null;
 
-		public TilesetInfo(String name, TileSet ts, int width, int height) {
+		public TilesetInfo(String name, int width, int height) {
 			this.name = name;
-			this.tileset = ts;
 			this.width = width;
 			this.height = height;
 			wall = new BitSet();
@@ -241,12 +224,6 @@ public class MapLayout {
 			out.writeInt(l.length);
 			for (int i = 0; i < l.length; i++)
 				out.writeLong(l[i]);
-		}
-
-		public TileSet tileset() throws IOException {
-			if (tileset == null)
-				tileset = new TileSet(Gdx.files.internal("data/tileset/" + name), width, height);
-			return tileset;
 		}
 
 		public boolean isWall(int i) {

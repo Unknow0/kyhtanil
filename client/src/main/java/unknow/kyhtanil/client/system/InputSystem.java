@@ -19,6 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import unknow.kyhtanil.client.component.TargetComp;
+import unknow.kyhtanil.client.graphics.GameWindow;
 import unknow.kyhtanil.client.system.net.Connection;
 import unknow.kyhtanil.common.Stats;
 import unknow.kyhtanil.common.component.PositionComp;
@@ -67,7 +68,7 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 
 	protected void initialize() {
 		AspectSubscriptionManager sm = world.getAspectSubscriptionManager();
-		allPosition = sm.get(Aspect.all(PositionComp.class));
+		allPosition = sm.get(Aspect.all(PositionComp.class, SpriteComp.class));
 		target = sm.get(Aspect.all(TargetComp.class));
 	}
 
@@ -105,12 +106,11 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 			if (dirY == 0. && dirX == 0.)
 				v.speed = 0f;
 			v.direction = (float) Math.atan2(dirY, dirX);
-		}
-		// else if(showStat==keycode)
-		// screen.toggleStat();
-		// else if(Input.Keys.ESCAPE==keycode)
-		// screen.closeLast();
-		else {
+		} else if (showStat == keycode) {
+			GameWindow.STATS.toggle();
+		} else if (Input.Keys.ESCAPE == keycode) {
+			// GameWindow.closeLast();
+		} else {
 			for (int i = 0; i < bar.length; i++) {
 				if (bar[i] == keycode) {
 					try {

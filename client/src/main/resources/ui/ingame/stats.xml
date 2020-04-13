@@ -1,11 +1,11 @@
-<layout id="root" fillParent="true" xmlns="dynLayout" init="state.create(); $ss=state.shared(); $sb=state.base(); $basePoints=state.points().base; $input={};">
+<layout id="root" xmlns="dynLayout" init="$ss=state.shared(); $sb=state.base(); $basePoints=state.points().base; $input={};">
 	<table fillParent="true">
 		<row>
 			<cell>
 				<label text="'Name'" />
 			</cell>
 			<cell>
-				<input text="$ss.name" />
+				<label text="$ss.name" />
 			</cell>
 		</row>
 		<row>
@@ -26,7 +26,7 @@
 				<label text="'Hp'" />
 			</cell>
 			<cell><!-- compute mp/hp -->
-				<label text='$ss.hp+" / "+ss.maxHp)' />
+				<label text='$ss.hp+" / "+$ss.maxHp' />
 			</cell>
 		</row>
 		<row>
@@ -34,7 +34,7 @@
 				<label text="'Mp'" />
 			</cell>
 			<cell>
-				<label text='$ss.mp+" / "+ss.maxMp' />
+				<label text='$ss.mp+" / "+$ss.maxMp' />
 			</cell>
 		</row>
 		<row>
@@ -92,10 +92,10 @@
 		</row>
 		<row>
 			<cell expandX="">
-				<button text="'Cancel'" onchange="" />
+				<button text="i18n.get('dialog_cancel')" onchange="GameWindow.STATS.close()" />
 			</cell>
 			<cell expandX="">
-				<button text="'Ok'" onchange="" />
+				<button text="'Apply'" onchange="" />
 			</cell>
 		</row>
 	</table>

@@ -31,10 +31,17 @@ public class CharList extends VisTable {
 	@Override
 	public void validate() {
 		if (State.state.chars != cache) {
+			selected = null;
 			clearChildren();
 			cache = State.state.chars;
-			for (CharDesc c : cache)
-				add(new CharActor(c)).row();
+			for (CharDesc c : cache) {
+				CharActor charActor = new CharActor(c);
+				if (selected == null) {
+					selected = charActor;
+					selected.setSelected(true);
+				}
+				add(charActor).row();
+			}
 		}
 		super.validate();
 	}

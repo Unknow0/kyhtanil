@@ -22,6 +22,7 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
 
 import unknow.kyhtanil.client.component.Archetypes;
+import unknow.kyhtanil.client.graphics.GameWindow;
 import unknow.kyhtanil.client.graphics.StatSelector;
 import unknow.kyhtanil.client.system.InputSystem;
 import unknow.kyhtanil.client.system.MovementSystem;
@@ -43,31 +44,19 @@ import unknow.kyhtanil.common.component.StatPoint;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 import unknow.scene.builder.DynLayout;
-import unknow.scene.builder.DynLayout.Attr;
+import unknow.scene.builder.DynLayoutContext;
+import unknow.scene.builder.DynLayoutContext.Attr;
 
 public class Main implements ApplicationListener {
+	public static final DynLayoutContext dynContext = new DynLayoutContext();
 	public static Main self;
 
-	private World world;
-
-	public static enum Screen {
-		LOGIN("ui/login.xml"), ACCOUNTCREATE("ui/accountcreate.xml"), CHARSELECT("ui/charselect.xml"), CHARCREATE("ui/charcreate.xml"), GAME("ui/layout.xml");
-
-		private FileHandle file;
-
-		private Screen(String file) {
-			this.file = Gdx.files.internal(file);
-		}
-
-		public InputStream file() {
-			return file.read();
-		}
-	}
-
+	private final Viewport gameVp = new ExtendViewport(560, 368);
+	private final DynLayout dynLayout = new DynLayout(dynContext);
 	private Stage stage;
-	private Viewport gameVp = new ExtendViewport(560, 368);
-	private DynLayout dynLayout = new DynLayout();
 	private I18NBundle i18n;
+
+	private World world;
 
 	@Override
 	public void create() {
@@ -82,13 +71,13 @@ public class Main implements ApplicationListener {
 			BaseUUIDManager manager = new BaseUUIDManager();
 
 			Connection co = new Connection(Cfg.host, Cfg.port);
-			dynLayout.put("main", this);
-			dynLayout.put("co", co);
-			dynLayout.put("state", State.state);
-			dynLayout.put("i18n", i18n);
-			for (Class<?> c : Arrays.asList(Stats.class, Align.class, Screen.class, StatBase.class, StatShared.class, StatPoint.class))
-				dynLayout.put(c.getSimpleName(), dynLayout.js.eval("Java.type('" + c.getName() + "')"));
-			dynLayout.addValueBuilder(StatSelector.class, new Attr[] { new Attr("value", "setValue"), new Attr("min", "setMin"), new Attr("max", "setMax") });
+			dynContext.put("main", this);
+			dynContext.put("co", co);
+			dynContext.put("state", State.state);
+			dynContext.put("i18n", i18n);
+			for (Class<?> c : Arrays.asList(Stats.class, Align.class, Screen.class, StatBase.class, StatShared.class, StatPoint.class, GameWindow.class))
+				dynContext.putClass(c);
+			dynContext.addValue(StatSelector.class, new Attr[] { new Attr("value", "setValue"), new Attr("min", "setMin"), new Attr("max", "setMax") });
 
 			InputSystem inputSystem = new InputSystem(gameVp);
 			WorldConfiguration cfg = new WorldConfiguration();
@@ -111,7 +100,7 @@ public class Main implements ApplicationListener {
 
 			world = new World(cfg);
 
-			Gdx.input.setInputProcessor(new InputMultiplexer(inputSystem, stage));
+			Gdx.input.setInputProcessor(new InputMultiplexer(stage, inputSystem));
 			stage.addActor(dynLayout);
 			show(Screen.LOGIN);
 		} catch (Exception e) {
@@ -120,6 +109,8 @@ public class Main implements ApplicationListener {
 	}
 
 	public void show(Screen screen) {
+		if (screen == Screen.GAME)
+			GameWindow.init();
 		try (InputStream is = screen.file()) {
 			dynLayout.load(new InputSource(is));
 			System.out.println(dynLayout);
@@ -163,6 +154,10 @@ public class Main implements ApplicationListener {
 		stage.getViewport().update(width, height, true);
 	}
 
+	public DynLayout dynLayout() {
+		return dynLayout;
+	}
+
 	@Override
 	public void pause() {
 	}
@@ -173,5 +168,19 @@ public class Main implements ApplicationListener {
 
 	@Override
 	public void dispose() {
+	}
+
+	public static enum Screen {
+		LOGIN("ui/login.xml"), ACCOUNTCREATE("ui/accountcreate.xml"), CHARSELECT("ui/charselect.xml"), CHARCREATE("ui/charcreate.xml"), GAME("ui/gamehud.xml");
+
+		private FileHandle file;
+
+		private Screen(String file) {
+			this.file = Gdx.files.internal(file);
+		}
+
+		public InputStream file() {
+			return file.read();
+		}
 	}
 }

@@ -15,10 +15,10 @@
 		</row>
 		<row>
 			<cell expandX="">
-				<button text="'Cancel'" onchange="main.show(Screen.CHARSELECT)" />
+				<button text="i18n.get('dialog_cancel')" onchange="main.show(Screen.CHARSELECT)" />
 			</cell>
 			<cell expandX="">
-				<button text="'Ok'" onchange="co.createChar($name.getText())" />
+				<button text="i18n.get('dialog_create')" onchange="co.createChar($name.getText())" />
 			</cell>
 		</row>
 	</table>
