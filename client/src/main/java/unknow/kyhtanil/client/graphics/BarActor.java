@@ -39,6 +39,7 @@ public abstract class BarActor extends Actor {
 			super(0xff0000ff);
 		}
 
+		@Override
 		protected float rate() {
 			StatShared shared = State.state.shared();
 			return (float) (shared.hp * 1. / shared.maxHp);
@@ -50,6 +51,7 @@ public abstract class BarActor extends Actor {
 			super(0x0000ffff);
 		}
 
+		@Override
 		protected float rate() {
 			StatShared shared = State.state.shared();
 			return (float) (shared.mp * 1. / shared.maxMp);

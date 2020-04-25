@@ -3,7 +3,7 @@ package unknow.kyhtanil.server.manager;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 
-import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 import unknow.kyhtanil.server.component.StateComp;
@@ -15,7 +15,7 @@ public class UUIDManager extends BaseUUIDManager {
 	private UUIDGen uuidGen;
 
 	public UUIDManager() {
-		super(Aspect.all(SpriteComp.class));
+		super(Aspect.all(Sprite.class));
 		uuidGen = new UUIDGen();
 	}
 

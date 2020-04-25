@@ -26,6 +26,6 @@ public class StatPoint extends PooledComponent implements Setable<StatPoint> {
 
 	@Override
 	public String toString() {
-		return "base: " + base + ", exp: " + exp;
+		return "StatPoint [base=" + base + ", exp=" + exp + "]";
 	}
 }

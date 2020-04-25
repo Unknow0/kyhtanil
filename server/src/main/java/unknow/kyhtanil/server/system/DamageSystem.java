@@ -22,6 +22,7 @@ public class DamageSystem extends CompositeEntityProcessor<DamageListComp, Damag
 		return mobInfo.get(e);
 	}
 
+	@Override
 	protected boolean processStart(int e) {
 		mob = mobInfo.get(e);
 		d = dirty.get(e);
@@ -45,6 +46,7 @@ public class DamageSystem extends CompositeEntityProcessor<DamageListComp, Damag
 		return true;
 	}
 
+	@Override
 	protected void processEnd(int e) {
 	}
 }

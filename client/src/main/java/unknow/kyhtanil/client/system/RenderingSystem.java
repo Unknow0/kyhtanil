@@ -21,8 +21,8 @@ import unknow.kyhtanil.client.component.TargetComp;
 import unknow.kyhtanil.common.TexManager;
 import unknow.kyhtanil.common.TexManager.Drawable;
 import unknow.kyhtanil.common.TexManager.RegionDrawable;
-import unknow.kyhtanil.common.component.PositionComp;
-import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.Position;
+import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.maps.MapLayout;
 
@@ -33,8 +33,8 @@ public class RenderingSystem extends IteratingSystem {
 
 	private ComponentMapper<StatShared> info;
 	private ComponentMapper<TargetComp> target;
-	private ComponentMapper<PositionComp> position;
-	private ComponentMapper<SpriteComp> sprite;
+	private ComponentMapper<Position> position;
+	private ComponentMapper<Sprite> sprite;
 
 	private RegionDrawable targetTex;
 	private Vector2 targetSize;
@@ -43,7 +43,7 @@ public class RenderingSystem extends IteratingSystem {
 	private State state;
 
 	public RenderingSystem(Viewport vp) throws FileNotFoundException, IOException {
-		super(Aspect.all(PositionComp.class, SpriteComp.class, StatShared.class));
+		super(Aspect.all(Position.class, Sprite.class, StatShared.class));
 		this.vp = vp;
 		this.layout = new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
 		targetTex = (RegionDrawable) TexManager.get("target");
@@ -67,7 +67,7 @@ public class RenderingSystem extends IteratingSystem {
 
 	@Override
 	protected void begin() {
-		PositionComp p = position.get(state.entity);
+		Position p = position.get(state.entity);
 		float x = p.x;
 		float y = p.y;
 		if (x < vp.getWorldWidth() / 2)
@@ -88,8 +88,8 @@ public class RenderingSystem extends IteratingSystem {
 
 	@Override
 	protected void process(int id) {
-		PositionComp pos = position.get(id);
-		SpriteComp s = sprite.get(id);
+		Position pos = position.get(id);
+		Sprite s = sprite.get(id);
 		Drawable tex = TexManager.get(s.tex);
 		if (tex != null) {
 			if (s.rotation != 0) {

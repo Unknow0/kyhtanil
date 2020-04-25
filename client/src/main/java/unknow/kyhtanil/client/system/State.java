@@ -5,7 +5,7 @@ import com.artemis.ComponentMapper;
 import com.artemis.annotations.SkipWire;
 
 import unknow.kyhtanil.client.component.Archetypes;
-import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatPoint;
 import unknow.kyhtanil.common.component.StatShared;
@@ -33,7 +33,7 @@ public class State extends BaseSystem {
 		if (entity >= 0)
 			world.delete(entity);
 		entity = world.create(arch.self);
-		world.edit(entity).remove(SpriteComp.class);
+		world.edit(entity).remove(Sprite.class);
 		StatBase statBase = base.get(entity);
 		statBase.level = 1;
 		statBase.strength = 1;

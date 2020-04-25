@@ -8,10 +8,10 @@ import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 
 import unknow.kyhtanil.client.component.Archetypes;
-import unknow.kyhtanil.common.component.PositionComp;
-import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.Position;
+import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatShared;
-import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.common.component.net.Spawn;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 
@@ -19,9 +19,9 @@ public class SpawnSystem extends IteratingSystem {
 	private static final Logger log = LoggerFactory.getLogger(SpawnSystem.class);
 	private ComponentMapper<Spawn> spawn;
 	private ComponentMapper<StatShared> info;
-	private ComponentMapper<PositionComp> position;
-	private ComponentMapper<VelocityComp> velocity;
-	private ComponentMapper<SpriteComp> sprite;
+	private ComponentMapper<Position> position;
+	private ComponentMapper<Velocity> velocity;
+	private ComponentMapper<Sprite> sprite;
 	private BaseUUIDManager manager;
 	private Archetypes arch;
 
@@ -29,6 +29,7 @@ public class SpawnSystem extends IteratingSystem {
 		super(Aspect.all(Spawn.class));
 	}
 
+	@Override
 	protected void process(int entityId) {
 		Spawn s = spawn.get(entityId);
 		world.delete(entityId);

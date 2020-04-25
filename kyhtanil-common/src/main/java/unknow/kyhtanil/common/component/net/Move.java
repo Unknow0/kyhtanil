@@ -20,7 +20,8 @@ public class Move extends Component {
 		this.direction = direction;
 	}
 
+	@Override
 	public String toString() {
-		return "uuid: " + uuid + ", x: " + x + ", y: " + y + ", direction: " + direction;
+		return "Move [uuid=" + uuid + ", x=" + x + ", y=" + y + ", direction=" + direction + "]";
 	}
 }

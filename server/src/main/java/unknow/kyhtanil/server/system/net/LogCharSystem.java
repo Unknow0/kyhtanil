@@ -9,11 +9,11 @@ import com.artemis.systems.IteratingSystem;
 
 import io.netty.channel.Channel;
 import unknow.kyhtanil.common.component.ErrorComp;
-import unknow.kyhtanil.common.component.PositionComp;
-import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.Position;
+import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatShared;
-import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.common.component.account.LogChar;
 import unknow.kyhtanil.common.component.account.PjInfo;
 import unknow.kyhtanil.common.component.net.Despawn;
@@ -44,9 +44,9 @@ public class LogCharSystem extends IteratingSystem {
 	private ComponentMapper<LogChar> logChar;
 	private ComponentMapper<NetComp> net;
 	private ComponentMapper<StateComp> state;
-	private ComponentMapper<PositionComp> position;
-	private ComponentMapper<SpriteComp> sprite;
-	private ComponentMapper<VelocityComp> velocity;
+	private ComponentMapper<Position> position;
+	private ComponentMapper<Sprite> sprite;
+	private ComponentMapper<Velocity> velocity;
 	private ComponentMapper<StatShared> stats;
 	private ComponentMapper<StatBase> perso;
 
@@ -99,7 +99,7 @@ public class LogCharSystem extends IteratingSystem {
 
 		s.state = States.IN_GAME;
 
-		PositionComp p = position.get(st);
+		Position p = position.get(st);
 		StatShared m = stats.get(st);
 		log.info("log char {} {}", l.uuid, m.name);
 
@@ -124,9 +124,9 @@ public class LogCharSystem extends IteratingSystem {
 		@Override
 		public void enter(int target) {
 			UUID uuid = manager.getUuid(target);
-			PositionComp p = position.get(target);
+			Position p = position.get(target);
 			StatShared m = stats.get(target);
-			VelocityComp v = velocity.get(target);
+			Velocity v = velocity.get(target);
 			chan.writeAndFlush(new Spawn(uuid, sprite.get(target), m, p, v));
 		}
 

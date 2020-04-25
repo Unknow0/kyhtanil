@@ -21,6 +21,7 @@ public class DamageReportSystem extends IteratingSystem {
 		super(Aspect.all(DamageReport.class));
 	}
 
+	@Override
 	protected void process(int entityId) {
 		DamageReport r = report.get(entityId);
 		world.delete(entityId);

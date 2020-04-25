@@ -16,7 +16,8 @@ public class DamageReport extends Component {
 		this.damage = damage;
 	}
 
+	@Override
 	public String toString() {
-		return "uuid: " + uuid + ", damage: " + damage;
+		return "DamageReport [uuid=" + uuid + ", damage=" + damage + "]";
 	}
 }

@@ -36,6 +36,6 @@ public class StatBase extends PooledComponent implements Setable<StatBase> {
 
 	@Override
 	public String toString() {
-		return "strength: " + strength + ", constitution: " + constitution + ", intelligence: " + intelligence + ", concentration: " + concentration + ", dexterity: " + dexterity + ", level: " + level ;
+		return "StatBase [strength=" + strength + ", constitution=" + constitution + ", intelligence=" + intelligence + ", concentration=" + concentration + ", dexterity=" + dexterity + ", level=" + level + ", dmg=" + dmg + "]";
 	}
 }

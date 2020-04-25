@@ -4,13 +4,13 @@ import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
 import com.artemis.BaseSystem;
 
-import unknow.kyhtanil.common.component.PositionComp;
-import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.Position;
+import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatAgg;
 import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatPoint;
 import unknow.kyhtanil.common.component.StatShared;
-import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.Velocity;
 
 public class Archetypes extends BaseSystem {
 	public Archetype login;
@@ -18,6 +18,7 @@ public class Archetypes extends BaseSystem {
 	public Archetype mob;
 	public Archetype pj;
 	public Archetype proj;
+	public Archetype spawner;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -25,7 +26,7 @@ public class Archetypes extends BaseSystem {
 		login = new ArchetypeBuilder().add(StateComp.class).build(world);
 
 		ArchetypeBuilder builder = new ArchetypeBuilder();
-		builder.add(PositionComp.class, VelocityComp.class, SpriteComp.class);
+		builder.add(Position.class, Velocity.class, Sprite.class);
 		builder.add(StatShared.class, StatBase.class, StatAgg.class, StatModAggregator.class);
 		builder.add(DamageListComp.class, Dirty.class);
 		mob = builder.build(world);
@@ -34,8 +35,10 @@ public class Archetypes extends BaseSystem {
 		pj = builder.build(world);
 
 		builder = new ArchetypeBuilder();
-		builder.add(PositionComp.class, VelocityComp.class, Projectile.class, SpriteComp.class);
+		builder.add(Position.class, Velocity.class, Projectile.class, Sprite.class);
 		proj = builder.build(world);
+
+		spawner = new ArchetypeBuilder().add(SpawnerComp.class).build(world);
 	}
 
 	@Override

@@ -4,9 +4,9 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 
-import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.StatAgg;
-import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.common.component.net.UpdateInfo;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.server.component.Dirty;
@@ -16,14 +16,14 @@ import unknow.kyhtanil.server.system.net.Clients;
 
 public class DirtySystem extends IteratingSystem {
 	private ComponentMapper<Dirty> dirty;
-	private ComponentMapper<PositionComp> pos;
+	private ComponentMapper<Position> pos;
 	private ComponentMapper<StateComp> state;
 
 	private UUIDManager uuid;
 	private Clients clients;
 
 	public DirtySystem() {
-		super(Aspect.all(Dirty.class, PositionComp.class));
+		super(Aspect.all(Dirty.class, Position.class));
 	}
 
 	@Override
@@ -38,8 +38,8 @@ public class DirtySystem extends IteratingSystem {
 
 		StateComp s = state.get(e);
 		if (s != null)
-			s.channel.writeAndFlush(new UpdateInfo(u, d.changed(VelocityComp.class)));
-		PositionComp p = pos.get(e);
+			s.channel.writeAndFlush(new UpdateInfo(u, d.changed(Velocity.class)));
+		Position p = pos.get(e);
 		clients.send(s, p.x, p.y, new UpdateInfo(u, d.changed(StatAgg.class)));
 		d.reset();
 	}

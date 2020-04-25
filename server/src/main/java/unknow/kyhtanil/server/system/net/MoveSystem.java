@@ -13,13 +13,12 @@ import com.artemis.systems.IteratingSystem;
 import io.netty.channel.Channel;
 import unknow.kyhtanil.common.Stats;
 import unknow.kyhtanil.common.component.ErrorComp;
-import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.StatAgg;
-import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.common.component.net.Move;
 import unknow.kyhtanil.common.component.net.NetComp;
 import unknow.kyhtanil.common.maps.MapLayout;
-import unknow.kyhtanil.server.GameWorld;
 import unknow.kyhtanil.server.component.Dirty;
 import unknow.kyhtanil.server.manager.LocalizedManager;
 import unknow.kyhtanil.server.manager.UUIDManager;
@@ -30,8 +29,8 @@ public class MoveSystem extends IteratingSystem {
 	private UUIDManager manager;
 	private ComponentMapper<Move> move;
 	private ComponentMapper<NetComp> net;
-	private ComponentMapper<PositionComp> position;
-	private ComponentMapper<VelocityComp> velocity;
+	private ComponentMapper<Position> position;
+	private ComponentMapper<Velocity> velocity;
 	private ComponentMapper<StatAgg> calculated;
 	private ComponentMapper<Dirty> dirty;
 
@@ -40,10 +39,11 @@ public class MoveSystem extends IteratingSystem {
 	@Wire
 	private MapLayout layout;
 
-	public MoveSystem(GameWorld gameWorld) {
+	public MoveSystem() {
 		super(Aspect.all(Move.class, NetComp.class));
 	}
 
+	@Override
 	protected void process(int entityId) {
 		Move m = move.get(entityId);
 		NetComp ctx = net.get(entityId);
@@ -60,7 +60,7 @@ public class MoveSystem extends IteratingSystem {
 		Dirty d = dirty.get(e);
 
 		int moveSpeed = calculated.get(e).get(Stats.MOVE_SPEED);
-		PositionComp p = position.get(e);
+		Position p = position.get(e);
 		try {
 			if (p.distance(m.x, m.y) > moveSpeed || layout.isWall(m.x, m.y)) {
 				m = new Move(m.uuid, p.x, p.y, m.direction);
@@ -75,7 +75,7 @@ public class MoveSystem extends IteratingSystem {
 		p.x = m.x;
 		p.y = m.y;
 		locManager.changed(e);
-		VelocityComp v = velocity.get(e);
+		Velocity v = velocity.get(e);
 		if (v.direction != m.direction)
 			d.add(v);
 		v.direction = m.direction;

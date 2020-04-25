@@ -4,20 +4,20 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 
-import unknow.kyhtanil.common.component.PositionComp;
-import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.Position;
+import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatShared;
-import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.server.component.Archetypes;
 import unknow.kyhtanil.server.component.SpawnerComp;
 
 public class SpawnSystem extends IteratingSystem {
 	private ComponentMapper<SpawnerComp> spawner;
-	private ComponentMapper<PositionComp> position;
-	private ComponentMapper<VelocityComp> velocity;
+	private ComponentMapper<Position> position;
+	private ComponentMapper<Velocity> velocity;
 	private ComponentMapper<StatShared> mobInfo;
-	private ComponentMapper<SpriteComp> sprite;
+	private ComponentMapper<Sprite> sprite;
 	private ComponentMapper<StatBase> stats;
 
 	private Archetypes arch;
@@ -32,20 +32,20 @@ public class SpawnSystem extends IteratingSystem {
 	@Override
 	protected void process(int e) {
 		SpawnerComp s = spawner.get(e);
-		if (s.current_count > s.max_count)
+		if (s.current_count > s.max)
 			return;
-		s.current += world.delta * s.creation_speed;
+		s.current += world.delta * s.speed;
 
 		if (s.current > 1) {
 			s.current = 0;
 			s.current_count++;
 			int m = world.create(arch.mob);
 
-			PositionComp p = position.get(m);
-			p.x = (float) (s.x + Math.random() * s.range * 2 - s.range);
-			p.y = (float) (s.y + Math.random() * s.range * 2 - s.range);
+			Position p = position.get(m);
+			p.x = (float) (s.x + Math.random() * s.r * 2 - s.r);
+			p.y = (float) (s.y + Math.random() * s.r * 2 - s.r);
 
-			VelocityComp v = velocity.get(m);
+			Velocity v = velocity.get(m);
 			v.direction = .5f;
 			v.speed = 0;
 
@@ -54,9 +54,10 @@ public class SpawnSystem extends IteratingSystem {
 			mi.name = "mob"; // TODO
 
 			StatBase st = stats.get(m);
+			st.concentration = 1;
 			// TODO load mob stats
 
-			SpriteComp sp = sprite.get(m);
+			Sprite sp = sprite.get(m);
 			sp.h = sp.w = 16;
 			sp.tex = "mob";
 

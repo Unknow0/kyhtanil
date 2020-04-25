@@ -37,13 +37,14 @@ public class StatAgg extends PooledComponent implements Setable<StatAgg> {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder("StatAgg [");
 		for (int i = 0; i < stats.length; i++) {
 			int v = stats[i];
 			if (v == 0)
 				continue;
-			sb.append(Stats.values()[i] + ": " + v);
+			sb.append(Stats.values()[i] + "=" + v + ",");
 		}
+		sb.setCharAt(sb.length() - 1, ']');
 		return sb.toString();
 	}
 }

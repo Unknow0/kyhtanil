@@ -18,7 +18,8 @@ public class Attack extends Component {
 		this.target = target;
 	}
 
+	@Override
 	public String toString() {
-		return "uuid: " + uuid + ", id: " + id + ", target: " + target;
+		return "Attack [uuid=" + uuid + ", id=" + id + ", target=" + target + "]";
 	}
 }

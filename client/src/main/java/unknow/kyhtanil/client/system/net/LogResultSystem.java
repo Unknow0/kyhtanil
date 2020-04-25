@@ -19,6 +19,7 @@ public class LogResultSystem extends IteratingSystem {
 		this.main = main;
 	}
 
+	@Override
 	protected void process(int entityId) {
 		LogResult logResult = logRes.get(entityId);
 		world.delete(entityId);

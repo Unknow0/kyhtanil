@@ -24,6 +24,7 @@ public class UpdateInfoSystem extends IteratingSystem {
 		super(Aspect.all(UpdateInfo.class));
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	protected void process(int entityId) {
 		UpdateInfo u = update.get(entityId);

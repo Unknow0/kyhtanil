@@ -16,6 +16,7 @@ public class ErrorSystem extends IteratingSystem {
 		this.main = main;
 	}
 
+	@Override
 	protected void process(int entityId) {
 		ErrorComp e = error.get(entityId);
 		world.delete(entityId);

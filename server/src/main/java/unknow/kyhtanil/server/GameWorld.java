@@ -64,7 +64,7 @@ public class GameWorld {
 		cfg.setSystem(new CreateAccountSystem());
 		cfg.setSystem(new LogCharSystem());
 		cfg.setSystem(new CreateCharSystem());
-		cfg.setSystem(new MoveSystem(this));
+		cfg.setSystem(new MoveSystem());
 		cfg.setSystem(new AttackSystem());
 
 		cfg.setSystem(new UpdateStatSystem());
@@ -91,11 +91,11 @@ public class GameWorld {
 		SpawnerComp s = spawner.get(e);
 		s.x = x;
 		s.y = y;
-		s.range = range;
+		s.r = range;
 		s.current_count = 0;
-		s.max_count = max_count;
+		s.max = max_count;
 		s.current = 0;
-		s.creation_speed = speed;
+		s.speed = speed;
 	}
 
 	public World world() {

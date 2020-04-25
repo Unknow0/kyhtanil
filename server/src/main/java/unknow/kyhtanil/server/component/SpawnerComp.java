@@ -4,17 +4,18 @@ import com.artemis.*;
 
 public class SpawnerComp extends PooledComponent {
 	public float x, y;
-	public float range;
+	public float r;
 
-	public int max_count;
+	public int max;
 	public int current_count;
 
-	public float creation_speed;
+	public float speed;
 	public float current;
 
+	@Override
 	protected void reset() {
-		x = y = range = 0;
-		max_count = current_count = 0;
-		creation_speed = current = 0;
+		x = y = r = 0;
+		max = current_count = 0;
+		speed = current = 0;
 	}
 }

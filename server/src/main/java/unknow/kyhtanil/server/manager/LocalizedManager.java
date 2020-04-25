@@ -14,7 +14,7 @@ import com.artemis.utils.IntBag;
 import com.badlogic.gdx.utils.IntMap;
 
 import unknow.common.data.IntArraySet;
-import unknow.kyhtanil.common.component.PositionComp;
+import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.server.component.StateComp;
 import unknow.kyhtanil.server.component.StateComp.States;
 
@@ -24,7 +24,7 @@ public class LocalizedManager extends BaseEntitySystem {
 
 	private float w, h;
 
-	private ComponentMapper<PositionComp> position;
+	private ComponentMapper<Position> position;
 	private ComponentMapper<StateComp> state;
 
 	private List<Area> areas = new ArrayList<>();
@@ -34,14 +34,14 @@ public class LocalizedManager extends BaseEntitySystem {
 	 * create a manager with a w x h square to store entity
 	 */
 	public LocalizedManager(float w, float h) {
-		super(Aspect.all(PositionComp.class));
+		super(Aspect.all(Position.class));
 		this.w = w;
 		this.h = h;
 	}
 
 	@Override
 	public void inserted(int entityId) {
-		PositionComp p = position.get(entityId);
+		Position p = position.get(entityId);
 		if (p == null)
 			return;
 		// don't add pj at there creation
@@ -61,7 +61,7 @@ public class LocalizedManager extends BaseEntitySystem {
 		for (Area a : areas) {
 			if (a.source == entityId)
 				continue;
-			PositionComp sp = position.get(a.source);
+			Position sp = position.get(a.source);
 			if (sp.distance(p) <= a.range) {
 				a.inside.add(entityId);
 				a.listener.enter(entityId);
@@ -73,7 +73,7 @@ public class LocalizedManager extends BaseEntitySystem {
 		Loc loc = objects.get(entityId);
 		IntBag bag = locMap.get(loc);
 
-		PositionComp p = position.get(entityId);
+		Position p = position.get(entityId);
 
 		if (p == null) {
 			bag.remove(entityId);
@@ -131,7 +131,7 @@ public class LocalizedManager extends BaseEntitySystem {
 		}
 
 		for (Area a : areas) {
-			PositionComp sp = position.get(a.source);
+			Position sp = position.get(a.source);
 			if (changed.contains(a.source)) {
 				IntBag bag = get(sp.x, sp.y, a.range, null);
 				IntArraySet entities = new IntArraySet(bag.getData(), 0, bag.size());
@@ -153,7 +153,7 @@ public class LocalizedManager extends BaseEntitySystem {
 				for (Integer i : changed) {
 					if (!a.inside.contains(i))
 						continue;
-					PositionComp p = position.get(i);
+					Position p = position.get(i);
 					if (p.distance(sp) > a.range) {
 						a.inside.remove(i);
 						a.listener.leave(i);
@@ -174,7 +174,7 @@ public class LocalizedManager extends BaseEntitySystem {
 				if (l != null) {
 					loop: for (int i = 0; i < l.size(); i++) {
 						int e = l.get(i);
-						PositionComp p = position.get(e);
+						Position p = position.get(e);
 						if (p == null)
 							continue;
 						if (c != null && !c.choose(e))
@@ -195,7 +195,7 @@ public class LocalizedManager extends BaseEntitySystem {
 	public void track(int source, float range, AreaListener listener) {
 		Area a = new Area(source, range, listener);
 		areas.add(a);
-		PositionComp sp = position.get(source);
+		Position sp = position.get(source);
 
 		IntBag intBag = get(sp.x, sp.y, range, null);
 		for (int i = 0; i < intBag.size(); i++) {

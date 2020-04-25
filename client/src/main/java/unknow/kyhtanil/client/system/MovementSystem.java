@@ -4,24 +4,24 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 
-import unknow.kyhtanil.common.component.PositionComp;
-import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.Position;
+import unknow.kyhtanil.common.component.Velocity;
 
 public class MovementSystem extends IteratingSystem {
-	private ComponentMapper<VelocityComp> velocity;
-	private ComponentMapper<PositionComp> position;
+	private ComponentMapper<Velocity> velocity;
+	private ComponentMapper<Position> position;
 
 	public MovementSystem() {
-		super(Aspect.all(PositionComp.class, VelocityComp.class));
+		super(Aspect.all(Position.class, Velocity.class));
 	}
 
 	@Override
 	protected void process(int e) {
-		VelocityComp v = velocity.get(e);
+		Velocity v = velocity.get(e);
 		if (v.speed == 0)
 			return;
 
-		PositionComp p = position.get(e);
+		Position p = position.get(e);
 		p.x += Math.cos(v.direction) * v.speed * world.delta;
 		p.y += Math.sin(v.direction) * v.speed * world.delta;
 	}

@@ -18,7 +18,8 @@ public class UpdateInfo extends Component {
 		this.c = c;
 	}
 
+	@Override
 	public String toString() {
-		return "uuid: " + uuid + ", changed: " + Arrays.toString(c);
+		return "UpdateInfo [uuid=" + uuid + ", c=" + Arrays.toString(c) + "]";
 	}
 }

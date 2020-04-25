@@ -22,10 +22,10 @@ import unknow.kyhtanil.client.component.TargetComp;
 import unknow.kyhtanil.client.graphics.GameWindow;
 import unknow.kyhtanil.client.system.net.Connection;
 import unknow.kyhtanil.common.Stats;
-import unknow.kyhtanil.common.component.PositionComp;
-import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.Position;
+import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatAgg;
-import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 
@@ -48,9 +48,9 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 	protected EntitySubscription target;
 
 	private ComponentMapper<StatAgg> stats;
-	private ComponentMapper<VelocityComp> velocity;
-	private ComponentMapper<PositionComp> position;
-	private ComponentMapper<SpriteComp> sprite;
+	private ComponentMapper<Velocity> velocity;
+	private ComponentMapper<Position> position;
+	private ComponentMapper<Sprite> sprite;
 	private BaseUUIDManager manager;
 	private Connection connection;
 	private State state;
@@ -66,16 +66,18 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 		this.vp = vp;
 	}
 
+	@Override
 	protected void initialize() {
 		AspectSubscriptionManager sm = world.getAspectSubscriptionManager();
-		allPosition = sm.get(Aspect.all(PositionComp.class, SpriteComp.class));
+		allPosition = sm.get(Aspect.all(Position.class, Sprite.class));
 		target = sm.get(Aspect.all(TargetComp.class));
 	}
 
+	@Override
 	public boolean keyDown(int keycode) {
 		if (!checkProcessing())
 			return false;
-		VelocityComp v = velocity.get(state.entity);
+		Velocity v = velocity.get(state.entity);
 		int moveSpeed = stats.get(state.entity).get(Stats.MOVE_SPEED);
 
 		if (up == keycode || down == keycode || left == keycode || right == keycode) {// TODO take pj speed
@@ -94,10 +96,11 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 		return true;
 	}
 
+	@Override
 	public boolean keyUp(int keycode) {
 		if (!checkProcessing())
 			return false;
-		VelocityComp v = velocity.get(state.entity);
+		Velocity v = velocity.get(state.entity);
 		if (up == keycode || down == keycode || left == keycode || right == keycode) {
 			if (up == keycode || down == keycode)
 				dirY = 0.;
@@ -134,10 +137,12 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 		return true;
 	}
 
+	@Override
 	public boolean keyTyped(char character) {
 		return false;
 	}
 
+	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (!checkProcessing())
 			return false;
@@ -153,8 +158,8 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 
 		for (int i = 0; i < entities.size(); i++) {
 			int e = entities.get(i);
-			PositionComp p = position.get(e);
-			SpriteComp s = sprite.get(e);
+			Position p = position.get(e);
+			Sprite s = sprite.get(e);
 			if (p.distance(v.x, v.y) < s.w) {
 				log.info("target {} ({}, {})", manager.getUuid(e), p.x, p.y);
 				EntityEdit edit = world.getEntity(e).edit();
@@ -165,18 +170,22 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 		return true;
 	}
 
+	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		return false;
 	}
 
+	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		return false;
 	}
 
+	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		return false;
 	}
 
+	@Override
 	public boolean scrolled(int amount) {
 		return false;
 	}
@@ -188,19 +197,19 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 
 	@Override
 	protected void processSystem() {
-		SpriteComp s = sprite.get(state.entity);
-		PositionComp p = position.get(state.entity);
+		Sprite s = sprite.get(state.entity);
+		Position p = position.get(state.entity);
 		Vector2 d = vp.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 		IntBag targets = target.getEntities();
 		if (!targets.isEmpty()) {
-			PositionComp t = position.get(targets.get(0));
+			Position t = position.get(targets.get(0));
 			d.set(t.x, t.y);
 		}
 		s.rotation = (float) Math.atan2(d.y - p.y, d.x - p.x);
 
 		long now = System.currentTimeMillis();
 		if (now - lastSend > 250 && (lastX != p.x || lastY != p.y)) {
-			VelocityComp v = velocity.get(state.entity);
+			Velocity v = velocity.get(state.entity);
 			try {
 				connection.update(state.uuid, p.x, p.y, v.direction);
 			} catch (IOException e) {

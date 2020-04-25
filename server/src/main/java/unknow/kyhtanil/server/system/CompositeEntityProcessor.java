@@ -24,6 +24,7 @@ public abstract class CompositeEntityProcessor<T extends CompositeComponent<C>, 
 		comp = BaseComponentMapper.getFor(clazz, world);
 	}
 
+	@Override
 	protected void processSystem() {
 		IntBag entities = subscription.getEntities();
 		for (int i = 0; i < entities.size(); i++) {

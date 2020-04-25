@@ -37,6 +37,6 @@ public class StatShared extends PooledComponent implements Setable<StatShared> {
 
 	@Override
 	public String toString() {
-		return "name: " + name + ", hp: " + hp + "/" + maxHp + ", mp: " + mp + "/" + maxMp;
+		return "StatShared [name=" + name + ", hp=" + hp + ", maxHp=" + maxHp + ", mp=" + mp + ", maxMp=" + maxMp + "]";
 	}
 }

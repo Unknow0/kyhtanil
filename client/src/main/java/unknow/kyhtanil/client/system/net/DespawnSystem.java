@@ -19,6 +19,7 @@ public class DespawnSystem extends IteratingSystem {
 		super(Aspect.all(Despawn.class));
 	}
 
+	@Override
 	protected void process(int entityId) {
 		Despawn d = despawn.get(entityId);
 		log.info("{}", d);

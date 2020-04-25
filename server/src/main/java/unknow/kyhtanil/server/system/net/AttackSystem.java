@@ -13,11 +13,11 @@ import io.netty.util.collection.IntObjectHashMap;
 import io.netty.util.collection.IntObjectMap;
 import unknow.kyhtanil.common.Skill;
 import unknow.kyhtanil.common.Stats;
-import unknow.kyhtanil.common.component.PositionComp;
-import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.Position;
+import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatAgg;
 import unknow.kyhtanil.common.component.StatShared;
-import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.common.component.net.Attack;
 import unknow.kyhtanil.common.component.net.NetComp;
 import unknow.kyhtanil.common.pojo.Point;
@@ -39,13 +39,13 @@ public class AttackSystem extends IteratingSystem {
 
 	private ComponentMapper<Attack> attack;
 	private ComponentMapper<NetComp> net;
-	private ComponentMapper<PositionComp> position;
-	private ComponentMapper<VelocityComp> velocity;
+	private ComponentMapper<Position> position;
+	private ComponentMapper<Velocity> velocity;
 	private ComponentMapper<StatShared> mobInfo;
 	private ComponentMapper<Dirty> dirty;
 	private ComponentMapper<DamageListComp> damage;
 	private ComponentMapper<Projectile> projectile;
-	private ComponentMapper<SpriteComp> sprite;
+	private ComponentMapper<Sprite> sprite;
 	private ComponentMapper<StatAgg> stat;
 
 	private Archetypes arch;
@@ -65,7 +65,7 @@ public class AttackSystem extends IteratingSystem {
 	protected void initialize() {
 		// auto attack
 		skills.put(0, (self, point, target) -> {
-			PositionComp p = position.get(self);
+			Position p = position.get(self);
 			double r = Math.atan2(point.y - p.y, point.x - p.x);
 
 			// TODO weapon range
@@ -76,7 +76,7 @@ public class AttackSystem extends IteratingSystem {
 				int t = intBag.get(i);
 				if (t == self)
 					continue;
-				PositionComp m = position.get(t);
+				Position m = position.get(t);
 				double mr = Math.atan2(m.y - p.y, m.x - p.x);
 				double diff = r - mr;
 				if (-.3 < diff && diff < .3) {
@@ -101,11 +101,11 @@ public class AttackSystem extends IteratingSystem {
 			info.mp -= cost;
 			dirty.get(self).add(info);
 
-			PositionComp p = position.get(self);
+			Position p = position.get(self);
 			float r = (float) Math.atan2(point.y - p.y, point.x - p.x);
 
 			addProj(self, r, 25, 5, "skills/fire", t -> {
-				PositionComp p2 = position.get(t);
+				Position p2 = position.get(t);
 
 				IntBag intBag = locManager.get(p2.x, p2.y, 50, filter);
 				for (int i = 0; i < intBag.size(); i++) {
@@ -135,7 +135,7 @@ public class AttackSystem extends IteratingSystem {
 			t = manager.getEntity((UUID) a.target);
 			if (t == null)
 				return;
-			PositionComp pos = position.get(t);
+			Position pos = position.get(t);
 			p = new Point(pos.x, pos.y);
 		} else
 			p = (Point) a.target;
@@ -153,7 +153,7 @@ public class AttackSystem extends IteratingSystem {
 	private void addProj(int source, float dir, float speed, float ttl, String tex, Event onHit) {
 		final int e = world.create(arch.proj);
 		position.get(e).set(position.get(source));
-		VelocityComp v = velocity.get(e);
+		Velocity v = velocity.get(e);
 		v.direction = dir;
 		v.speed = speed;
 		Projectile p = projectile.get(e);
@@ -161,7 +161,7 @@ public class AttackSystem extends IteratingSystem {
 		p.onHit = onHit;
 		p.source = manager.getUuid(source);
 
-		SpriteComp s = sprite.get(e);
+		Sprite s = sprite.get(e);
 		s.w = s.h = 8;
 		s.rotation = dir;
 		s.tex = tex;

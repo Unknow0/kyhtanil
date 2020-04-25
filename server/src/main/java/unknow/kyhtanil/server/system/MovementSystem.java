@@ -7,8 +7,8 @@ import com.artemis.ComponentMapper;
 import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 
-import unknow.kyhtanil.common.component.PositionComp;
-import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.Position;
+import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.common.component.net.Move;
 import unknow.kyhtanil.common.maps.MapLayout;
 import unknow.kyhtanil.common.pojo.UUID;
@@ -19,8 +19,8 @@ import unknow.kyhtanil.server.system.net.Clients;
 public class MovementSystem extends IteratingSystem {
 	private UUIDManager uuidManager;
 	private LocalizedManager locManager;
-	private ComponentMapper<VelocityComp> velocity;
-	private ComponentMapper<PositionComp> position;
+	private ComponentMapper<Velocity> velocity;
+	private ComponentMapper<Position> position;
 
 	private Clients clients;
 
@@ -28,21 +28,18 @@ public class MovementSystem extends IteratingSystem {
 	private MapLayout layout;
 
 	public MovementSystem() {
-		super(Aspect.all(PositionComp.class, VelocityComp.class));
-	}
-
-	protected void initialize() {
+		super(Aspect.all(Position.class, Velocity.class));
 	}
 
 	private float f = 0;
 
 	@Override
 	protected void process(int e) {
-		VelocityComp v = velocity.get(e);
+		Velocity v = velocity.get(e);
 		if (v.speed == 0)
 			return;
 
-		PositionComp p = position.get(e);
+		Position p = position.get(e);
 		double x = p.x + Math.cos(v.direction) * v.speed * world.delta;
 		double y = p.y + Math.sin(v.direction) * v.speed * world.delta;
 		try {
@@ -50,8 +47,8 @@ public class MovementSystem extends IteratingSystem {
 				return;
 		} catch (IOException ex) {
 		}
-		p.x=(float) x;
-		p.y=(float) y;
+		p.x = (float) x;
+		p.y = (float) y;
 
 		locManager.changed(e);
 		// notify move ?

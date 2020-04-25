@@ -13,6 +13,7 @@ public class StateComp extends PooledComponent {
 	public Channel channel;
 	public States state;
 
+	@Override
 	protected void reset() {
 		account = 0;
 		channel = null;

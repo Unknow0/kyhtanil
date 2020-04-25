@@ -4,5 +4,6 @@ create table characters (
 	name varchar(50),
 	hp integer,
 	mp integer,
+
 	body integer
 	);

@@ -14,11 +14,8 @@ public class Despawn extends Component {
 		this.uuid = uuid;
 	}
 
-	public void reset() {
-		uuid = null;
-	}
-
+	@Override
 	public String toString() {
-		return "uuid: " + uuid;
+		return "Despawn [uuid=" + uuid + "]";
 	}
 }

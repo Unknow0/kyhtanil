@@ -7,10 +7,10 @@ import com.artemis.BaseSystem;
 import com.artemis.ComponentMapper;
 import com.artemis.utils.IntBag;
 
-import unknow.kyhtanil.common.component.PositionComp;
-import unknow.kyhtanil.common.component.SpriteComp;
+import unknow.kyhtanil.common.component.Position;
+import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatShared;
-import unknow.kyhtanil.common.component.VelocityComp;
+import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.common.component.net.Despawn;
 import unknow.kyhtanil.common.component.net.Spawn;
 import unknow.kyhtanil.common.pojo.UUID;
@@ -26,9 +26,9 @@ public class Clients extends BaseSystem {
 	private UUIDManager uuidManager;
 
 	private ComponentMapper<StateComp> state;
-	private ComponentMapper<PositionComp> position;
-	private ComponentMapper<VelocityComp> velocity;
-	private ComponentMapper<SpriteComp> sprite;
+	private ComponentMapper<Position> position;
+	private ComponentMapper<Velocity> velocity;
+	private ComponentMapper<Sprite> sprite;
 	private ComponentMapper<StatShared> stat;
 
 	@Override
@@ -55,15 +55,15 @@ public class Clients extends BaseSystem {
 	}
 
 	public void despawn(StateComp sender, int entityId) {
-		PositionComp p = position.get(entityId);
+		Position p = position.get(entityId);
 		UUID uuid = uuidManager.getUuid(entityId);
 		send(sender, p.x, p.y, new Despawn(uuid));
 	}
 
 	public void spawn(StateComp sender, int e) {
-		PositionComp p = position.get(e);
-		VelocityComp v = velocity.get(e);
-		SpriteComp s = sprite.get(e);
+		Position p = position.get(e);
+		Velocity v = velocity.get(e);
+		Sprite s = sprite.get(e);
 		StatShared m = stat.get(e);
 		UUID uuid = uuidManager.getUuid(e);
 		send(sender, p.x, p.y, new Spawn(uuid, s, m, p, v));

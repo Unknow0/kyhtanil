@@ -14,11 +14,13 @@ public class NetComp extends PooledComponent {
 		this.channel = channel;
 	}
 
+	@Override
 	public void reset() {
 		channel = null;
 	}
 
+	@Override
 	public String toString() {
-		return "channel: " + channel;
+		return "NetComp [channel=" + channel + "]";
 	}
 }
