@@ -1,6 +1,6 @@
 package unknow.kyhtanil.server.system.net;
 
-import java.security.NoSuchAlgorithmException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,13 +11,11 @@ import org.slf4j.LoggerFactory;
 import com.artemis.BaseSystem;
 import com.artemis.Component;
 import com.artemis.EntityEdit;
-import com.esotericsoftware.kryo.KryoException;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -34,18 +32,17 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
 import unknow.kyhtanil.common.component.net.NetComp;
-import unknow.kyhtanil.common.util.Kryos;
+import unknow.kyhtanil.common.util.KyhtanilSerialize;
 import unknow.kyhtanil.server.Cfg;
 
 public class Server extends BaseSystem {
 	private static final Logger log = LoggerFactory.getLogger(Server.class);
-	private Kryos kryos;
 
 	private EventLoopGroup serverGroup = new NioEventLoopGroup();
 	private ServerBootstrap server = new ServerBootstrap();
 	private EventLoopGroup clientGroup = new NioEventLoopGroup();
 	private Bootstrap client = new Bootstrap();
-	private List<ChannelFuture> bind = new ArrayList<ChannelFuture>();
+	private List<ChannelFuture> bind = new ArrayList<>();
 
 	private final Encoder encoder = new Encoder();
 	private final Handler handler = new Handler();
@@ -53,9 +50,7 @@ public class Server extends BaseSystem {
 	private List<E> list = new ArrayList<>();
 	private List<E> back = new ArrayList<>();
 
-	public Server() throws NoSuchAlgorithmException, InterruptedException {
-		kryos = new Kryos();
-
+	public Server() throws InterruptedException {
 		ChannelInitializer<SocketChannel> initializer = new ChannelInitializer<SocketChannel>() {
 			@Override
 			public void initChannel(SocketChannel ch) throws Exception {
@@ -121,43 +116,37 @@ public class Server extends BaseSystem {
 	}
 
 	public class Decoder extends ByteToMessageDecoder {
-		protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-			if (in.readableBytes() < 1)
+		@Override
+		protected void decode(ChannelHandlerContext ctx, ByteBuf buf, List<Object> out) throws Exception {
+			if (buf.readableBytes() < 1)
 				return;
+			buf.markReaderIndex();
 			try {
-				byte[] dst = new byte[in.readableBytes()];
-				in.getBytes(in.readerIndex(), dst);
-
-				Input input = new Input(dst);
-				Object o = kryos.read(input);
+				Object o = KyhtanilSerialize.read(new ByteBufInputStream(buf));
 				log.trace("read: {} {}", o.getClass(), o);
 				if (o instanceof Component) {
 					list.add(new E((Component) o, ctx.channel()));
 				} else if (o instanceof byte[]) {
-					if (!Arrays.equals((byte[]) o, kryos.hash()))
+					if (!Arrays.equals((byte[]) o, KyhtanilSerialize.hash()))
 						ctx.close();
 				}
-
-				in.skipBytes(input.position());
-			} catch (KryoException e) {
-				if (!e.getMessage().contains("Buffer underflow")) {
-					log.error(e.getMessage(), e);
-				}
+			} catch (IOException e) {
+				buf.resetReaderIndex();
+				if (!"end of stream reached".equals(e.getMessage()))
+					log.error("decoder error", e);
 			}
 		}
 	}
 
 	@Sharable
 	public class Encoder extends MessageToByteEncoder<Object> {
-		protected void encode(ChannelHandlerContext ctx, Object data, ByteBuf out) throws Exception {
-			log.trace("write: {}: {}", data.getClass(), data);
-
+		@Override
+		protected void encode(ChannelHandlerContext ctx, Object data, ByteBuf buf) throws Exception {
 			try {
-				ByteBufOutputStream buf = new ByteBufOutputStream(out);
-				Output output = new Output(buf);
-				kryos.write(output, data);
-				output.close();
-			} catch (Exception e) {
+				log.trace("write: {}: {}", data.getClass(), data);
+				ByteBufOutputStream out = new ByteBufOutputStream(buf);
+				KyhtanilSerialize.write(data, out);
+			} catch (Throwable e) {
 				log.error(e.getMessage(), e);
 			}
 		}
@@ -167,7 +156,7 @@ public class Server extends BaseSystem {
 	public class Handler extends ChannelHandlerAdapter {
 		@Override
 		public void channelActive(ChannelHandlerContext ctx) {
-			ctx.writeAndFlush(kryos.hash());
+			ctx.writeAndFlush(KyhtanilSerialize.hash());
 		}
 
 		@Override

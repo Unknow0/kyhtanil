@@ -14,7 +14,8 @@ public class CreateAccount extends Component {
 		this.passHash = passHash;
 	}
 
+	@Override
 	public String toString() {
-		return "login: " + login + ", passHash: " + passHash;
+		return "CreateAccount [login=" + login + "]";
 	}
 }

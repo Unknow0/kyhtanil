@@ -1,5 +1,7 @@
 package unknow.kyhtanil.common.component.account;
 
+import java.util.Arrays;
+
 import com.artemis.Component;
 
 import unknow.kyhtanil.common.pojo.CharDesc;
@@ -17,7 +19,8 @@ public class LogResult extends Component {
 		this.characters = characters;
 	}
 
+	@Override
 	public String toString() {
-		return "uuid: " + uuid + ", characters: " + characters;
+		return "LogResult [uuid=" + uuid + ", characters=" + Arrays.toString(characters) + "]";
 	}
 }

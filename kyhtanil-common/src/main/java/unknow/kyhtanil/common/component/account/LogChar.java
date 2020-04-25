@@ -16,7 +16,9 @@ public class LogChar extends Component {
 		this.character = character;
 	}
 
+	@Override
 	public String toString() {
-		return "uuid: " + uuid + ", character: " + character;
+		return "LogChar [uuid=" + uuid + ", character=" + character + "]";
 	}
+
 }

@@ -23,27 +23,28 @@ import unknow.kyhtanil.common.TexManager;
 import unknow.kyhtanil.common.TexManager.Drawable;
 
 public class MapLayout {
-	private static final int size = 16;
-	private static final int h = (int) (size * Math.sqrt(3) / 2);
-	private static final float width = 29f;
-	private static final float heigth = 33f;
+	/** hex edge size */
+	private static final float size = 10;
+	private static final float size15 = size * 1.5f;
+	private static final float h2 = (float) (size * Math.sqrt(3));
+	private static final float h = h2 / 2;
 
 	private Map<String, TilesetInfo> tileset;
 	private List<MapEntry> maps;
 
 	public MapLayout() {
-		maps = new ArrayList<MapEntry>();
-		tileset = new HashMap<String, TilesetInfo>();
+		maps = new ArrayList<>();
+		tileset = new HashMap<>();
 	}
 
 	public MapLayout(DataInputStream in) throws IOException {
 		int len = in.readInt();
-		maps = new ArrayList<MapEntry>(len);
+		maps = new ArrayList<>(len);
 		for (int i = 0; i < len; i++)
 			maps.add(new MapEntry(in));
 
 		len = in.readInt();
-		tileset = new HashMap<String, TilesetInfo>();
+		tileset = new HashMap<>();
 		for (int i = 0; i < len; i++) {
 			TilesetInfo ti = new TilesetInfo(in);
 			tileset.put(ti.name, ti);
@@ -70,7 +71,7 @@ public class MapLayout {
 	}
 
 	public List<MapEntry> get(int sx, int sy, int ex, int ey) {
-		List<MapEntry> list = new ArrayList<MapEntry>(5);
+		List<MapEntry> list = new ArrayList<>(5);
 		for (MapEntry e : maps) {
 			if (sx < e.x + e.w && sy < e.y + e.h && ex > e.x && ey > e.y)
 				list.add(e);
@@ -102,7 +103,7 @@ public class MapLayout {
 	 * @throws IOException
 	 */
 	public boolean isWall(double x, double y) throws IOException {
-		double my = y / (size * 1.5);
+		double my = y / (size15);
 		double yr = my % 1;
 
 		boolean shift = (int) my % 2 == 0;
@@ -137,18 +138,15 @@ public class MapLayout {
 	}
 
 	public void draw(Batch batch, Viewport vp) throws IOException {
-		float h2 = 2 * h;
-		float s15 = size * 1.5f;
-
 		Vector3 v = vp.getCamera().position;
 		int sx = (int) ((v.x - vp.getWorldWidth() / 2) / h2) - 1;
-		int sy = (int) ((v.y - vp.getWorldHeight() / 2) / s15) - 1;
+		int sy = (int) ((v.y - vp.getWorldHeight() / 2) / size15) - 1;
 		// if(sx<minX)
 		// sx=minX;
 		// if(sy<minY)
 		// sy=minY;
 		int ex = sx + 2 + (int) ((vp.getWorldWidth()) / h2);
-		int ey = sy + 2 + (int) ((vp.getWorldHeight()) / s15);
+		int ey = sy + 2 + (int) ((vp.getWorldHeight()) / size15);
 		// if(ex>maxX)
 		// ex=maxX;
 		// if(ey>maxY)
@@ -163,12 +161,12 @@ public class MapLayout {
 			while (x <= ex && x < mxe) {
 				int y = e.y < sy ? sy : e.y;
 				while (y <= ey && y < mye) {
-					int px = x * h * 2;
+					float px = x * h2;
 					if (y % 2 == 0)
 						px += h;
 					Drawable drawable = TexManager.get("tileset/" + e.tileset + "/" + m.get(x - e.x, y - e.y));
 					if (drawable != null)
-						drawable.draw(batch, px, y * size * 1.5f, width, heigth);
+						drawable.draw(batch, px, y * size15, h2, 2 * size);
 					y++;
 				}
 				x++;

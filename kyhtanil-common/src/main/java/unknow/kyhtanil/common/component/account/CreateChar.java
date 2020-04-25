@@ -15,4 +15,9 @@ public class CreateChar extends Component {
 		this.uuid = uuid;
 		this.name = name;
 	}
+
+	@Override
+	public String toString() {
+		return "CreateChar [uuid=" + uuid + ", name=" + name + "]";
+	}
 }

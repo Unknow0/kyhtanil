@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
-import com.artemis.utils.IntBag;
 
 import io.netty.channel.Channel;
 import unknow.kyhtanil.common.component.ErrorComp;
@@ -17,6 +16,7 @@ import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.VelocityComp;
 import unknow.kyhtanil.common.component.account.LogChar;
 import unknow.kyhtanil.common.component.account.PjInfo;
+import unknow.kyhtanil.common.component.net.Despawn;
 import unknow.kyhtanil.common.component.net.NetComp;
 import unknow.kyhtanil.common.component.net.Spawn;
 import unknow.kyhtanil.common.pojo.UUID;
@@ -25,6 +25,7 @@ import unknow.kyhtanil.server.component.Archetypes;
 import unknow.kyhtanil.server.component.StateComp;
 import unknow.kyhtanil.server.component.StateComp.States;
 import unknow.kyhtanil.server.manager.LocalizedManager;
+import unknow.kyhtanil.server.manager.LocalizedManager.AreaListener;
 import unknow.kyhtanil.server.manager.UUIDManager;
 import unknow.kyhtanil.server.system.UpdateStatSystem;
 
@@ -35,7 +36,6 @@ import unknow.kyhtanil.server.system.UpdateStatSystem;
 public class LogCharSystem extends IteratingSystem {
 	private static final Logger log = LoggerFactory.getLogger(LogCharSystem.class);
 
-	private Clients clients;
 	private Database database;
 	private LocalizedManager locManager;
 	private UUIDManager manager;
@@ -51,8 +51,6 @@ public class LogCharSystem extends IteratingSystem {
 	private ComponentMapper<StatBase> perso;
 
 	private UpdateStatSystem update;
-
-	private static final float range = 500f;
 
 	public LogCharSystem() {
 		super(Aspect.all(LogChar.class, NetComp.class));
@@ -109,22 +107,32 @@ public class LogCharSystem extends IteratingSystem {
 		update.process(st);
 
 		// spawn the new pj in the world
-		clients.spawn(s, st);
 		PjInfo pjInfo = new PjInfo(p.x, p.y, m, perso.get(st));
-		chan.write(pjInfo);
+		s.channel.write(pjInfo);
 
-		// get all surrounding entity and notify the new player with them
-		IntBag bag = locManager.get(p.x, p.y, range, null);
-		for (int i = 0; i < bag.size(); i++) {
-			int em = bag.get(i);
-			if (em == st)
-				continue;
-			uuid = manager.getUuid(em);
-			p = position.get(em);
-			m = stats.get(em);
-			VelocityComp v = velocity.get(em);
-			chan.write(new Spawn(uuid, sprite.get(em), m, p, v));
+		locManager.track(st, Clients.RANGE, new SpawnListener(s.channel));
+		s.channel.flush();
+	}
+
+	private class SpawnListener implements AreaListener {
+		private Channel chan;
+
+		public SpawnListener(Channel chan) {
+			this.chan = chan;
 		}
-		chan.flush();
+
+		@Override
+		public void enter(int target) {
+			UUID uuid = manager.getUuid(target);
+			PositionComp p = position.get(target);
+			StatShared m = stats.get(target);
+			VelocityComp v = velocity.get(target);
+			chan.writeAndFlush(new Spawn(uuid, sprite.get(target), m, p, v));
+		}
+
+		@Override
+		public void leave(int target) {
+			chan.writeAndFlush(new Despawn(manager.getUuid(target)));
+		}
 	}
 }

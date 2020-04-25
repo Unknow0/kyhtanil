@@ -1,6 +1,8 @@
 package unknow.kyhtanil.client.system.net;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -16,8 +18,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 
 import unknow.kyhtanil.client.system.State;
 import unknow.kyhtanil.common.component.account.CreateAccount;
@@ -29,18 +29,17 @@ import unknow.kyhtanil.common.component.net.Move;
 import unknow.kyhtanil.common.pojo.CharDesc;
 import unknow.kyhtanil.common.pojo.Point;
 import unknow.kyhtanil.common.pojo.UUID;
-import unknow.kyhtanil.common.util.Kryos;
+import unknow.kyhtanil.common.util.KyhtanilSerialize;
 
 public class Connection extends BaseSystem implements Runnable {
 	private static final Logger log = LoggerFactory.getLogger(Connection.class);
-	private final Kryos kryo;
 
 	private List<Component> list = new ArrayList<>();
 
 	private Thread t;
 	private Socket co;
-	private Input in;
-	private Output out;
+	private InputStream in;
+	private OutputStream out;
 
 	private State state;
 
@@ -50,13 +49,11 @@ public class Connection extends BaseSystem implements Runnable {
 		hints.keepAlive = true;
 		co = Gdx.net.newClientSocket(Protocol.TCP, host, port, hints);
 
-		in = new Input(co.getInputStream());
-		out = new Output(co.getOutputStream());
-
-		kryo = new Kryos();
-		kryo.write(out, kryo.hash());
-		byte[] h = (byte[]) kryo.read(in);
-		if (!Arrays.equals(h, kryo.hash()))
+		in = co.getInputStream();
+		out = co.getOutputStream();
+		KyhtanilSerialize.write(KyhtanilSerialize.hash(), out);
+		byte[] h = (byte[]) KyhtanilSerialize.read(in);
+		if (!Arrays.equals(h, KyhtanilSerialize.hash()))
 			throw new Exception("Invalide version");
 
 		t = new Thread(this);
@@ -69,11 +66,11 @@ public class Connection extends BaseSystem implements Runnable {
 		md.update(login.toLowerCase().getBytes("UTF8"));
 		md.update((byte) ':');
 		md.update(pass.getBytes("UTF8"));
-		kryo.write(out, new CreateAccount(login, md.digest()));
+		write(new CreateAccount(login, md.digest()));
 	}
 
-	public void createChar(String name) {
-		kryo.write(out, new CreateChar(state.uuid, name));
+	public void createChar(String name) throws IOException {
+		write(new CreateChar(state.uuid, name));
 	}
 
 	public void login(String login, String pass) throws IOException, NoSuchAlgorithmException {
@@ -81,28 +78,33 @@ public class Connection extends BaseSystem implements Runnable {
 		md.update(login.toLowerCase().getBytes("UTF8"));
 		md.update((byte) ':');
 		md.update(pass.getBytes("UTF8"));
-		kryo.write(out, new Login(login, md.digest()));
+		write(new Login(login, md.digest()));
 	}
 
 	public void update(UUID id, float x, float y, float direction) throws IOException {
-		kryo.write(out, new Move(id, x, y, direction));
+		write(new Move(id, x, y, direction));
 	}
 
 	public void logChar(UUID uuid, CharDesc charDesc) throws IOException {
-		kryo.write(out, new LogChar(uuid, charDesc.id));
+		write(new LogChar(uuid, charDesc.id));
 	}
 
 	public void attack(UUID uuid, int attId, UUID target, float x, float y) throws IOException {
-		kryo.write(out, new Attack(uuid, attId, target == null ? new Point(x, y) : target));
+		write(new Attack(uuid, attId, target == null ? new Point(x, y) : target));
+	}
+
+	private void write(Object o) throws IOException {
+		log.info("write {}", o);
+		KyhtanilSerialize.write(o, out);
 	}
 
 	@Override
 	public void run() {
 		try {
 			while (true) {
-				Object o = kryo.read(in);
+				Object o = KyhtanilSerialize.read(in);
 
-				log.info("{}", o);
+				log.info("read {}", o);
 				synchronized (list) {
 					list.add((Component) o);
 				}

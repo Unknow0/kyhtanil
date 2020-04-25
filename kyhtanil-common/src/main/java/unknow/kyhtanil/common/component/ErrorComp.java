@@ -28,7 +28,8 @@ public class ErrorComp extends Component {
 		this.code = code;
 	}
 
+	@Override
 	public String toString() {
-		return code.toString();
+		return "ErrorComp [code=" + code + "]";
 	}
 }

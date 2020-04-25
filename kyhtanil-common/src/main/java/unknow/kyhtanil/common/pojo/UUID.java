@@ -5,7 +5,8 @@
  */
 package unknow.kyhtanil.common.pojo;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Formatter;
 
 public class UUID implements Comparable<UUID> {
 	public byte[] bytes;
@@ -28,6 +29,7 @@ public class UUID implements Comparable<UUID> {
 		return Arrays.hashCode(bytes);
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == this)
 			return true;
@@ -40,9 +42,14 @@ public class UUID implements Comparable<UUID> {
 
 	@Override
 	public String toString() {
-		return Arrays.toString(bytes);
+		try (Formatter fmt = new Formatter()) {
+			for (int i = 0; i < bytes.length; i++)
+				fmt.format("%02x", bytes[i]);
+			return fmt.toString();
+		}
 	}
 
+	@Override
 	public int compareTo(UUID o) {
 		if (this == o)
 			return 0;

@@ -39,46 +39,65 @@ public class UpdateStatSystem extends IteratingSystem {
 		StatAgg calc = calculated.get(e);
 
 		for (Stats s : Stats.values())
-			calc.set(s, total(calc.get(s), stat, s, base(s, b)));
+			calc.set(s, total(s, calc, stat, b));
 
 		if (d) {
 			d = false;
 			dirty.get(e).add(calc);
 		}
 
-		info.maxHp = total(info.maxHp, stat, Stats.HP_MAX, Stats.baseHp(calc.get(Stats.STAT_CONSTITUTION)));
-		info.maxMp = total(info.maxMp, stat, Stats.MP_MAX, Stats.baseMp(calc.get(Stats.STAT_INTELLIGENCE)));
+		int oldMaxHp = info.maxHp;
+		int oldMaxMp = info.maxMp;
+		info.maxHp = calc.get(Stats.HP_MAX);
+		info.maxMp = calc.get(Stats.MP_MAX);
 
-		// TODO scale hp/mp
+		// TODO add partial value
+		info.hp += calc.get(Stats.HP_REGEN);
+		info.mp += calc.get(Stats.MP_REGEN);
 
-		if (d)
+		if (oldMaxHp != info.maxHp || oldMaxMp != info.maxMp)
 			dirty.get(e).add(info);
 	}
 
-	private static int base(Stats s, StatBase b) {
+	private int total(Stats s, StatAgg last, StatModAggregator a, StatBase b) {
+		int base;
 		switch (s) {
 		case STAT_CONCENTRATION:
-			return b.concentration;
+			base = b.concentration;
+			break;
 		case STAT_CONSTITUTION:
-			return b.constitution;
+			base = b.constitution;
+			break;
 		case STAT_DEXTERITY:
-			return b.dexterity;
+			base = b.dexterity;
+			break;
 		case STAT_INTELLIGENCE:
-			return b.intelligence;
+			base = b.intelligence;
+			break;
 		case STAT_STRENGTH:
-			return b.strength;
+			base = b.strength;
+			break;
 		case WPN_DMG_BLUNT:
-			return 2;
+			base = 2;
+			break;
 		case MOVE_SPEED:
-			return 20;
+			base = 20;
+			break;
+		case HP_MAX:
+			base = Stats.baseHp(last.get(Stats.STAT_CONSTITUTION));
+			break;
+		case MP_MAX:
+			base = Stats.baseMp(last.get(Stats.STAT_INTELLIGENCE));
+			break;
+		case MP_REGEN:
+			base = last.get(Stats.MP_MAX) / 100;
 		default:
-			return 0;
+			base = 0;
+			break;
 		}
-	}
 
-	private int total(int last, StatModAggregator a, Stats s, int b) {
-		int n = (int) ((b + a.flat.get(s)) * a.add.get(s) * a.more.get(s));
-		if (last != n)
+		int n = (int) ((base + a.flat.get(s)) * a.add.get(s) * a.more.get(s));
+		if (last.get(s) != n)
 			d = true;
 		return n;
 	}

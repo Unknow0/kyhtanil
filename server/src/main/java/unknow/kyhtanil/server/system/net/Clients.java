@@ -20,6 +20,7 @@ import unknow.kyhtanil.server.manager.UUIDManager;
 
 public class Clients extends BaseSystem {
 	private static final Logger log = LoggerFactory.getLogger(Clients.class);
+	public static final float RANGE = 550;
 
 	private LocalizedManager locManager;
 	private UUIDManager uuidManager;
@@ -34,10 +35,7 @@ public class Clients extends BaseSystem {
 	protected void processSystem() {
 	}
 
-	float range = 50;
-
 	private final LocalizedManager.Choose filter = new LocalizedManager.Choose() {
-
 		@Override
 		public boolean choose(int e) {
 			return state.has(e);
@@ -46,7 +44,7 @@ public class Clients extends BaseSystem {
 
 	public void send(StateComp sender, float x, float y, Object msg) {
 		log.debug("send {} ({}) at {} x {} from {}", msg.getClass().getSimpleName(), msg, x, y, sender);
-		IntBag bag = locManager.get(x, y, range, filter);
+		IntBag bag = locManager.get(x, y, RANGE, filter);
 		for (int i = 0; i < bag.size(); i++) {
 			StateComp s = state.get(bag.get(i));
 			if (s != sender) {

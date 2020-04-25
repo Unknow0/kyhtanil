@@ -21,7 +21,8 @@ public class PjInfo extends Component {
 		this.perso = perso;
 	}
 
+	@Override
 	public String toString() {
-		return "x: " + x + ", y: " + y + ", perso: " + perso + ", total: " + stats;
+		return "PjInfo [x=" + x + ", y=" + y + ", stats=" + stats + ", perso=" + perso + "]";
 	}
 }

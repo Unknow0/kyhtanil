@@ -9,8 +9,9 @@ import org.slf4j.LoggerFactory;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
-import com.esotericsoftware.kryo.util.IntMap;
 
+import io.netty.util.collection.IntObjectHashMap;
+import io.netty.util.collection.IntObjectMap;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.server.component.StateComp;
 
@@ -19,7 +20,7 @@ import unknow.kyhtanil.server.component.StateComp;
  */
 public class StateManager extends IteratingSystem {
 	private static final Logger log = LoggerFactory.getLogger(StateManager.class);
-	private final IntMap<UUID> uuidByLogin = new IntMap<>();
+	private final IntObjectMap<UUID> uuidByLogin = new IntObjectHashMap<>();
 	private final Map<UUID, Integer> uuidToEntity = new HashMap<>();
 
 	private UUIDManager uuidManager;

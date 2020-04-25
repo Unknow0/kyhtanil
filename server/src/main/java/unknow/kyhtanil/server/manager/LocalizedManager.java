@@ -1,6 +1,9 @@
 package unknow.kyhtanil.server.manager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -10,6 +13,7 @@ import com.artemis.ComponentMapper;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.utils.IntMap;
 
+import unknow.common.data.IntArraySet;
 import unknow.kyhtanil.common.component.PositionComp;
 import unknow.kyhtanil.server.component.StateComp;
 import unknow.kyhtanil.server.component.StateComp.States;
@@ -22,6 +26,9 @@ public class LocalizedManager extends BaseEntitySystem {
 
 	private ComponentMapper<PositionComp> position;
 	private ComponentMapper<StateComp> state;
+
+	private List<Area> areas = new ArrayList<>();
+	private IntArraySet changed = new IntArraySet(16);
 
 	/**
 	 * create a manager with a w x h square to store entity
@@ -50,6 +57,16 @@ public class LocalizedManager extends BaseEntitySystem {
 		}
 		bag.add(entityId);
 		objects.put(entityId, loc);
+
+		for (Area a : areas) {
+			if (a.source == entityId)
+				continue;
+			PositionComp sp = position.get(a.source);
+			if (sp.distance(p) <= a.range) {
+				a.inside.add(entityId);
+				a.listener.enter(entityId);
+			}
+		}
 	}
 
 	public void changed(int entityId) {
@@ -77,6 +94,8 @@ public class LocalizedManager extends BaseEntitySystem {
 		}
 		bag.add(entityId);
 		objects.put(entityId, nloc);
+
+		changed.add(entityId);
 	}
 
 	@Override
@@ -86,6 +105,63 @@ public class LocalizedManager extends BaseEntitySystem {
 			return;
 		IntBag bag = locMap.get(loc);
 		bag.removeValue(entityId);
+
+		Iterator<Area> it = areas.iterator();
+		while (it.hasNext()) {
+			Area a = it.next();
+			if (a.source == entityId) {
+				it.remove();
+				continue;
+			}
+			if (a.inside.remove(entityId))
+				a.listener.leave(entityId);
+		}
+	}
+
+	@Override
+	protected void processSystem() {
+		for (Entry<Loc, IntBag> e : locMap.entrySet()) {
+			Loc key = e.getKey();
+			IntBag bag = e.getValue();
+			int[] data = bag.getData();
+			for (int i = 0; i < bag.size(); i++) {
+				if (!key.equals(objects.get(data[i])))
+					throw new RuntimeException("inconsistancy");
+			}
+		}
+
+		for (Area a : areas) {
+			PositionComp sp = position.get(a.source);
+			if (changed.contains(a.source)) {
+				IntBag bag = get(sp.x, sp.y, a.range, null);
+				IntArraySet entities = new IntArraySet(bag.getData(), 0, bag.size());
+				entities.remove(a.source);
+				Iterator<Integer> it = a.inside.iterator();
+				while (it.hasNext()) {
+					Integer e = it.next();
+					if (!entities.contains(e)) {
+						a.listener.leave(e);
+						it.remove();
+					}
+				}
+				for (Integer e : entities) {
+					if (!a.inside.contains(e))
+						a.listener.enter(e);
+				}
+				a.inside.addAll(entities);
+			} else {
+				for (Integer i : changed) {
+					if (!a.inside.contains(i))
+						continue;
+					PositionComp p = position.get(i);
+					if (p.distance(sp) > a.range) {
+						a.inside.remove(i);
+						a.listener.leave(i);
+					}
+				}
+			}
+		}
+		changed.clear();
 	}
 
 	public IntBag get(float x, float y, float r, Choose c) {
@@ -114,6 +190,21 @@ public class LocalizedManager extends BaseEntitySystem {
 			}
 		}
 		return bag;
+	}
+
+	public void track(int source, float range, AreaListener listener) {
+		Area a = new Area(source, range, listener);
+		areas.add(a);
+		PositionComp sp = position.get(source);
+
+		IntBag intBag = get(sp.x, sp.y, range, null);
+		for (int i = 0; i < intBag.size(); i++) {
+			int e = intBag.get(i);
+			if (e == source)
+				continue;
+			a.inside.add(e);
+			listener.enter(e);
+		}
 	}
 
 	private static final class Loc implements Comparable<Loc> {
@@ -146,21 +237,34 @@ public class LocalizedManager extends BaseEntitySystem {
 		public int hashCode() {
 			return Float.floatToRawIntBits(31 * x + y);
 		}
-	}
 
-	protected void processSystem() {
-		for (Entry<Loc, IntBag> e : locMap.entrySet()) {
-			Loc key = e.getKey();
-			IntBag bag = e.getValue();
-			int[] data = bag.getData();
-			for (int i = 0; i < bag.size(); i++) {
-				if (!key.equals(objects.get(data[i])))
-					throw new RuntimeException("inconsistancy");
-			}
+		@Override
+		public String toString() {
+			return x + "x" + y;
 		}
 	}
 
 	public static interface Choose {
-		public boolean choose(int e);
+		boolean choose(int e);
+	}
+
+	public static interface AreaListener {
+		void enter(int target);
+
+		void leave(int target);
+	}
+
+	public static class Area {
+		int source;
+		float range;
+		IntArraySet inside;
+		AreaListener listener;
+
+		public Area(int source, float range, AreaListener listener) {
+			this.source = source;
+			this.range = range;
+			this.listener = listener;
+			this.inside = new IntArraySet(16);
+		}
 	}
 }

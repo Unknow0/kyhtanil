@@ -6,13 +6,15 @@ import java.util.Set;
 import com.artemis.Aspect;
 import com.artemis.BaseEntitySystem;
 import com.artemis.utils.IntBag;
-import com.esotericsoftware.kryo.util.IntMap;
+
+import io.netty.util.collection.IntObjectHashMap;
+import io.netty.util.collection.IntObjectMap;
 
 public class EventSystem extends BaseEntitySystem {
-	private IntMap<Set<EntityListener>> listeners = new IntMap<>();
+	private final IntObjectMap<Set<EntityListener>> listeners = new IntObjectHashMap<>();
 
-	public EventSystem(Aspect.Builder aspect) {
-		super(aspect);
+	public EventSystem() {
+		super(Aspect.all());
 	}
 
 	@Override

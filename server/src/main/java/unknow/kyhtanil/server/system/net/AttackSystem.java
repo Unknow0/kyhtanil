@@ -8,8 +8,9 @@ import com.artemis.ComponentMapper;
 import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 import com.artemis.utils.IntBag;
-import com.esotericsoftware.kryo.util.IntMap;
 
+import io.netty.util.collection.IntObjectHashMap;
+import io.netty.util.collection.IntObjectMap;
 import unknow.kyhtanil.common.Skill;
 import unknow.kyhtanil.common.Stats;
 import unknow.kyhtanil.common.component.PositionComp;
@@ -54,7 +55,7 @@ public class AttackSystem extends IteratingSystem {
 	@Wire
 	private Database database;
 
-	private IntMap<Skill> skills = new IntMap<Skill>();
+	private IntObjectMap<Skill> skills = new IntObjectHashMap<>();
 
 	public AttackSystem() {
 		super(Aspect.all(Attack.class, NetComp.class));
@@ -62,7 +63,7 @@ public class AttackSystem extends IteratingSystem {
 
 	@Override
 	protected void initialize() {
-		// auto atack
+		// auto attack
 		skills.put(0, (self, point, target) -> {
 			PositionComp p = position.get(self);
 			double r = Math.atan2(point.y - p.y, point.x - p.x);
@@ -115,6 +116,7 @@ public class AttackSystem extends IteratingSystem {
 		});
 	}
 
+	@Override
 	protected void process(int entityId) {
 		Attack a = attack.get(entityId);
 		NetComp ctx = net.get(entityId);

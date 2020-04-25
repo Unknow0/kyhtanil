@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import com.artemis.Archetype;
 import com.artemis.ArchetypeBuilder;
-import com.artemis.Aspect;
 import com.artemis.BaseComponentMapper;
 import com.artemis.World;
 import com.artemis.WorldConfiguration;
@@ -39,35 +38,28 @@ import unknow.kyhtanil.server.system.net.Server;
 public class GameWorld {
 	private static final Logger log = LoggerFactory.getLogger(GameWorld.class);
 
-	private final Database database;
-
 	private final World world;
-	private final UUIDManager uuidManager;
-	private final LocalizedManager locManager;
 
 	private final BaseComponentMapper<SpawnerComp> spawner;
 
 	private final Archetype spawnArch;
 
 	public GameWorld() throws Exception {
-		database = new Database();
-		uuidManager = new UUIDManager();
-		locManager = new LocalizedManager(10f, 10f);
 		MapLayout layout = new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
 
 		WorldConfiguration cfg = new WorldConfiguration();
 		cfg.setSystem(DebugSystem.class);
-		cfg.setSystem(database);
+		cfg.setSystem(new Database());
 
-		cfg.setSystem(uuidManager);
-		cfg.setSystem(locManager);
+		cfg.setSystem(new UUIDManager());
+		cfg.setSystem(new LocalizedManager(10f, 10f));
 		cfg.setSystem(new StateManager());
 		cfg.setSystem(new Archetypes());
 
 		cfg.setSystem(new Server());
 		cfg.setSystem(new Clients());
 
-		cfg.setSystem(new EventSystem(Aspect.all()));
+		cfg.setSystem(new EventSystem());
 		cfg.setSystem(new LoginSystem());
 		cfg.setSystem(new CreateAccountSystem());
 		cfg.setSystem(new LogCharSystem());

@@ -8,21 +8,15 @@ import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 import unknow.kyhtanil.server.component.StateComp;
 import unknow.kyhtanil.server.component.StateComp.States;
-import unknow.kyhtanil.server.system.net.Clients;
 import unknow.kyhtanil.server.utils.UUIDGen;
 
 public class UUIDManager extends BaseUUIDManager {
-	private Clients clients;
 	private ComponentMapper<StateComp> state;
 	private UUIDGen uuidGen;
 
 	public UUIDManager() {
 		super(Aspect.all(SpriteComp.class));
 		uuidGen = new UUIDGen();
-	}
-
-	@Override
-	protected final void initialize() {
 	}
 
 	@Override
@@ -34,7 +28,6 @@ public class UUIDManager extends BaseUUIDManager {
 		StateComp s = state.get(entityId);
 
 		if (s == null || s.state == States.IN_GAME) {
-			clients.despawn(null, entityId);
 			remove(entityId);
 		}
 	}
@@ -44,7 +37,6 @@ public class UUIDManager extends BaseUUIDManager {
 		if (getUuid(e) == null) // only mob got here
 		{
 			assignUuid(e);
-			clients.spawn(null, e);
 		}
 	}
 
@@ -56,6 +48,7 @@ public class UUIDManager extends BaseUUIDManager {
 		return uuid;
 	}
 
+	@Override
 	protected void processSystem() {
 	}
 }
