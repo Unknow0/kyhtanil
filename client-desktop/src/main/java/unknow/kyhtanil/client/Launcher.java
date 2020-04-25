@@ -17,9 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.impl.SimpleLoggerFactory;
-
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
@@ -134,45 +131,54 @@ class A extends JFrame implements SyncListener {
 		return false;
 	}
 
+	@Override
 	public void startUpdate(String project, int modified, int news, int delete) {
 		listener.startUpdate(project, modified, news, delete);
 		total.setMaximum(2 * (modified + news));
 	}
 
+	@Override
 	public void startFile(String name) {
 		listener.startFile(name);
 		label.setText("Updating '" + name + "'");
 	}
 
+	@Override
 	public void startCheckFile(String name) {
 		listener.startCheckFile(name);
 		label.setText("Checking '" + name + "'");
 	}
 
+	@Override
 	public void doneCheckFile(String name) {
 		listener.doneCheckFile(name);
 		total.setValue(total.getValue() + 1);
 	}
 
+	@Override
 	public void startReconstruct(String name) {
 		listener.startReconstruct(name);
 		label.setText("Reconstructing '" + name + "'");
 	}
 
+	@Override
 	public void updateReconstruct(String name, float rate) {
 		listener.updateReconstruct(name, rate);
 		// XXX
 	}
 
+	@Override
 	public void doneReconstruct(String name, long fileSize, boolean ok) {
 		listener.doneReconstruct(name, fileSize, ok);
 		total.setValue(total.getValue() + (ok ? 1 : -1));
 	}
 
+	@Override
 	public void doneFile(String name, long fileSize) {
 		listener.doneFile(name, fileSize);
 	}
 
+	@Override
 	public void doneUpdate(String project) {
 		listener.doneUpdate(project);
 	}
