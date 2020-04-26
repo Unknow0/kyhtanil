@@ -6,4 +6,3 @@ create table items (
 	"desc" varchar(255),
 	slot item_slots
 	);
-grant SELECT,UPDATE,INSERT on table items to kyhtanil;

@@ -7,4 +7,3 @@ create table characters (
 
 	body integer
 	);
-grant SELECT,UPDATE,INSERT on table characters to kyhtanil;

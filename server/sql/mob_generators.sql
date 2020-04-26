@@ -6,4 +6,3 @@ create table mob_generators (
 
 	mob integer not null
 );
-grant SELECT,UPDATE,INSERT on table mob_generators to kyhtanil;

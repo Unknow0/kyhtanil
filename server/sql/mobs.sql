@@ -8,4 +8,3 @@ create table mobs (
 	concentration integer,
 	dexterity integer
 );
-grant SELECT,UPDATE,INSERT on table mobs to kyhtanil;

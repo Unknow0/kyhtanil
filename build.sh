@@ -1,4 +1,5 @@
 #!/bin/bash
+shopt -s extglob
 
 cd $(dirname "$0")
 
@@ -29,14 +30,12 @@ docker build -t kyhtanil/server -f Dockerfile.server target || exit 1
 docker build -t kyhtanil/sync -f Dockerfile.sync target || exit 2
 
 restart=
+purge=
 while [ "$1" ]
 do
 	case "$1" in
 		purge-db)
-			psql postgres -c "drop database kyhtanil;" || exit 1
-			psql postgres -c "create database kyhtanil;" || exit 1
-			cat server/sql/[^c]* | psql kyhtanil || exit 1
-			cat server/sql/contents.sql | psql kyhtanil || exit 1
+			purge=1
 			;;
 		restart)
 			restart=1
@@ -49,6 +48,17 @@ if [[ "$restart" ]]
 then
 	docker stop kyhtanil-server kyhtanil-sync
 	docker rm  kyhtanil-server kyhtanil-sync
+
+	if [[ "$purge" ]]
+	then
+		psql postgres -c "drop database kyhtanil;" || exit 1
+		psql postgres -c "create database kyhtanil;" || exit 1
+		psql kyhtanil -c "alter default privileges grant select,insert,update on tables to kyhtanil" || exit 1
+		psql kyhtanil -c "alter default privileges grant usage,select,update on sequences to kyhtanil" || exit 1
+		cat server/sql/!(content.sql) | psql kyhtanil || exit 1
+		cat server/sql/content.sql | psql kyhtanil || exit 1
+	fi
+
 	docker run -d --name kyhtanil-sync --restart=always -p 54320:54320 kyhtanil/sync
 	docker run -d --name kyhtanil-server --restart=always -p 54321:54321 --add-host db:192.168.1.99 kyhtanil/server
 fi
