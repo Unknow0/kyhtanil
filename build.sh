@@ -49,15 +49,7 @@ then
 	docker stop kyhtanil-server kyhtanil-sync
 	docker rm  kyhtanil-server kyhtanil-sync
 
-	if [[ "$purge" ]]
-	then
-		psql postgres -c "drop database kyhtanil;" || exit 1
-		psql postgres -c "create database kyhtanil;" || exit 1
-		psql kyhtanil -c "alter default privileges grant select,insert,update on tables to kyhtanil" || exit 1
-		psql kyhtanil -c "alter default privileges grant usage,select,update on sequences to kyhtanil" || exit 1
-		cat server/sql/!(content.sql) | psql kyhtanil || exit 1
-		cat server/sql/content.sql | psql kyhtanil || exit 1
-	fi
+	[ "$purge" ] && ./purge-db.sh
 
 	docker run -d --name kyhtanil-sync --restart=always -p 54320:54320 kyhtanil/sync
 	docker run -d --name kyhtanil-server --restart=always -p 54321:54321 --add-host db:192.168.1.99 kyhtanil/server

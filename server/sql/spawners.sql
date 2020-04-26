@@ -4,5 +4,6 @@ create table spawners (
 	y float not null,
 	r float not null,
 
-	mobs integer[] not null
+	max integer not null,
+	speed integer not null
 );
