@@ -1,6 +1,6 @@
 create table mobs (
 	id serial primary key,
-	varchar(50) name,
+	name varchar(50),
 
 	strength integer,
 	constitution integer,
@@ -8,3 +8,4 @@ create table mobs (
 	concentration integer,
 	dexterity integer
 );
+grant SELECT,UPDATE,INSERT on table mobs to kyhtanil;

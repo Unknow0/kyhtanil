@@ -9,3 +9,4 @@ CREATE TABLE characters_body (
 	xp integer,
 	level integer
 );
+grant SELECT,UPDATE,INSERT on table characters_body to kyhtanil;
