@@ -3,7 +3,7 @@ package unknow.kyhtanil.common.component;
 import com.artemis.PooledComponent;
 
 /**
- * Stat all off visible entity
+ * Stat off all visible entity
  * 
  * @author unknow
  */

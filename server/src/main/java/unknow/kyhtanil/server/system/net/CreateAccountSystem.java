@@ -47,7 +47,7 @@ public class CreateAccountSystem extends IteratingSystem {
 		try {
 			Integer a = database.createAccount(l.login, l.passHash);
 			if (a != null) {
-				int ns = world.create(arch.pj);
+				int ns = world.create(arch.login);
 				StateComp s = state.get(ns);
 				s.account = a;
 				s.channel = ctx.channel;

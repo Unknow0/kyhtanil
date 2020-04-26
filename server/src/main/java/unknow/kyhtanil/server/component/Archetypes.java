@@ -38,7 +38,7 @@ public class Archetypes extends BaseSystem {
 		builder.add(Position.class, Velocity.class, Projectile.class, Sprite.class);
 		proj = builder.build(world);
 
-		spawner = new ArchetypeBuilder().add(SpawnerComp.class).build(world);
+		spawner = new ArchetypeBuilder().add(Spawner.class).build(world);
 	}
 
 	@Override

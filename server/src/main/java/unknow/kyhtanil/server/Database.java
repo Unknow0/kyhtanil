@@ -21,9 +21,11 @@ import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.pojo.CharDesc;
 import unknow.kyhtanil.server.component.Archetypes;
-import unknow.kyhtanil.server.component.SpawnerComp;
+import unknow.kyhtanil.server.component.Spawner;
+import unknow.kyhtanil.server.component.Spawner.Mob;
 
 public class Database extends BaseSystem {
+	private static final Spawner.Mob[] MOB_ARRAY = new Spawner.Mob[0];
 	private static final RSConvert<Boolean> HAS_NEXT = rs -> rs.next();
 	private static final RSConvert<Integer> FIRT_INT = rs -> rs.getInt(1);
 
@@ -33,7 +35,7 @@ public class Database extends BaseSystem {
 	private ComponentMapper<Position> position;
 	private ComponentMapper<StatShared> statShared;
 	private ComponentMapper<StatBase> statBase;
-	private ComponentMapper<SpawnerComp> spawner;
+	private ComponentMapper<Spawner> spawner;
 
 	public Database() {
 	}
@@ -148,18 +150,34 @@ public class Database extends BaseSystem {
 	}
 
 	public void loadSpawner() throws SQLException {
+		List<Spawner.Mob> list = new ArrayList<>();
 		exec("select * from spawners", rs -> {
 			while (rs.next()) {
 				int i = world.create(archetype.spawner);
-				SpawnerComp s = spawner.get(i);
+				Spawner s = spawner.get(i);
 				s.x = rs.getFloat("x");
 				s.y = rs.getFloat("y");
 				s.r = rs.getFloat("r");
 				s.max = rs.getInt("max");
 				s.speed = rs.getInt("speed");
 
-				Object mobs = rs.getObject("mobs");
-				System.out.println(mobs);
+				s.mobs = exec("select m.*, factor from spawner_mobs s inner join mobs m on m.id=s.mob where s.spawner=?", rsm -> {
+					list.clear();
+					while (rsm.next()) {
+						Mob mob = new Spawner.Mob();
+						mob.name = rsm.getString("name");
+						mob.tex = rsm.getString("tex");
+						mob.w = rsm.getFloat("w");
+
+						mob.strength = rsm.getInt("strength");
+						mob.constitution = rsm.getInt("constitution");
+						mob.intelligence = rsm.getInt("intelligence");
+						mob.concentration = rsm.getInt("concentration");
+						mob.dexterity = rsm.getInt("dexterity");
+						list.add(mob);
+					}
+					return list.toArray(MOB_ARRAY);
+				}, rs.getInt("id"));
 			}
 			return null;
 		});

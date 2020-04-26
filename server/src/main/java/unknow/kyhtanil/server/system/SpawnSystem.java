@@ -10,10 +10,11 @@ import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.server.component.Archetypes;
-import unknow.kyhtanil.server.component.SpawnerComp;
+import unknow.kyhtanil.server.component.Spawner;
+import unknow.kyhtanil.server.component.Spawner.Mob;
 
 public class SpawnSystem extends IteratingSystem {
-	private ComponentMapper<SpawnerComp> spawner;
+	private ComponentMapper<Spawner> spawner;
 	private ComponentMapper<Position> position;
 	private ComponentMapper<Velocity> velocity;
 	private ComponentMapper<StatShared> mobInfo;
@@ -26,20 +27,22 @@ public class SpawnSystem extends IteratingSystem {
 	private EventSystem event;
 
 	public SpawnSystem() {
-		super(Aspect.all(SpawnerComp.class));
+		super(Aspect.all(Spawner.class));
 	}
 
 	@Override
 	protected void process(int e) {
-		SpawnerComp s = spawner.get(e);
-		if (s.current_count > s.max)
+		Spawner s = spawner.get(e);
+		if (s.count > s.max)
 			return;
-		s.current += world.delta * s.speed;
+		s.time += world.delta * s.speed;
 
-		if (s.current > 1) {
-			s.current = 0;
-			s.current_count++;
+		if (s.time > 1) {
+			s.time = 0;
+			s.count++;
 			int m = world.create(arch.mob);
+
+			Mob mob = s.mobs[(int) (Math.random() * s.mobs.length)];
 
 			Position p = position.get(m);
 			p.x = (float) (s.x + Math.random() * s.r * 2 - s.r);
@@ -50,27 +53,32 @@ public class SpawnSystem extends IteratingSystem {
 			v.speed = 0;
 
 			StatShared mi = mobInfo.get(m);
-			mi.hp = 10;
-			mi.name = "mob"; // TODO
+			mi.name = mob.name;
 
 			StatBase st = stats.get(m);
-			st.concentration = 1;
-			// TODO load mob stats
+			st.strength = mob.strength;
+			st.constitution = mob.constitution;
+			st.intelligence = mob.intelligence;
+			st.concentration = mob.concentration;
+			st.dexterity = mob.dexterity;
 
 			Sprite sp = sprite.get(m);
-			sp.h = sp.w = 16;
-			sp.tex = "mob";
+			sp.h = sp.w = mob.w;
+			sp.tex = mob.tex;
 
-			update.process(m); // XXX ??
+			update.process(m);
 			event.register(m, new Listener(spawner, e));
+
+			mi.hp = mi.maxHp;
+			mi.mp = mi.maxMp;
 		}
 	}
 
 	private static class Listener implements EventSystem.EntityListener {
-		private ComponentMapper<SpawnerComp> spawner;
+		private ComponentMapper<Spawner> spawner;
 		private int spawnerId;
 
-		public Listener(ComponentMapper<SpawnerComp> spawner, int spawnerId) {
+		public Listener(ComponentMapper<Spawner> spawner, int spawnerId) {
 			this.spawner = spawner;
 			this.spawnerId = spawnerId;
 		}
@@ -81,8 +89,8 @@ public class SpawnSystem extends IteratingSystem {
 
 		@Override
 		public void removed(int entityId) {
-			SpawnerComp s = spawner.get(spawnerId);
-			s.current_count--;
+			Spawner s = spawner.get(spawnerId);
+			s.count--;
 		}
 	}
 }
