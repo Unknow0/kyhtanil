@@ -132,7 +132,9 @@ public class LogCharSystem extends IteratingSystem {
 
 		@Override
 		public void leave(int target) {
-			chan.writeAndFlush(new Despawn(manager.getUuid(target)));
+			UUID uuid = manager.getUuid(target);
+			if (uuid != null)
+				chan.writeAndFlush(new Despawn(uuid));
 		}
 	}
 }

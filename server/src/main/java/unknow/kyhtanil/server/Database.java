@@ -15,6 +15,7 @@ import com.artemis.ComponentMapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import unknow.kyhtanil.common.Stats;
 import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatShared;
@@ -24,6 +25,7 @@ import unknow.kyhtanil.server.component.SpawnerComp;
 
 public class Database extends BaseSystem {
 	private static final RSConvert<Boolean> HAS_NEXT = rs -> rs.next();
+	private static final RSConvert<Integer> FIRT_INT = rs -> rs.getInt(1);
 
 	private DataSource ds;
 
@@ -45,13 +47,6 @@ public class Database extends BaseSystem {
 		ds = new HikariDataSource(new HikariConfig("/hikari.properties"));
 	}
 
-	private static interface STInit {
-		public static final STInit EMPTY = st -> {
-		};
-
-		public void init(PreparedStatement st) throws SQLException;
-	}
-
 	private static interface RSConvert<T> {
 		public T convert(ResultSet rs) throws SQLException;
 	}
@@ -67,18 +62,20 @@ public class Database extends BaseSystem {
 		}
 	}
 
-	private int sqlupdate(String sql, STInit init) throws SQLException {
+	private int sqlupdate(String sql, Object... param) throws SQLException {
 		try (Connection c = ds.getConnection()) {
 			PreparedStatement st = c.prepareStatement(sql);
-			init.init(st);
+			for (int i = 0; i < param.length; i++)
+				st.setObject(i + 1, param[i]);
 			return st.executeUpdate();
 		}
 	}
 
-	private <T> T sqlinsert(String sql, STInit init, RSConvert<T> conv) throws SQLException {
+	private <T> T sqlinsert(String sql, RSConvert<T> conv, Object... param) throws SQLException {
 		try (Connection c = ds.getConnection()) {
 			PreparedStatement st = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			init.init(st);
+			for (int i = 0; i < param.length; i++)
+				st.setObject(i + 1, param[i]);
 			st.executeUpdate();
 			ResultSet rs = st.getGeneratedKeys();
 			if (!rs.next())
@@ -92,13 +89,7 @@ public class Database extends BaseSystem {
 	}
 
 	public Integer createAccount(String login, byte[] passHash) throws SQLException {
-		return sqlinsert("insert into accounts (login, pass_hash) values (?,?)", st -> {
-			st.setString(1, login);
-			st.setBytes(2, passHash);
-		}, rs -> {
-			rs.next();
-			return rs.getInt(0);
-		});
+		return sqlinsert("insert into accounts (login, pass_hash) values (?,?)", FIRT_INT, login, passHash);
 	}
 
 	public Integer getAccount(String login, byte[] passHash) throws SQLException {
@@ -148,18 +139,12 @@ public class Database extends BaseSystem {
 	}
 
 	public void createChar(int account, String name) throws SQLException {
-		sqlinsert("insert into characters (name,account) values (?,?)", st -> {
-			st.setString(1, name);
-			st.setInt(2, account);
-		}, rs -> {
+		sqlinsert("insert into characters (name,account,hp,mp) values (?,?,?,?)", rs -> {
 			int c = rs.getInt(1);
-			int b = sqlinsert("insert into characters_body default values", STInit.EMPTY, rsi -> rsi.getInt(1));
-			sqlupdate("update characters set body=? where id=?", st -> {
-				st.setInt(1, b);
-				st.setInt(2, c);
-			});
+			int b = sqlinsert("insert into characters_body default values", FIRT_INT);
+			sqlupdate("update characters set body=? where id=?", b, c);
 			return null;
-		});
+		}, name, account, Stats.baseHp(0), Stats.baseMp(0));
 	}
 
 	public void loadSpawner() throws SQLException {

@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.*;
 
 public class ArrayUtils {
 	public static <T> Array<T> newArray(Collection<T> col) {
-		Array<T> a = new Array<T>(false, col.size());
+		Array<T> a = new Array<>(false, col.size());
 		for (T t : col)
 			a.add(t);
 		return a;

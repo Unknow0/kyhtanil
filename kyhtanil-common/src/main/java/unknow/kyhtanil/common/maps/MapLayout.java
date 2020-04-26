@@ -89,6 +89,8 @@ public class MapLayout {
 	 */
 	public boolean isWall(int x, int y) throws IOException {
 		MapEntry e = get(x, y);
+		if (e == null)
+			return true;
 		TilesetInfo ti = tileset.get(e.tileset);
 		return ti.isWall(e.map().get(x - e.x, y - e.y));
 	}
