@@ -6,15 +6,11 @@ import java.io.FileInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.artemis.Archetype;
-import com.artemis.ArchetypeBuilder;
-import com.artemis.BaseComponentMapper;
 import com.artemis.World;
 import com.artemis.WorldConfiguration;
 
 import unknow.kyhtanil.common.maps.MapLayout;
 import unknow.kyhtanil.server.component.Archetypes;
-import unknow.kyhtanil.server.component.SpawnerComp;
 import unknow.kyhtanil.server.manager.LocalizedManager;
 import unknow.kyhtanil.server.manager.StateManager;
 import unknow.kyhtanil.server.manager.UUIDManager;
@@ -39,10 +35,6 @@ public class GameWorld {
 	private static final Logger log = LoggerFactory.getLogger(GameWorld.class);
 
 	private final World world;
-
-	private final BaseComponentMapper<SpawnerComp> spawner;
-
-	private final Archetype spawnArch;
 
 	public GameWorld() throws Exception {
 		MapLayout layout = new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
@@ -78,28 +70,8 @@ public class GameWorld {
 		cfg.register(layout);
 
 		world = new World(cfg);
-
-		spawner = BaseComponentMapper.getFor(SpawnerComp.class, world);
-
-		spawnArch = new ArchetypeBuilder().add(SpawnerComp.class).build(world);
-
-		createSpawner(200, 200, 100, 3, 1);
-	}
-
-	private void createSpawner(float x, float y, float range, int max_count, float speed) {
-		int e = world.create(spawnArch);
-		SpawnerComp s = spawner.get(e);
-		s.x = x;
-		s.y = y;
-		s.r = range;
-		s.current_count = 0;
-		s.max = max_count;
-		s.current = 0;
-		s.speed = speed;
-	}
-
-	public World world() {
-		return world;
+		
+		world.getSystem(Database.class).loadSpawner();
 	}
 
 	public void run() {

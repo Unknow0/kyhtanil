@@ -157,6 +157,9 @@ public class Database extends BaseSystem {
 				s.r = rs.getFloat("r");
 				s.max = rs.getInt("max");
 				s.speed = rs.getInt("speed");
+
+				Object mobs = rs.getObject("mobs");
+				System.out.println(mobs);
 			}
 			return null;
 		});

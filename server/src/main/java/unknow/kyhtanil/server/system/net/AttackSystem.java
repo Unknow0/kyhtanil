@@ -66,10 +66,11 @@ public class AttackSystem extends IteratingSystem {
 		// auto attack
 		skills.put(0, (self, point, target) -> {
 			Position p = position.get(self);
+			Sprite sp = sprite.get(self);
 			double r = Math.atan2(point.y - p.y, point.x - p.x);
 
 			// TODO weapon range
-			IntBag intBag = locManager.get(p.x, p.y, 32, filter);
+			IntBag intBag = locManager.get(p.x, p.y, 32, e -> damage.has(e) && p.distance(position.get(e)) < sp.w + sprite.get(e).w);
 			if (intBag.isEmpty())
 				return;
 			for (int i = 0; i < intBag.size(); i++) {

@@ -1,5 +1,8 @@
 package unknow.kyhtanil.server.system;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.artemis.Aspect;
 import com.artemis.BaseEntitySystem;
 import com.artemis.Component;
@@ -9,6 +12,7 @@ import com.artemis.utils.Bag;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 
 public class DebugSystem extends BaseEntitySystem {
+	private static final Logger log = LoggerFactory.getLogger(DebugSystem.class);
 	private ComponentManager manager;
 	private BaseUUIDManager uuid;
 	private Bag<Component> fillBag = new Bag<>();
@@ -26,13 +30,13 @@ public class DebugSystem extends BaseEntitySystem {
 		fillBag.clear();
 		manager.getComponentsFor(entityId, fillBag);
 
-		System.out.println("added " + entityId + " " + uuid.getUuid(entityId));
+		log.trace("added {} {}", entityId, uuid.getUuid(entityId));
 		for (int i = 0; i < fillBag.size(); i++)
-			System.out.println("	" + fillBag.get(i).getClass());
+			log.trace("	{}", fillBag.get(i));
 	}
 
 	@Override
 	protected void removed(int entityId) {
-		System.out.println("removed " + entityId);
+		log.trace("removed {}", entityId);
 	}
 }
