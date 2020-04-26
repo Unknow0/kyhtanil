@@ -3,4 +3,3 @@ create table accounts (
 	login varchar(50),
 	pass_hash bytea
 	);
-grant SELECT,UPDATE,INSERT on table accounts to kyhtanil;
