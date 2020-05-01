@@ -2,7 +2,6 @@ package unknow.kyhtanil.client.system;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import com.artemis.Aspect;
@@ -14,18 +13,21 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import unknow.kyhtanil.client.component.TargetComp;
 import unknow.kyhtanil.common.TexManager;
 import unknow.kyhtanil.common.TexManager.Drawable;
-import unknow.kyhtanil.common.TexManager.RegionDrawable;
 import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.maps.MapLayout;
 
+/**
+ * Render sprite
+ * 
+ * @author unknow
+ */
 public class RenderingSystem extends IteratingSystem {
 	private SpriteBatch batch;
 	private Viewport vp;
@@ -36,18 +38,22 @@ public class RenderingSystem extends IteratingSystem {
 	private ComponentMapper<Position> position;
 	private ComponentMapper<Sprite> sprite;
 
-	private RegionDrawable targetTex;
-	private Vector2 targetSize;
+	private Drawable targetTex;
 	private Texture hpTex;
 
 	private State state;
 
-	public RenderingSystem(Viewport vp) throws FileNotFoundException, IOException {
+	/**
+	 * create new RenderingSystem
+	 * 
+	 * @param vp the viewport to use
+	 * @throws IOException if we failed to load maps layout
+	 */
+	public RenderingSystem(Viewport vp) throws IOException {
 		super(Aspect.all(Position.class, Sprite.class, StatShared.class));
 		this.vp = vp;
 		this.layout = new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
-		targetTex = (RegionDrawable) TexManager.get("target");
-		targetSize = new Vector2(targetTex.getWidth(), targetTex.getHeight());
+		targetTex = TexManager.get("target");
 		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
 		pixmap.setColor(Color.RED);
 		pixmap.fill();
@@ -108,7 +114,7 @@ public class RenderingSystem extends IteratingSystem {
 				tex.draw(batch, pos.x - s.w / 2, pos.y - s.h / 2, s.w, s.h);
 		}
 		if (target.has(id))
-			targetTex.draw(batch, pos.x - targetSize.x / 2, pos.y - targetSize.y / 2, targetSize.x, targetSize.y);
+			targetTex.draw(batch, pos.x - s.w / 2 - 5, pos.y - s.h / 2 - 5, s.w + 10, s.h + 10);
 
 		StatShared c = info.get(id);
 

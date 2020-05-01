@@ -17,7 +17,7 @@ import unknow.kyhtanil.server.Database;
 import unknow.kyhtanil.server.component.Archetypes;
 import unknow.kyhtanil.server.component.StateComp;
 import unknow.kyhtanil.server.component.StateComp.States;
-import unknow.kyhtanil.server.manager.StateManager;
+import unknow.kyhtanil.server.manager.UUIDManager;
 
 /**
  * manage the login request <br>
@@ -26,7 +26,7 @@ import unknow.kyhtanil.server.manager.StateManager;
 public class CreateAccountSystem extends IteratingSystem {
 	private static final Logger log = LoggerFactory.getLogger(CreateAccountSystem.class);
 
-	private StateManager manager;
+	private UUIDManager manager;
 	private ComponentMapper<CreateAccount> create;
 	private ComponentMapper<NetComp> net;
 	private ComponentMapper<StateComp> state;
@@ -34,6 +34,9 @@ public class CreateAccountSystem extends IteratingSystem {
 	private Archetypes arch;
 	private Database database;
 
+	/**
+	 * create new CreateAccountSystem
+	 */
 	public CreateAccountSystem() {
 		super(Aspect.all(CreateAccount.class, NetComp.class));
 	}
@@ -53,7 +56,7 @@ public class CreateAccountSystem extends IteratingSystem {
 				s.channel = ctx.channel;
 				s.state = States.LOGGED;
 
-				UUID uuid = manager.log(ns, a);
+				UUID uuid = manager.assignUuid(ns);
 				if (uuid != null) {
 					log.info("log {} {}", s.account, uuid);
 					ctx.channel.writeAndFlush(new LogResult(uuid, new CharDesc[0]));

@@ -47,9 +47,14 @@ import unknow.scene.builder.DynLayout;
 import unknow.scene.builder.DynLayoutContext;
 import unknow.scene.builder.DynLayoutContext.Attr;
 
+/**
+ * Global game window
+ * 
+ * @author unknow
+ */
 public class Main implements ApplicationListener {
+	/** context for the game dynlayout (keep registered class) */
 	public static final DynLayoutContext dynContext = new DynLayoutContext();
-	public static Main self;
 
 	private final Viewport gameVp = new ExtendViewport(560, 368);
 	private final DynLayout dynLayout = new DynLayout(dynContext);
@@ -61,9 +66,9 @@ public class Main implements ApplicationListener {
 	@Override
 	public void create() {
 		try {
-			self = this;
 			VisUI.load();
 			TexManager.init();
+			Keybind.load();
 
 			i18n = I18NBundle.createBundle(Gdx.files.internal("text"));
 			stage = new Stage(new ScreenViewport());
@@ -108,9 +113,14 @@ public class Main implements ApplicationListener {
 		}
 	}
 
+	/**
+	 * show a screen
+	 * 
+	 * @param screen the screen to show
+	 */
 	public void show(Screen screen) {
 		if (screen == Screen.GAME)
-			GameWindow.init();
+			GameWindow.init(dynLayout);
 		try (InputStream is = screen.file()) {
 			dynLayout.load(new InputSource(is));
 			System.out.println(dynLayout);
@@ -119,10 +129,16 @@ public class Main implements ApplicationListener {
 		}
 	}
 
+	/**
+	 * show an error
+	 * 
+	 * @param code the error
+	 */
 	public void error(ErrorCode code) {
 		VisLabel info = (VisLabel) dynLayout.get("info");
-		if (info == null)
+		if (info == null) {
 			return;
+		}
 		switch (code) {
 		case INVALID_LOGIN:
 			info.setText(i18n.get("error_invalid_login"));
@@ -154,10 +170,6 @@ public class Main implements ApplicationListener {
 		stage.getViewport().update(width, height, true);
 	}
 
-	public DynLayout dynLayout() {
-		return dynLayout;
-	}
-
 	@Override
 	public void pause() {
 	}
@@ -170,8 +182,22 @@ public class Main implements ApplicationListener {
 	public void dispose() {
 	}
 
+	/**
+	 * the screen the game can show
+	 * 
+	 * @author unknow
+	 */
 	public static enum Screen {
-		LOGIN("ui/login.xml"), ACCOUNTCREATE("ui/accountcreate.xml"), CHARSELECT("ui/charselect.xml"), CHARCREATE("ui/charcreate.xml"), GAME("ui/gamehud.xml");
+		/** the login */
+		LOGIN("ui/login.xml"),
+		/** the account creation */
+		ACCOUNTCREATE("ui/accountcreate.xml"),
+		/** char selection */
+		CHARSELECT("ui/charselect.xml"),
+		/** char creation */
+		CHARCREATE("ui/charcreate.xml"),
+		/** the game */
+		GAME("ui/gamehud.xml");
 
 		private FileHandle file;
 
@@ -179,6 +205,11 @@ public class Main implements ApplicationListener {
 			this.file = Gdx.files.internal(file);
 		}
 
+		/**
+		 * the content of the layout of this screen
+		 * 
+		 * @return the IntputSteam
+		 */
 		public InputStream file() {
 			return file.read();
 		}

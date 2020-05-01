@@ -8,12 +8,18 @@ import unknow.kyhtanil.common.pojo.Damage;
  * base stats (without modifier)
  */
 public class StatBase extends PooledComponent implements Setable<StatBase> {
+	/** the strength */
 	public int strength;
+	/** the constitution */
 	public int constitution;
+	/** the intelligence */
 	public int intelligence;
+	/** the concentration */
 	public int concentration;
+	/** the dexterity */
 	public int dexterity;
 
+	/** the level TODO move to StatPoints? */
 	public int level;
 
 	/** weapon damage */

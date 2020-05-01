@@ -11,12 +11,20 @@ import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.net.DamageReport;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 
+/**
+ * apply reported damage
+ * 
+ * @author unknow
+ */
 public class DamageReportSystem extends IteratingSystem {
 	private static final Logger log = LoggerFactory.getLogger(DamageReportSystem.class);
 	private ComponentMapper<DamageReport> report;
 	private ComponentMapper<StatShared> mob;
 	private BaseUUIDManager manager;
 
+	/**
+	 * create new DamageReportSystem
+	 */
 	public DamageReportSystem() {
 		super(Aspect.all(DamageReport.class));
 	}

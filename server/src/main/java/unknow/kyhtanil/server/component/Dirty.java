@@ -8,7 +8,13 @@ import com.artemis.PooledComponent;
 
 import unknow.kyhtanil.common.component.Setable;
 
+/**
+ * contains all component that have been updated and should be reported to client
+ * 
+ * @author unknow
+ */
 public class Dirty extends PooledComponent {
+	/** changed component */
 	public Map<Class<?>, Setable<?>> map = new IdentityHashMap<>();
 
 	@Override
@@ -16,10 +22,21 @@ public class Dirty extends PooledComponent {
 		map.clear();
 	}
 
+	/**
+	 * add a dirty component
+	 * 
+	 * @param c component taht changed
+	 */
 	public void add(Setable<?> c) {
 		map.put(c.getClass(), c);
 	}
 
+	/**
+	 * get all changed component
+	 * 
+	 * @param exclude component to exclude
+	 * @return the array of changed component
+	 */
 	public Component[] changed(Class<?> exclude) {
 		int i = map.size();
 		if (map.containsKey(exclude))

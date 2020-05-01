@@ -1,5 +1,8 @@
 package unknow.kyhtanil.server.system.net;
 
+import java.util.function.IntConsumer;
+import java.util.function.IntPredicate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +14,6 @@ import com.artemis.utils.IntBag;
 
 import io.netty.util.collection.IntObjectHashMap;
 import io.netty.util.collection.IntObjectMap;
-import unknow.kyhtanil.common.Skill;
 import unknow.kyhtanil.common.Stats;
 import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.Sprite;
@@ -20,7 +22,6 @@ import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.common.component.net.Attack;
 import unknow.kyhtanil.common.component.net.NetComp;
-import unknow.kyhtanil.common.pojo.Point;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.server.Database;
 import unknow.kyhtanil.server.component.Archetypes;
@@ -29,8 +30,12 @@ import unknow.kyhtanil.server.component.Dirty;
 import unknow.kyhtanil.server.component.Projectile;
 import unknow.kyhtanil.server.manager.LocalizedManager;
 import unknow.kyhtanil.server.manager.UUIDManager;
-import unknow.kyhtanil.server.utils.Event;
 
+/**
+ * manage attack event
+ * 
+ * @author unknow
+ */
 public class AttackSystem extends IteratingSystem {
 	private static final Logger log = LoggerFactory.getLogger(AttackSystem.class);
 
@@ -50,13 +55,16 @@ public class AttackSystem extends IteratingSystem {
 
 	private Archetypes arch;
 
-	private final LocalizedManager.Choose filter = e -> damage.has(e);
+	private final IntPredicate filter = e -> damage.has(e);
 
 	@Wire
 	private Database database;
 
 	private IntObjectMap<Skill> skills = new IntObjectHashMap<>();
 
+	/**
+	 * create new AttackSystem
+	 */
 	public AttackSystem() {
 		super(Aspect.all(Attack.class, NetComp.class));
 	}
@@ -131,15 +139,14 @@ public class AttackSystem extends IteratingSystem {
 		}
 
 		Integer t = null;
-		Point p;
+		Position p;
 		if (a.target instanceof UUID) {
 			t = manager.getEntity((UUID) a.target);
 			if (t == null)
 				return;
-			Position pos = position.get(t);
-			p = new Point(pos.x, pos.y);
+			p = position.get(t);
 		} else
-			p = (Point) a.target;
+			p = (Position) a.target;
 
 		Skill script = skills.get(a.id);
 
@@ -151,7 +158,7 @@ public class AttackSystem extends IteratingSystem {
 		d.add(new DamageListComp.Damage(source, 0, slashing, blunt, pierce, lightning, fire, ice, duration));
 	}
 
-	private void addProj(int source, float dir, float speed, float ttl, String tex, Event onHit) {
+	private void addProj(int source, float dir, float speed, float ttl, String tex, IntConsumer onHit) {
 		final int e = world.create(arch.proj);
 		position.get(e).set(position.get(source));
 		Velocity v = velocity.get(e);
@@ -166,5 +173,9 @@ public class AttackSystem extends IteratingSystem {
 		s.w = s.h = 8;
 		s.rotation = dir;
 		s.tex = tex;
+	}
+
+	private interface Skill {
+		void exec(int source, Position p, Integer target);
 	}
 }

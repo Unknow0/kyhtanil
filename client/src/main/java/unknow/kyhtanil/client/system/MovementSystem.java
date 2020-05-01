@@ -7,10 +7,18 @@ import com.artemis.systems.IteratingSystem;
 import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.Velocity;
 
+/**
+ * Mouvement predition system
+ * 
+ * @author unknow
+ */
 public class MovementSystem extends IteratingSystem {
 	private ComponentMapper<Velocity> velocity;
 	private ComponentMapper<Position> position;
 
+	/**
+	 * create new MovementSystem
+	 */
 	public MovementSystem() {
 		super(Aspect.all(Position.class, Velocity.class));
 	}

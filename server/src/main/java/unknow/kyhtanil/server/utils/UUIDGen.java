@@ -3,22 +3,36 @@ package unknow.kyhtanil.server.utils;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.server.Cfg;
 
+/**
+ * generate uuid for entities
+ * 
+ * @author unknow
+ */
 public class UUIDGen {
 	private final UUID self;
-	private long msb = 1;
+	private long msb = 0;
 	private long lsb = 0;
 	private final byte nodeId;
 	private final Object monitor = new Object();
 
+	/**
+	 * create new UUIDGen
+	 */
 	public UUIDGen() {
 		this.nodeId = Cfg.nodeId;
 		self = next();
 	}
 
+	/**
+	 * @return uuid for this node
+	 */
 	public UUID self() {
 		return self;
 	}
 
+	/**
+	 * @return the next uuid
+	 */
 	public UUID next() {
 		synchronized (monitor) {
 			lsb++;

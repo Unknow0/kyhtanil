@@ -13,6 +13,11 @@ import unknow.kyhtanil.common.component.Setable;
 import unknow.kyhtanil.common.component.net.UpdateInfo;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 
+/**
+ * apply update info event
+ * 
+ * @author unknow
+ */
 public class UpdateInfoSystem extends IteratingSystem {
 	private static final Logger log = LoggerFactory.getLogger(UpdateInfoSystem.class);
 	private ComponentMapper<UpdateInfo> update;
@@ -20,6 +25,9 @@ public class UpdateInfoSystem extends IteratingSystem {
 	private BaseUUIDManager manager;
 	private State state;
 
+	/**
+	 * create new UpdateInfoSystem
+	 */
 	public UpdateInfoSystem() {
 		super(Aspect.all(UpdateInfo.class));
 	}

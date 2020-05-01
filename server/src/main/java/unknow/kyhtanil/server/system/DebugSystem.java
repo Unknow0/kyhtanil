@@ -11,12 +11,20 @@ import com.artemis.utils.Bag;
 
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 
+/**
+ * log creation/deletion of entities
+ * 
+ * @author unknow
+ */
 public class DebugSystem extends BaseEntitySystem {
 	private static final Logger log = LoggerFactory.getLogger(DebugSystem.class);
 	private ComponentManager manager;
 	private BaseUUIDManager uuid;
 	private Bag<Component> fillBag = new Bag<>();
 
+	/**
+	 * create new DebugSystem
+	 */
 	public DebugSystem() {
 		super(Aspect.all());
 	}

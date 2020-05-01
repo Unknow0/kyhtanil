@@ -12,8 +12,15 @@ import unknow.kyhtanil.common.component.StatPoint;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.Velocity;
 
+/**
+ * Client Archetypes
+ * 
+ * @author unknow
+ */
 public class Archetypes extends BaseSystem {
+	/** all spawned entities */
 	public Archetype all;
+	/** the logged in character */
 	public Archetype self;
 
 	@SuppressWarnings("unchecked")

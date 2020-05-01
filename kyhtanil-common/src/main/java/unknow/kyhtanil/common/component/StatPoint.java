@@ -2,16 +2,16 @@ package unknow.kyhtanil.common.component;
 
 import com.artemis.PooledComponent;
 
+/**
+ * Hold exp & stats points
+ * 
+ * @author unknow
+ */
 public class StatPoint extends PooledComponent implements Setable<StatPoint> {
+	/** points to update base stats */
 	public int base;
+	/** collected xp */
 	public int exp;
-
-	public StatPoint() {
-	}
-
-	public StatPoint(int base) {
-		this.base = base;
-	}
 
 	@Override
 	protected void reset() {

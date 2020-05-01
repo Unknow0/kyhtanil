@@ -33,6 +33,9 @@ public class CreateCharSystem extends IteratingSystem {
 
 	private Database database;
 
+	/**
+	 * create new CreateCharSystem
+	 */
 	public CreateCharSystem() {
 		super(Aspect.all(CreateChar.class, NetComp.class));
 	}

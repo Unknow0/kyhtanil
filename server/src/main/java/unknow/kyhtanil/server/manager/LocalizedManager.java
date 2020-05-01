@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.IntPredicate;
 
 import com.artemis.Aspect;
 import com.artemis.BaseEntitySystem;
@@ -18,6 +19,11 @@ import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.server.component.StateComp;
 import unknow.kyhtanil.server.component.StateComp.States;
 
+/**
+ * manage entities by location by spliting the world be sub square
+ * 
+ * @author unknow
+ */
 public class LocalizedManager extends BaseEntitySystem {
 	private Map<Loc, IntBag> locMap = new HashMap<>();
 	private IntMap<Loc> objects = new IntMap<>();
@@ -32,6 +38,9 @@ public class LocalizedManager extends BaseEntitySystem {
 
 	/**
 	 * create a manager with a w x h square to store entity
+	 * 
+	 * @param w width of sub square
+	 * @param h height of sub square
 	 */
 	public LocalizedManager(float w, float h) {
 		super(Aspect.all(Position.class));
@@ -69,6 +78,11 @@ public class LocalizedManager extends BaseEntitySystem {
 		}
 	}
 
+	/**
+	 * notify an entity have moved
+	 * 
+	 * @param entityId entity taht moved
+	 */
 	public void changed(int entityId) {
 		Loc loc = objects.get(entityId);
 		IntBag bag = locMap.get(loc);
@@ -164,7 +178,16 @@ public class LocalizedManager extends BaseEntitySystem {
 		changed.clear();
 	}
 
-	public IntBag get(float x, float y, float r, Choose c) {
+	/**
+	 * get all entity in circle
+	 * 
+	 * @param x center of circle
+	 * @param y center of circle
+	 * @param r radius of circle
+	 * @param c filter to the found entities
+	 * @return all entities in circle that match
+	 */
+	public IntBag get(float x, float y, float r, IntPredicate c) {
 		float mx = x + 2 * r;
 		float my = y + 2 * r;
 		IntBag bag = new IntBag();
@@ -177,7 +200,7 @@ public class LocalizedManager extends BaseEntitySystem {
 						Position p = position.get(e);
 						if (p == null)
 							continue;
-						if (c != null && !c.choose(e))
+						if (c != null && !c.test(e))
 							continue loop;
 
 						float dx = x - p.x;
@@ -192,6 +215,13 @@ public class LocalizedManager extends BaseEntitySystem {
 		return bag;
 	}
 
+	/**
+	 * track an area around an entity
+	 * 
+	 * @param source   center of the area
+	 * @param range    range of the area
+	 * @param listener the listener
+	 */
 	public void track(int source, float range, AreaListener listener) {
 		Area a = new Area(source, range, listener);
 		areas.add(a);
@@ -244,17 +274,33 @@ public class LocalizedManager extends BaseEntitySystem {
 		}
 	}
 
-	public static interface Choose {
-		boolean choose(int e);
-	}
-
+	/**
+	 * listener for area tracking
+	 * 
+	 * @author unknow
+	 */
 	public static interface AreaListener {
+		/**
+		 * notify that an entity entered the area
+		 * 
+		 * @param target the entity that entered
+		 */
 		void enter(int target);
 
+		/**
+		 * notify that an entity leaved the area
+		 * 
+		 * @param target the entity that leaved
+		 */
 		void leave(int target);
 	}
 
-	public static class Area {
+	/**
+	 * a tracked area
+	 * 
+	 * @author unknow
+	 */
+	private static class Area {
 		int source;
 		float range;
 		IntArraySet inside;

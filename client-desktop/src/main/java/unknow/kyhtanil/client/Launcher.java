@@ -23,7 +23,18 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import unknow.sync.SyncClient;
 import unknow.sync.SyncListener;
 
+/**
+ * Game launcher
+ * 
+ * @author unknow
+ */
 public class Launcher {
+	/**
+	 * entry point
+	 * 
+	 * @param arg
+	 * @throws Exception
+	 */
 	public static void main(String[] arg) throws Exception {
 		System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
 		System.setProperty("org.slf4j.simpleLogger.logFile", "log");
@@ -65,10 +76,20 @@ public class Launcher {
 		Files.deleteIfExists(tmp);
 	}
 
+	/**
+	 * @param sep separator to use
+	 * @param o   value to concatenate
+	 * @return concatenated string
+	 */
 	public static String implode(String sep, Object... o) {
 		return implode(sep, Arrays.asList(o));
 	}
 
+	/**
+	 * @param sep  separator to use
+	 * @param list value to concatenate
+	 * @return concatenated string
+	 */
 	public static String implode(String sep, List<?> list) {
 		StringBuilder sb = new StringBuilder();
 		for (Object o : list) {
@@ -79,6 +100,12 @@ public class Launcher {
 		return sb.toString();
 	}
 
+	/**
+	 * launch java
+	 * 
+	 * @param arg param to java
+	 * @throws IOException
+	 */
 	public static void launch(String... arg) throws IOException {
 		String javaHome = System.getProperty("java.home");
 

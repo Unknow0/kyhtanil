@@ -16,6 +16,11 @@ import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.common.component.account.PjInfo;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 
+/**
+ * apply PjInfo (eg show game windows)
+ * 
+ * @author unknow
+ */
 public class PjInfoSystem extends IteratingSystem {
 	private Main main;
 	private State state;
@@ -29,6 +34,11 @@ public class PjInfoSystem extends IteratingSystem {
 	private ComponentMapper<StatBase> perso;
 	private Archetypes arch;
 
+	/**
+	 * create new PjInfoSystem
+	 * 
+	 * @param main
+	 */
 	public PjInfoSystem(Main main) {
 		super(Aspect.all(PjInfo.class));
 		this.main = main;

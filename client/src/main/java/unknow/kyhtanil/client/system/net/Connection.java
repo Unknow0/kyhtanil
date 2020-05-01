@@ -3,6 +3,7 @@ package unknow.kyhtanil.client.system.net;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 
 import unknow.kyhtanil.client.system.State;
+import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.account.CreateAccount;
 import unknow.kyhtanil.common.component.account.CreateChar;
 import unknow.kyhtanil.common.component.account.LogChar;
@@ -27,10 +29,14 @@ import unknow.kyhtanil.common.component.account.Login;
 import unknow.kyhtanil.common.component.net.Attack;
 import unknow.kyhtanil.common.component.net.Move;
 import unknow.kyhtanil.common.pojo.CharDesc;
-import unknow.kyhtanil.common.pojo.Point;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.common.util.KyhtanilSerialize;
 
+/**
+ * global connection to the server
+ * 
+ * @author unknow
+ */
 public class Connection extends BaseSystem implements Runnable {
 	private static final Logger log = LoggerFactory.getLogger(Connection.class);
 
@@ -43,7 +49,14 @@ public class Connection extends BaseSystem implements Runnable {
 
 	private State state;
 
-	public Connection(String host, int port) throws Exception {
+	/**
+	 * create new Connection
+	 * 
+	 * @param host
+	 * @param port
+	 * @throws IOException
+	 */
+	public Connection(String host, int port) throws IOException {
 		log.info("connecting to {}:{}", host, port);
 		SocketHints hints = new SocketHints();
 		hints.keepAlive = true;
@@ -54,48 +67,102 @@ public class Connection extends BaseSystem implements Runnable {
 		KyhtanilSerialize.write(KyhtanilSerialize.hash(), out);
 		byte[] h = (byte[]) KyhtanilSerialize.read(in);
 		if (!Arrays.equals(h, KyhtanilSerialize.hash()))
-			throw new Exception("Invalide version");
+			throw new IOException("Invalide version");
 
 		t = new Thread(this);
 		t.setDaemon(true);
 		t.start();
 	}
 
-	public void createAccount(String login, String pass) throws IOException, NoSuchAlgorithmException {
-		MessageDigest md = MessageDigest.getInstance("SHA-512");
-		md.update(login.toLowerCase().getBytes("UTF8"));
-		md.update((byte) ':');
-		md.update(pass.getBytes("UTF8"));
-		write(new CreateAccount(login, md.digest()));
+	/**
+	 * create an account
+	 * 
+	 * @param login the login
+	 * @param pass  the pass
+	 */
+	public void createAccount(String login, String pass) {
+		write(new CreateAccount(login, hash(login, pass)));
 	}
 
-	public void createChar(String name) throws IOException {
+	/**
+	 * create a caracter
+	 * 
+	 * @param name the name
+	 */
+	public void createChar(String name) {
 		write(new CreateChar(state.uuid, name));
 	}
 
-	public void login(String login, String pass) throws IOException, NoSuchAlgorithmException {
-		MessageDigest md = MessageDigest.getInstance("SHA-512");
-		md.update(login.toLowerCase().getBytes("UTF8"));
-		md.update((byte) ':');
-		md.update(pass.getBytes("UTF8"));
-		write(new Login(login, md.digest()));
+	/**
+	 * login to the game
+	 * 
+	 * @param login the login
+	 * @param pass  the pass
+	 */
+	public void login(String login, String pass) {
+		write(new Login(login, hash(login, pass)));
 	}
 
-	public void update(UUID id, float x, float y, float direction) throws IOException {
-		write(new Move(id, x, y, direction));
+	private static byte[] hash(String login, String pass) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-512");
+			md.update(login.toLowerCase().getBytes(StandardCharsets.UTF_8));
+			md.update((byte) ':');
+			md.update(pass.getBytes(StandardCharsets.UTF_8));
+			return md.digest();
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	public void logChar(UUID uuid, CharDesc charDesc) throws IOException {
+	/**
+	 * send the updated position
+	 * 
+	 * @param id        the uuid
+	 * @param p         the new position
+	 * @param direction the direction
+	 */
+	public void update(UUID id, Position p, float direction) {
+		write(new Move(id, p.x, p.y, direction));
+	}
+
+	/**
+	 * log a char to the game
+	 * 
+	 * @param uuid     the uuid
+	 * @param charDesc the char to log
+	 */
+	public void logChar(UUID uuid, CharDesc charDesc) {
 		write(new LogChar(uuid, charDesc.id));
 	}
 
-	public void attack(UUID uuid, int attId, UUID target, float x, float y) throws IOException {
-		write(new Attack(uuid, attId, target == null ? new Point(x, y) : target));
+	/**
+	 * send an attack
+	 * 
+	 * @param uuid   the uuid
+	 * @param attId  the id of the attack
+	 * @param target the target uuid (can be null if no selected target)
+	 * @param x      the target x
+	 * @param y      the target y
+	 */
+	public void attack(UUID uuid, int attId, UUID target, float x, float y) {
+		write(new Attack(uuid, attId, target == null ? new Position(x, y) : target));
 	}
 
-	private void write(Object o) throws IOException {
-		log.info("write {}", o);
-		KyhtanilSerialize.write(o, out);
+	/**
+	 * write an object to the server
+	 * 
+	 * @param o object to write
+	 * @throws IOException
+	 */
+	private void write(Object o) {
+		try {
+			log.info("write {}", o);
+			KyhtanilSerialize.write(o, out);
+		} catch (IOException e) {
+			log.error("failed to send", e);
+			// TODO manage error
+		}
 	}
 
 	@Override

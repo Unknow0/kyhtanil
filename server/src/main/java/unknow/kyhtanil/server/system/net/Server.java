@@ -33,8 +33,12 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
 import unknow.kyhtanil.common.component.net.NetComp;
 import unknow.kyhtanil.common.util.KyhtanilSerialize;
-import unknow.kyhtanil.server.Cfg;
 
+/**
+ * The server move event from network to world
+ * 
+ * @author unknow
+ */
 public class Server extends BaseSystem {
 	private static final Logger log = LoggerFactory.getLogger(Server.class);
 
@@ -50,7 +54,13 @@ public class Server extends BaseSystem {
 	private List<E> list = new ArrayList<>();
 	private List<E> back = new ArrayList<>();
 
-	public Server() throws InterruptedException {
+	/**
+	 * create new Server
+	 * 
+	 * @param port the port to listen to
+	 * @throws InterruptedException
+	 */
+	public Server(int port) throws InterruptedException {
 		ChannelInitializer<SocketChannel> initializer = new ChannelInitializer<SocketChannel>() {
 			@Override
 			public void initChannel(SocketChannel ch) throws Exception {
@@ -62,10 +72,11 @@ public class Server extends BaseSystem {
 		server.childHandler(initializer);
 		server.option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
 
+		ChannelFuture b = server.bind(port).sync();
+		bind.add(b.channel().closeFuture());
+
 		client.group(clientGroup).channel(NioSocketChannel.class);
 		client.handler(initializer);
-
-		bind(Cfg.port);
 	}
 
 	@Override
@@ -85,21 +96,31 @@ public class Server extends BaseSystem {
 		back.clear();
 	}
 
-	public void bind(int port) throws InterruptedException {
-		ChannelFuture b = server.bind(port).sync();
-		bind.add(b.channel().closeFuture());
-	}
-
+	/**
+	 * connect to somewhere
+	 * 
+	 * @param host the host
+	 * @param port the port
+	 * @throws InterruptedException
+	 */
 	public void connect(String host, int port) throws InterruptedException {
 		ChannelFuture connect = client.connect(host, port);
 		connect.sync();
 	}
 
+	/**
+	 * whait until the server closed
+	 * 
+	 * @throws InterruptedException
+	 */
 	public void waitShutdown() throws InterruptedException {
 		for (int i = 0; i < bind.size(); i++)
 			bind.get(i).sync();
 	}
 
+	/**
+	 * shutdown the server
+	 */
 	public void close() {
 		clientGroup.shutdownGracefully();
 		serverGroup.shutdownGracefully();
@@ -115,7 +136,7 @@ public class Server extends BaseSystem {
 		}
 	}
 
-	public class Decoder extends ByteToMessageDecoder {
+	private class Decoder extends ByteToMessageDecoder {
 		@Override
 		protected void decode(ChannelHandlerContext ctx, ByteBuf buf, List<Object> out) throws Exception {
 			if (buf.readableBytes() < 1)
@@ -139,7 +160,7 @@ public class Server extends BaseSystem {
 	}
 
 	@Sharable
-	public class Encoder extends MessageToByteEncoder<Object> {
+	private class Encoder extends MessageToByteEncoder<Object> {
 		@Override
 		protected void encode(ChannelHandlerContext ctx, Object data, ByteBuf buf) throws Exception {
 			try {
@@ -153,7 +174,7 @@ public class Server extends BaseSystem {
 	}
 
 	@Sharable
-	public class Handler extends ChannelHandlerAdapter {
+	private class Handler extends ChannelHandlerAdapter {
 		@Override
 		public void channelActive(ChannelHandlerContext ctx) {
 			ctx.writeAndFlush(KyhtanilSerialize.hash());

@@ -9,11 +9,24 @@ import com.artemis.Aspect.Builder;
 import com.artemis.annotations.*;
 import com.artemis.utils.*;
 
+/**
+ * base system for compositeComponent
+ * 
+ * @author unknow
+ * @param <T> the compositComponent
+ * @param <C> the sub component
+ */
 @SkipWire
 public abstract class CompositeEntityProcessor<T extends CompositeComponent<C>, C> extends EntitySystem {
 	private BaseComponentMapper<T> comp;
 	private Class<T> clazz;
 
+	/**
+	 * create new CompositeEntityProcessor
+	 * 
+	 * @param aspect the aspect (should at least contains the CompositComponent)
+	 * @param comp   the class of the composite
+	 */
 	public CompositeEntityProcessor(Builder aspect, Class<T> comp) {
 		super(aspect);
 		clazz = comp;

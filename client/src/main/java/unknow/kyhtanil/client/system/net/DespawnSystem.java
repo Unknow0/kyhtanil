@@ -10,11 +10,19 @@ import com.artemis.systems.IteratingSystem;
 import unknow.kyhtanil.common.component.net.Despawn;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 
+/**
+ * apply despawn event
+ * 
+ * @author unknow
+ */
 public class DespawnSystem extends IteratingSystem {
 	private static final Logger log = LoggerFactory.getLogger(DespawnSystem.class);
 	private ComponentMapper<Despawn> despawn;
 	private BaseUUIDManager manager;
 
+	/**
+	 * create new DespawnSystem
+	 */
 	public DespawnSystem() {
 		super(Aspect.all(Despawn.class));
 	}

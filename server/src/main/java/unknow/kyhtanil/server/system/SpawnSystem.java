@@ -10,11 +10,18 @@ import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.server.component.Archetypes;
+import unknow.kyhtanil.server.component.Spawned;
 import unknow.kyhtanil.server.component.Spawner;
 import unknow.kyhtanil.server.component.Spawner.Mob;
 
+/**
+ * spawn new entities
+ * 
+ * @author unknow
+ */
 public class SpawnSystem extends IteratingSystem {
 	private ComponentMapper<Spawner> spawner;
+	private ComponentMapper<Spawned> spawned;
 	private ComponentMapper<Position> position;
 	private ComponentMapper<Velocity> velocity;
 	private ComponentMapper<StatShared> mobInfo;
@@ -24,8 +31,10 @@ public class SpawnSystem extends IteratingSystem {
 	private Archetypes arch;
 
 	private UpdateStatSystem update;
-	private EventSystem event;
 
+	/**
+	 * create new SpawnSystem
+	 */
 	public SpawnSystem() {
 		super(Aspect.all(Spawner.class));
 	}
@@ -40,7 +49,8 @@ public class SpawnSystem extends IteratingSystem {
 		if (s.time > 1) {
 			s.time = 0;
 			s.count++;
-			int m = world.create(arch.mob);
+			int m = world.create(arch.managerMob);
+			spawned.get(m).spawner = e;
 
 			Mob mob = s.mobs[(int) (Math.random() * s.mobs.length)];
 
@@ -67,30 +77,9 @@ public class SpawnSystem extends IteratingSystem {
 			sp.tex = mob.tex;
 
 			update.process(m);
-			event.register(m, new Listener(spawner, e));
 
 			mi.hp = mi.maxHp;
 			mi.mp = mi.maxMp;
-		}
-	}
-
-	private static class Listener implements EventSystem.EntityListener {
-		private ComponentMapper<Spawner> spawner;
-		private int spawnerId;
-
-		public Listener(ComponentMapper<Spawner> spawner, int spawnerId) {
-			this.spawner = spawner;
-			this.spawnerId = spawnerId;
-		}
-
-		@Override
-		public void inserted(int entityId) {
-		}
-
-		@Override
-		public void removed(int entityId) {
-			Spawner s = spawner.get(spawnerId);
-			s.count--;
 		}
 	}
 }

@@ -19,7 +19,7 @@ import unknow.kyhtanil.server.Database;
 import unknow.kyhtanil.server.component.Archetypes;
 import unknow.kyhtanil.server.component.StateComp;
 import unknow.kyhtanil.server.component.StateComp.States;
-import unknow.kyhtanil.server.manager.StateManager;
+import unknow.kyhtanil.server.manager.UUIDManager;
 
 /**
  * manage the login request <br>
@@ -28,7 +28,7 @@ import unknow.kyhtanil.server.manager.StateManager;
 public class LoginSystem extends IteratingSystem {
 	private static final Logger log = LoggerFactory.getLogger(LoginSystem.class);
 
-	private StateManager manager;
+	private UUIDManager manager;
 	private Database database;
 	private Archetypes arch;
 
@@ -36,6 +36,9 @@ public class LoginSystem extends IteratingSystem {
 	private ComponentMapper<NetComp> net;
 	private ComponentMapper<StateComp> state;
 
+	/**
+	 * create new LoginSystem
+	 */
 	public LoginSystem() {
 		super(Aspect.all(Login.class, NetComp.class));
 	}
@@ -56,7 +59,7 @@ public class LoginSystem extends IteratingSystem {
 				s.channel = ctx.channel;
 				s.state = States.LOGGED;
 
-				UUID uuid = manager.log(ns, a);
+				UUID uuid = manager.assignUuid(ns);
 				if (uuid != null) {
 					List<CharDesc> charList = database.getCharList(a);
 					log.info("log {} {}", s.account, uuid);

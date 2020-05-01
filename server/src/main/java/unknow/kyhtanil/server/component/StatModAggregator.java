@@ -10,8 +10,11 @@ import unknow.kyhtanil.common.Stats;
  * aggregate stats modifier
  */
 public class StatModAggregator extends PooledComponent {
+	/** all flat value */
 	public final IntEnumMap<Stats> flat = new IntEnumMap<>(Stats.class, 0);
+	/** all increase value */
 	public final FloatEnumMap<Stats> add = new FloatEnumMap<>(Stats.class, 1);
+	/** all more value */
 	public final FloatEnumMap<Stats> more = new FloatEnumMap<>(Stats.class, 1);
 
 	@Override

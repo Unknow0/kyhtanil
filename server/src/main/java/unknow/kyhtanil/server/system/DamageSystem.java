@@ -7,6 +7,11 @@ import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.server.component.DamageListComp;
 import unknow.kyhtanil.server.component.Dirty;
 
+/**
+ * apply all damage on entities
+ * 
+ * @author unknow
+ */
 public class DamageSystem extends CompositeEntityProcessor<DamageListComp, DamageListComp.Damage> {
 	private ComponentMapper<StatShared> mobInfo;
 	private ComponentMapper<Dirty> dirty;
@@ -14,6 +19,9 @@ public class DamageSystem extends CompositeEntityProcessor<DamageListComp, Damag
 	private StatShared mob;
 	private Dirty d;
 
+	/**
+	 * create new DamageSystem
+	 */
 	public DamageSystem() {
 		super(Aspect.all(DamageListComp.class, StatShared.class), DamageListComp.class);
 	}

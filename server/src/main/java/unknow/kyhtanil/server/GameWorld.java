@@ -17,10 +17,10 @@ import unknow.kyhtanil.server.manager.UUIDManager;
 import unknow.kyhtanil.server.system.DamageSystem;
 import unknow.kyhtanil.server.system.DebugSystem;
 import unknow.kyhtanil.server.system.DirtySystem;
-import unknow.kyhtanil.server.system.EventSystem;
 import unknow.kyhtanil.server.system.MovementSystem;
 import unknow.kyhtanil.server.system.ProjectileSystem;
 import unknow.kyhtanil.server.system.SpawnSystem;
+import unknow.kyhtanil.server.system.SpawnedSystem;
 import unknow.kyhtanil.server.system.UpdateStatSystem;
 import unknow.kyhtanil.server.system.net.AttackSystem;
 import unknow.kyhtanil.server.system.net.Clients;
@@ -31,11 +31,21 @@ import unknow.kyhtanil.server.system.net.LoginSystem;
 import unknow.kyhtanil.server.system.net.MoveSystem;
 import unknow.kyhtanil.server.system.net.Server;
 
+/**
+ * handle the game world
+ * 
+ * @author unknow
+ */
 public class GameWorld {
 	private static final Logger log = LoggerFactory.getLogger(GameWorld.class);
 
 	private final World world;
 
+	/**
+	 * create new GameWorld
+	 * 
+	 * @throws Exception
+	 */
 	public GameWorld() throws Exception {
 		MapLayout layout = new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
 
@@ -48,10 +58,9 @@ public class GameWorld {
 		cfg.setSystem(new StateManager());
 		cfg.setSystem(new Archetypes());
 
-		cfg.setSystem(new Server());
+		cfg.setSystem(new Server(Cfg.port));
 		cfg.setSystem(new Clients());
 
-		cfg.setSystem(new EventSystem());
 		cfg.setSystem(new LoginSystem());
 		cfg.setSystem(new CreateAccountSystem());
 		cfg.setSystem(new LogCharSystem());
@@ -59,21 +68,24 @@ public class GameWorld {
 		cfg.setSystem(new MoveSystem());
 		cfg.setSystem(new AttackSystem());
 
-		cfg.setSystem(new UpdateStatSystem());
 		cfg.setSystem(new SpawnSystem());
+		cfg.setSystem(new SpawnedSystem());
+
+		cfg.setSystem(new UpdateStatSystem());
 		cfg.setSystem(new DamageSystem());
 		cfg.setSystem(new MovementSystem());
 		cfg.setSystem(new ProjectileSystem());
-
 		cfg.setSystem(new DirtySystem());
 
 		cfg.register(layout);
 
 		world = new World(cfg);
-		
 		world.getSystem(Database.class).loadSpawner();
 	}
 
+	/**
+	 * run the world
+	 */
 	public void run() {
 		long start = System.currentTimeMillis();
 
@@ -90,6 +102,10 @@ public class GameWorld {
 		}
 	}
 
+	/**
+	 * @param arg
+	 * @throws Exception
+	 */
 	public static void main(String arg[]) throws Exception {
 		GameWorld world = new GameWorld();
 		world.run();

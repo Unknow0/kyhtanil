@@ -1,6 +1,16 @@
 package unknow.kyhtanil.server.component;
 
+/**
+ * all damage effect
+ * 
+ * @author unknow
+ */
 public class DamageListComp extends CompositeComponent<DamageListComp.Damage> {
+	/**
+	 * a damage effect
+	 * 
+	 * @author unknow
+	 */
 	public static class Damage {
 		public int base;
 		public int slashing;

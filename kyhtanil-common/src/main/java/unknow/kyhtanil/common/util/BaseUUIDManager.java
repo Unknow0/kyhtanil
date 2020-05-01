@@ -13,11 +13,20 @@ import com.artemis.utils.Bag;
 
 import unknow.kyhtanil.common.pojo.UUID;
 
+/**
+ * Manager of uuid, keep mapping between uuid and entities
+ * 
+ * @author unknow
+ */
 public class BaseUUIDManager extends BaseEntitySystem {
 	private static final Logger log = LoggerFactory.getLogger(BaseUUIDManager.class);
+
 	protected final Map<UUID, Integer> uuidToEntity;
 	private final Bag<UUID> entityToUuid;
 
+	/**
+	 * create new BaseUUIDManager
+	 */
 	public BaseUUIDManager() {
 		this(Aspect.all());
 	}
@@ -28,14 +37,28 @@ public class BaseUUIDManager extends BaseEntitySystem {
 		this.entityToUuid = new Bag<>();
 	}
 
+	/**
+	 * @param uuid
+	 * @return the entity or null if this uuid is unknown
+	 */
 	public final Integer getEntity(UUID uuid) {
 		return uuidToEntity.get(uuid);
 	}
 
+	/**
+	 * @param entityId
+	 * @return the uuid of this entities
+	 */
 	public final UUID getUuid(int entityId) {
 		return entityToUuid.safeGet(entityId);
 	}
 
+	/**
+	 * remove the uuid of this entrie
+	 * 
+	 * @param e the entitie to remove
+	 * @return the previous uuid if any
+	 */
 	public final UUID remove(int e) {
 		UUID uuid = entityToUuid.safeGet(e);
 		if (uuid != null) {
@@ -49,6 +72,9 @@ public class BaseUUIDManager extends BaseEntitySystem {
 	/**
 	 * set this uuid to this entity. <br>
 	 * Remove old uuid maping for this entity and uuid
+	 * 
+	 * @param entityId the entity
+	 * @param newUuid  the new uuid
 	 */
 	public final void setUuid(int entityId, UUID newUuid) {
 		log.info("setUuuid {} {}", entityId, newUuid);

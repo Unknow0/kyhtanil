@@ -8,11 +8,19 @@ import com.kotcrab.vis.ui.widget.VisTable;
 import unknow.kyhtanil.client.system.State;
 import unknow.kyhtanil.common.pojo.CharDesc;
 
+/**
+ * the char list
+ * 
+ * @author unknow
+ */
 public class CharList extends VisTable {
 	private CharDesc[] cache;
 
 	private CharActor selected;
 
+	/**
+	 * create new CharList
+	 */
 	public CharList() {
 		addCaptureListener(new ClickListener() {
 			@Override
@@ -46,6 +54,9 @@ public class CharList extends VisTable {
 		super.validate();
 	}
 
+	/**
+	 * @return the selected char
+	 */
 	public CharDesc selected() {
 		return selected.c;
 	}

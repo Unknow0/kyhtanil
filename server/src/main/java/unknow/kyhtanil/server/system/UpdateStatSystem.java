@@ -11,6 +11,11 @@ import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.server.component.Dirty;
 import unknow.kyhtanil.server.component.StatModAggregator;
 
+/**
+ * compute aggregated stats
+ * 
+ * @author unknow
+ */
 public class UpdateStatSystem extends IteratingSystem {
 	private ComponentMapper<StatShared> shared;
 	private ComponentMapper<StatBase> base;
@@ -18,6 +23,9 @@ public class UpdateStatSystem extends IteratingSystem {
 	private ComponentMapper<StatAgg> calculated;
 	private ComponentMapper<Dirty> dirty;
 
+	/**
+	 * create new UpdateStatSystem
+	 */
 	public UpdateStatSystem() {
 		super(Aspect.all(Dirty.class, StatShared.class, StatAgg.class, StatBase.class, StatModAggregator.class));
 	}
@@ -62,38 +70,38 @@ public class UpdateStatSystem extends IteratingSystem {
 	private int total(Stats s, StatAgg last, StatModAggregator a, StatBase b) {
 		int base;
 		switch (s) {
-		case STAT_CONCENTRATION:
-			base = b.concentration;
-			break;
-		case STAT_CONSTITUTION:
-			base = b.constitution;
-			break;
-		case STAT_DEXTERITY:
-			base = b.dexterity;
-			break;
-		case STAT_INTELLIGENCE:
-			base = b.intelligence;
-			break;
-		case STAT_STRENGTH:
-			base = b.strength;
-			break;
-		case WPN_DMG_BLUNT:
-			base = 2;
-			break;
-		case MOVE_SPEED:
-			base = 20;
-			break;
-		case HP_MAX:
-			base = Stats.baseHp(last.get(Stats.STAT_CONSTITUTION));
-			break;
-		case MP_MAX:
-			base = Stats.baseMp(last.get(Stats.STAT_INTELLIGENCE));
-			break;
-		case MP_REGEN:
-			base = last.get(Stats.MP_MAX) / 100;
-		default:
-			base = 0;
-			break;
+			case STAT_CONCENTRATION:
+				base = b.concentration;
+				break;
+			case STAT_CONSTITUTION:
+				base = b.constitution;
+				break;
+			case STAT_DEXTERITY:
+				base = b.dexterity;
+				break;
+			case STAT_INTELLIGENCE:
+				base = b.intelligence;
+				break;
+			case STAT_STRENGTH:
+				base = b.strength;
+				break;
+			case WPN_DMG_BLUNT:
+				base = 2;
+				break;
+			case MOVE_SPEED:
+				base = 20;
+				break;
+			case HP_MAX:
+				base = Stats.baseHp(last.get(Stats.STAT_CONSTITUTION));
+				break;
+			case MP_MAX:
+				base = Stats.baseMp(last.get(Stats.STAT_INTELLIGENCE));
+				break;
+			case MP_REGEN:
+				base = last.get(Stats.MP_MAX) / 100;
+			default:
+				base = 0;
+				break;
 		}
 
 		int n = (int) ((base + a.flat.get(s)) * a.add.get(s) * a.more.get(s));

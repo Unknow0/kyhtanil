@@ -1,18 +1,17 @@
 package unknow.kyhtanil.common.component.net;
 
-import io.netty.channel.*;
+import com.artemis.PooledComponent;
 
-import com.artemis.*;
+import io.netty.channel.Channel;
 
+/**
+ * source of network event
+ * 
+ * @author unknow
+ */
 public class NetComp extends PooledComponent {
+	/** the client */
 	public Channel channel = null;
-
-	public NetComp() {
-	}
-
-	public NetComp(Channel channel) {
-		this.channel = channel;
-	}
 
 	@Override
 	public void reset() {

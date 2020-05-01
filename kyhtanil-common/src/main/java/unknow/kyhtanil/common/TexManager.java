@@ -13,6 +13,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
+/**
+ * Texture manager
+ * 
+ * @author unknow
+ */
 public class TexManager {
 	private static final Drawable NULL_DRAWABLE = new Drawable() {
 		@Override
@@ -24,6 +29,9 @@ public class TexManager {
 
 	private static Map<String, Drawable> cache = new WeakHashMap<>();
 
+	/**
+	 * initialize the Manager, (load the texture atlas)
+	 */
 	public static final void init() {
 		graphics = Gdx.graphics;
 		atlas = new TextureAtlas(Gdx.files.internal("data/tex/texture.atlas"));
@@ -47,6 +55,10 @@ public class TexManager {
 		return new RegionDrawable(region);
 	}
 
+	/**
+	 * @param tex the texture to load
+	 * @return the drawable
+	 */
 	public static Drawable get(String tex) {
 		Drawable drawable = cache.get(tex);
 		if (drawable == null)
@@ -54,21 +66,34 @@ public class TexManager {
 		return drawable == NULL_DRAWABLE ? null : drawable;
 	}
 
+	/**
+	 * a drawable
+	 * 
+	 * @author unknow
+	 */
 	public static interface Drawable {
+		/**
+		 * draw
+		 * 
+		 * @param batch  where
+		 * @param x      position
+		 * @param y      position
+		 * @param width
+		 * @param height
+		 */
 		void draw(Batch batch, float x, float y, float width, float height);
 	}
 
-	public static class NineDrawable extends NinePatch implements Drawable {
-		public NineDrawable(TextureRegion region, int left, int right, int top, int bottom) {
+	private static class NineDrawable extends NinePatch implements Drawable {
+		private NineDrawable(TextureRegion region, int left, int right, int top, int bottom) {
 			super(region, left, right, top, bottom);
 		}
-
 	}
 
-	public static class RegionDrawable implements Drawable {
+	private static class RegionDrawable implements Drawable {
 		private TextureRegion region;
 
-		public RegionDrawable(TextureRegion region) {
+		private RegionDrawable(TextureRegion region) {
 			this.region = region;
 		}
 
@@ -76,17 +101,9 @@ public class TexManager {
 		public void draw(Batch batch, float x, float y, float width, float height) {
 			batch.draw(region, x, y, width, height);
 		}
-
-		public int getWidth() {
-			return region.getRegionWidth();
-		}
-
-		public int getHeight() {
-			return region.getRegionHeight();
-		}
 	}
 
-	public static class AnimationDrawable implements Drawable {
+	private static class AnimationDrawable implements Drawable {
 		private Animation a;
 		private float t;
 

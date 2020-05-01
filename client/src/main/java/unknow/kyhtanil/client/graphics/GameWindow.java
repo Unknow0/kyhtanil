@@ -10,12 +10,24 @@ import com.kotcrab.vis.ui.widget.VisWindow;
 import unknow.kyhtanil.client.Main;
 import unknow.scene.builder.DynLayout;
 
+/**
+ * List of ingame window
+ * 
+ * @author unknow
+ */
 public enum GameWindow {
+	/** the stats window */
 	STATS("Stats", "ui/ingame/stats.xml");
 
-	private static final DynLayout ROOT = Main.self.dynLayout();
+	private static DynLayout ROOT;
 
-	public static void init() {
+	/**
+	 * load all required dependencies
+	 * 
+	 * @param root root dynLayout
+	 */
+	public static void init(DynLayout root) {
+		ROOT = root;
 		for (GameWindow w : values()) {
 			DynLayout dynLayout = new DynLayout(Main.dynContext);
 			try (InputStream is = Gdx.files.internal(w.layout).read()) {
@@ -36,16 +48,25 @@ public enum GameWindow {
 		internal = new VisWindow(title);
 	}
 
+	/**
+	 * close this window
+	 */
 	public void close() {
 		internal.remove();
 	}
 
+	/**
+	 * open the window
+	 */
 	public void show() {
 		ROOT.addActor(internal);
 		internal.pack();
 		internal.centerWindow();
 	}
 
+	/**
+	 * show if the windows is closed else close
+	 */
 	public void toggle() {
 		if (internal.hasParent())
 			close();

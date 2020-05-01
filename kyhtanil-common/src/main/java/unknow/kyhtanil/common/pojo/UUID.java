@@ -8,7 +8,13 @@ package unknow.kyhtanil.common.pojo;
 import java.util.Arrays;
 import java.util.Formatter;
 
+/**
+ * uuid used to reference entities across cluster
+ * 
+ * @author unknow
+ */
 public class UUID implements Comparable<UUID> {
+	/** the value */
 	public byte[] bytes;
 
 	/** Creates a new UUID */

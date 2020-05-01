@@ -23,6 +23,11 @@ import unknow.kyhtanil.server.component.Dirty;
 import unknow.kyhtanil.server.manager.LocalizedManager;
 import unknow.kyhtanil.server.manager.UUIDManager;
 
+/**
+ * handle move event from client
+ * 
+ * @author unknow
+ */
 public class MoveSystem extends IteratingSystem {
 	private static final Logger log = LoggerFactory.getLogger(MoveSystem.class);
 
@@ -39,6 +44,9 @@ public class MoveSystem extends IteratingSystem {
 	@Wire
 	private MapLayout layout;
 
+	/**
+	 * create new MoveSystem
+	 */
 	public MoveSystem() {
 		super(Aspect.all(Move.class, NetComp.class));
 	}

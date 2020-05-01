@@ -12,13 +12,25 @@ import unknow.kyhtanil.common.component.StatPoint;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.Velocity;
 
+/**
+ * server archetypes
+ * 
+ * @author unknow
+ */
 public class Archetypes extends BaseSystem {
+	/** archetype of logged account */
 	public Archetype login;
 
+	/** mob entities */
 	public Archetype mob;
+	/** all player char */
 	public Archetype pj;
+	/** a projectile */
 	public Archetype proj;
+	/** a mob spawner */
 	public Archetype spawner;
+	/** managed mob entities */
+	public Archetype managerMob;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -29,7 +41,9 @@ public class Archetypes extends BaseSystem {
 		builder.add(Position.class, Velocity.class, Sprite.class);
 		builder.add(StatShared.class, StatBase.class, StatAgg.class, StatModAggregator.class);
 		builder.add(DamageListComp.class, Dirty.class);
+		builder.add(ContributionList.class);
 		mob = builder.build(world);
+		managerMob = new ArchetypeBuilder(mob).add(Spawned.class).build(world);
 
 		builder.add(StateComp.class, StatPoint.class);
 		pj = builder.build(world);

@@ -52,6 +52,9 @@ public class LogCharSystem extends IteratingSystem {
 
 	private UpdateStatSystem update;
 
+	/**
+	 * create new LogCharSystem
+	 */
 	public LogCharSystem() {
 		super(Aspect.all(LogChar.class, NetComp.class));
 	}

@@ -5,9 +5,20 @@
  */
 package unknow.kyhtanil.common.component;
 
-import com.artemis.*;
+import com.artemis.Component;
 
+/**
+ * all possible error
+ * 
+ * @author unknow
+ */
+@SuppressWarnings("javadoc")
 public class ErrorComp extends Component {
+	/**
+	 * the errors
+	 * 
+	 * @author unknow
+	 */
 	public static enum ErrorCode {
 		ALREADY_LOGGED, INVALID_LOGIN, INVALID_STATE, NAME_ALREADY_USED, INVALID_UUID, UNKNOWN_ERROR
 	};
@@ -21,6 +32,9 @@ public class ErrorComp extends Component {
 
 	public ErrorCode code;
 
+	/**
+	 * create new ErrorComp
+	 */
 	public ErrorComp() {
 	}
 
@@ -30,6 +44,6 @@ public class ErrorComp extends Component {
 
 	@Override
 	public String toString() {
-		return "ErrorComp [code=" + code + "]";
+		return "Error [code=" + code + "]";
 	}
 }

@@ -8,13 +8,28 @@ import com.artemis.PooledComponent;
  * @author unknow
  */
 public class StatShared extends PooledComponent implements Setable<StatShared> {
+	/** name of the entity */
 	public String name;
-	public int hp, maxHp;
-	public int mp, maxMp;
+	/** the current hp */
+	public int hp;
+	/** the max hp */
+	public int maxHp;
+	/** the mp */
+	public int mp;
+	/** the max mp */
+	public int maxMp;
 
+	/**
+	 * create new StatShared
+	 */
 	public StatShared() {
 	}
 
+	/**
+	 * create new StatShared
+	 * 
+	 * @param m
+	 */
 	public StatShared(StatShared m) {
 		set(m);
 	}

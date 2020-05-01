@@ -7,10 +7,20 @@ import com.artemis.systems.IteratingSystem;
 import unknow.kyhtanil.client.Main;
 import unknow.kyhtanil.common.component.ErrorComp;
 
+/**
+ * manage received error
+ * 
+ * @author unknow
+ */
 public class ErrorSystem extends IteratingSystem {
 	private ComponentMapper<ErrorComp> error;
 	private Main main;
 
+	/**
+	 * create new ErrorSystem
+	 * 
+	 * @param main
+	 */
 	public ErrorSystem(Main main) {
 		super(Aspect.all(ErrorComp.class));
 		this.main = main;

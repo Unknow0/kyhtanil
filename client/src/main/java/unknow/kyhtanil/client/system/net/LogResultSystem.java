@@ -9,11 +9,21 @@ import unknow.kyhtanil.client.Main.Screen;
 import unknow.kyhtanil.client.system.State;
 import unknow.kyhtanil.common.component.account.LogResult;
 
+/**
+ * apply log result (eg show char select)
+ * 
+ * @author unknow
+ */
 public class LogResultSystem extends IteratingSystem {
 	private ComponentMapper<LogResult> logRes;
 	private Main main;
 	private State state;
 
+	/**
+	 * create new LogResultSystem
+	 * 
+	 * @param main
+	 */
 	public LogResultSystem(Main main) {
 		super(Aspect.all(LogResult.class));
 		this.main = main;

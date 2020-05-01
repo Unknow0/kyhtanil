@@ -14,6 +14,11 @@ import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextField;
 
+/**
+ * The stat value selector (allow to increment value if points is available)
+ * 
+ * @author unknow
+ */
 public class StatSelector extends VisTable {
 	private ButtonRepeatTask buttonRepeatTask = new ButtonRepeatTask();
 	private float buttonRepeatInitialTime = 0.4f;
@@ -25,6 +30,9 @@ public class StatSelector extends VisTable {
 
 	private Text text = new Text();
 
+	/**
+	 * create new StatSelector
+	 */
 	public StatSelector() {
 		NumberSelectorStyle style = VisUI.getSkin().get("default", NumberSelectorStyle.class);
 		Sizes sizes = VisUI.getSizes();
@@ -96,14 +104,25 @@ public class StatSelector extends VisTable {
 		});
 	}
 
+	/**
+	 * increment the value
+	 */
 	public void increment() {
 		setValue(current + 1);
 	}
 
+	/**
+	 * decrement the vlaue
+	 */
 	public void decrement() {
 		setValue(current - 1);
 	}
 
+	/**
+	 * set the value (truncate to max if > max, and to min if < min)
+	 * 
+	 * @param v the new value
+	 */
 	public void setValue(int v) {
 		int old = current;
 		current = v;
@@ -118,14 +137,23 @@ public class StatSelector extends VisTable {
 		}
 	}
 
+	/**
+	 * @return the value
+	 */
 	public int getValue() {
 		return current;
 	}
 
+	/**
+	 * @param max the new max
+	 */
 	public void setMax(int max) {
 		this.max = max;
 	}
 
+	/**
+	 * @param min the new min
+	 */
 	public void setMin(int min) {
 		this.min = min;
 	}
@@ -143,10 +171,23 @@ public class StatSelector extends VisTable {
 		}
 	}
 
+	/**
+	 * the Event fired when the value change
+	 * 
+	 * @author unknow
+	 */
 	public static class Event extends ChangeEvent {
+		/** old value */
 		public int old;
+		/** the new value */
 		public int current;
 
+		/**
+		 * create new Event
+		 * 
+		 * @param old
+		 * @param current
+		 */
 		public Event(int old, int current) {
 			this.old = old;
 			this.current = current;

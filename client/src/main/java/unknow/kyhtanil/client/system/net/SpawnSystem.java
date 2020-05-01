@@ -15,6 +15,11 @@ import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.common.component.net.Spawn;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 
+/**
+ * apply spawn event
+ * 
+ * @author unknow
+ */
 public class SpawnSystem extends IteratingSystem {
 	private static final Logger log = LoggerFactory.getLogger(SpawnSystem.class);
 	private ComponentMapper<Spawn> spawn;
@@ -25,6 +30,9 @@ public class SpawnSystem extends IteratingSystem {
 	private BaseUUIDManager manager;
 	private Archetypes arch;
 
+	/**
+	 * create new SpawnSystem
+	 */
 	public SpawnSystem() {
 		super(Aspect.all(Spawn.class));
 	}

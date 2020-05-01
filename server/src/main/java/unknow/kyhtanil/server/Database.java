@@ -24,9 +24,13 @@ import unknow.kyhtanil.server.component.Archetypes;
 import unknow.kyhtanil.server.component.Spawner;
 import unknow.kyhtanil.server.component.Spawner.Mob;
 
+/**
+ * database connection
+ * 
+ * @author unknow
+ */
 public class Database extends BaseSystem {
 	private static final Spawner.Mob[] MOB_ARRAY = new Spawner.Mob[0];
-	private static final RSConvert<Boolean> HAS_NEXT = rs -> rs.next();
 	private static final RSConvert<Integer> FIRT_INT = rs -> rs.getInt(1);
 
 	private DataSource ds;
@@ -37,6 +41,9 @@ public class Database extends BaseSystem {
 	private ComponentMapper<StatBase> statBase;
 	private ComponentMapper<Spawner> spawner;
 
+	/**
+	 * create new Database
+	 */
 	public Database() {
 	}
 
@@ -86,18 +93,55 @@ public class Database extends BaseSystem {
 		}
 	}
 
-	public boolean loginExist(String login) throws SQLException {
-		return exec("select id from accounts where lower(login)=lower(?)", HAS_NEXT, login);
-	}
-
+	/**
+	 * create a new account
+	 * 
+	 * @param login    the login
+	 * @param passHash the hashed pass
+	 * @return the account id or null if login already exists
+	 * @throws SQLException
+	 */
 	public Integer createAccount(String login, byte[] passHash) throws SQLException {
 		return sqlinsert("insert into accounts (login, pass_hash) values (?,?)", FIRT_INT, login, passHash);
 	}
 
+	/**
+	 * get the account id
+	 * 
+	 * @param login    the login
+	 * @param passHash the hashed pass
+	 * @return the account id or null if the login or pass invalid
+	 * @throws SQLException
+	 */
 	public Integer getAccount(String login, byte[] passHash) throws SQLException {
-		return exec("select * from accounts where lower(login)=lower(?) and pass_hash=?", rs -> rs.next() ? rs.getInt("id") : null, login, passHash);
+		return exec("select id from accounts where lower(login)=lower(?) and pass_hash=?", rs -> rs.next() ? rs.getInt("id") : null, login, passHash);
 	}
 
+	/**
+	 * list all char for an account
+	 * 
+	 * @param account the account
+	 * @return the list of charDesc
+	 * @throws SQLException
+	 */
+	public List<CharDesc> getCharList(int account) throws SQLException {
+		return exec("select c.id, name, level from characters c inner join characters_body b on c.body=b.id  where account=?", rs -> {
+			List<CharDesc> list = new ArrayList<>();
+			while (rs.next())
+				list.add(new CharDesc(rs.getInt("id"), rs.getString("name"), rs.getInt("level")));
+			return list;
+		}, account);
+	}
+
+	/**
+	 * load a character
+	 * 
+	 * @param account the account
+	 * @param id      the char id
+	 * @param e       the entity to load char onto
+	 * @return true if the char is well loaded
+	 * @throws SQLException
+	 */
 	public boolean loadPj(int account, Integer id, int e) throws SQLException {
 		return exec(
 				"select" // @formatter:off
@@ -109,9 +153,7 @@ public class Database extends BaseSystem {
 					if (!rs.next())
 						return false;
 					Position p = position.get(e);
-					// pj.x=5;
-					// pj.y=5; // TODO
-					p.x = p.y = 60;
+					p.x = p.y = 60; // TODO
 
 					StatShared m = statShared.get(e);
 					m.name = rs.getString("name");
@@ -131,15 +173,13 @@ public class Database extends BaseSystem {
 				}, account, id);
 	}
 
-	public List<CharDesc> getCharList(int account) throws SQLException {
-		return exec("select c.id, name, level from characters c inner join characters_body b on c.body=b.id  where account=?", rs -> {
-			List<CharDesc> list = new ArrayList<>();
-			while (rs.next())
-				list.add(new CharDesc(rs.getInt("id"), rs.getString("name"), rs.getInt("level")));
-			return list;
-		}, account);
-	}
-
+	/**
+	 * create a character
+	 * 
+	 * @param account the account id
+	 * @param name    the name of the new char
+	 * @throws SQLException
+	 */
 	public void createChar(int account, String name) throws SQLException {
 		sqlinsert("insert into characters (name,account,hp,mp) values (?,?,?,?)", rs -> {
 			int c = rs.getInt(1);
@@ -149,6 +189,11 @@ public class Database extends BaseSystem {
 		}, name, account, Stats.baseHp(0), Stats.baseMp(0));
 	}
 
+	/**
+	 * load all spawners into the world
+	 * 
+	 * @throws SQLException
+	 */
 	public void loadSpawner() throws SQLException {
 		List<Spawner.Mob> list = new ArrayList<>();
 		exec("select * from spawners", rs -> {

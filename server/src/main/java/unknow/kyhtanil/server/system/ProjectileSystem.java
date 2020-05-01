@@ -1,30 +1,34 @@
 package unknow.kyhtanil.server.system;
 
+import java.util.function.IntPredicate;
+
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 import com.artemis.utils.IntBag;
 
-import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.Position;
+import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.server.component.Projectile;
 import unknow.kyhtanil.server.manager.LocalizedManager;
-import unknow.kyhtanil.server.manager.LocalizedManager.Choose;
 import unknow.kyhtanil.server.manager.UUIDManager;
 
+/**
+ * manage projectile life time & on hit effect
+ * 
+ * @author unknow
+ */
 public class ProjectileSystem extends IteratingSystem {
 	private LocalizedManager locManager;
 	private UUIDManager uuid;
 	private ComponentMapper<Projectile> projectile;
 	private ComponentMapper<Position> position;
 	private ComponentMapper<StatShared> mobInfo;
-	private Choose c = new Choose() {
-		@Override
-		public boolean choose(int e) {
-			return mobInfo.has(e);
-		}
-	};
+	private IntPredicate c = e -> mobInfo.has(e);
 
+	/**
+	 * create new ProjectileSystem
+	 */
 	public ProjectileSystem() {
 		super(Aspect.all(Projectile.class, Position.class));
 	}
@@ -53,7 +57,7 @@ public class ProjectileSystem extends IteratingSystem {
 				continue;
 			if (p.distance(position.get(t)) < 16) {
 				if (proj.onHit != null)
-					proj.onHit.run(t);
+					proj.onHit.accept(t);
 				world.delete(e);
 				return;
 			}

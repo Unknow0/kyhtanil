@@ -19,7 +19,7 @@ public class MapModel {
 		in.read(map);
 	}
 
-	/** @retrun the id at these coord */
+	/** @return the id at these coord */
 	public int get(int x, int y) {
 		return map[x + y * width];
 	}
@@ -29,7 +29,7 @@ public class MapModel {
 		return width;
 	}
 
-	/** heigth of the map in tile */
+	/** height of the map in tile */
 	public int height() {
 		return height;
 	}

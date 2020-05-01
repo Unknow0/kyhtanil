@@ -14,14 +14,21 @@ import unknow.kyhtanil.server.component.StateComp;
 import unknow.kyhtanil.server.manager.UUIDManager;
 import unknow.kyhtanil.server.system.net.Clients;
 
+/**
+ * send & clear dirty event
+ * 
+ * @author unknow
+ */
 public class DirtySystem extends IteratingSystem {
 	private ComponentMapper<Dirty> dirty;
-	private ComponentMapper<Position> pos;
 	private ComponentMapper<StateComp> state;
 
 	private UUIDManager uuid;
 	private Clients clients;
 
+	/**
+	 * create new DirtySystem
+	 */
 	public DirtySystem() {
 		super(Aspect.all(Dirty.class, Position.class));
 	}
@@ -39,8 +46,7 @@ public class DirtySystem extends IteratingSystem {
 		StateComp s = state.get(e);
 		if (s != null)
 			s.channel.writeAndFlush(new UpdateInfo(u, d.changed(Velocity.class)));
-		Position p = pos.get(e);
-		clients.send(s, p.x, p.y, new UpdateInfo(u, d.changed(StatAgg.class)));
+		clients.send(e, new UpdateInfo(u, d.changed(StatAgg.class)));
 		d.reset();
 	}
 }

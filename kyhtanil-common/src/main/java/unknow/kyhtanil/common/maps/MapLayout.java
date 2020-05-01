@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +21,11 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import unknow.kyhtanil.common.TexManager;
 import unknow.kyhtanil.common.TexManager.Drawable;
 
+/**
+ * the layout of all maps
+ * 
+ * @author unknow
+ */
 public class MapLayout {
 	/** hex edge size */
 	private static final float size = 10;
@@ -32,11 +36,20 @@ public class MapLayout {
 	private Map<String, TilesetInfo> tileset;
 	private List<MapEntry> maps;
 
+	/**
+	 * create new MapLayout
+	 */
 	public MapLayout() {
 		maps = new ArrayList<>();
 		tileset = new HashMap<>();
 	}
 
+	/**
+	 * create new MapLayout
+	 * 
+	 * @param in the source
+	 * @throws IOException
+	 */
 	public MapLayout(DataInputStream in) throws IOException {
 		int len = in.readInt();
 		maps = new ArrayList<>(len);
@@ -51,6 +64,12 @@ public class MapLayout {
 		}
 	}
 
+	/**
+	 * save the layout
+	 * 
+	 * @param out the output
+	 * @throws IOException
+	 */
 	public void save(DataOutputStream out) throws IOException {
 		out.writeInt(maps.size());
 		for (MapEntry e : maps)
@@ -62,6 +81,13 @@ public class MapLayout {
 			t.save(out);
 	}
 
+	/**
+	 * get map entry containing this position
+	 * 
+	 * @param x position in map coordinate
+	 * @param y position in map coordinate
+	 * @return the map entry or null if none found
+	 */
 	public MapEntry get(int x, int y) {
 		for (MapEntry e : maps) {
 			if (x >= e.x && y >= e.y && x < e.x + e.w && y < e.y + e.h)
@@ -70,6 +96,15 @@ public class MapLayout {
 		return null;
 	}
 
+	/**
+	 * get all map entry
+	 * 
+	 * @param sx start position in map coordinate
+	 * @param sy start position in map coordinate
+	 * @param ex end position in map coordinate
+	 * @param ey end position in map coordinate
+	 * @return the found map entry
+	 */
 	public List<MapEntry> get(int sx, int sy, int ex, int ey) {
 		List<MapEntry> list = new ArrayList<>(5);
 		for (MapEntry e : maps) {
@@ -82,9 +117,9 @@ public class MapLayout {
 	/**
 	 * check wall in map coordinate
 	 * 
-	 * @param x
-	 * @param y
-	 * @return
+	 * @param x the x in map coordinate
+	 * @param y the y in map coordinate
+	 * @return true if it's a wall
 	 * @throws IOException
 	 */
 	public boolean isWall(int x, int y) throws IOException {
@@ -98,10 +133,9 @@ public class MapLayout {
 	/**
 	 * check wall in game coordinate
 	 * 
-	 * @param x
-	 * @param y
-	 * @param unitsPerPixel
-	 * @return
+	 * @param x x in game coordinate
+	 * @param y y in game coordinate
+	 * @return true if it's a wall
 	 * @throws IOException
 	 */
 	public boolean isWall(double x, double y) throws IOException {
@@ -129,16 +163,29 @@ public class MapLayout {
 		return isWall((int) mx, (int) my);
 	}
 
-	public void add(int x, int y, int w, int h, String name, String tilesetFile) {
-		MapEntry e = new MapEntry(x, y, w, h, name, tilesetFile);
-		e.map = new MapModel(w, h);
-		maps.add(e);
-	}
+//	XXX
+//	public void add(int x, int y, int w, int h, String name, String tilesetFile) {
+//		MapEntry e = new MapEntry(x, y, w, h, name, tilesetFile);
+//		e.map = new MapModel(w, h);
+//		maps.add(e);
+//	}
 
+	/**
+	 * list all map entry
+	 * 
+	 * @return all map entry
+	 */
 	public List<MapEntry> maps() {
 		return maps;
 	}
 
+	/**
+	 * draw all visible maps
+	 * 
+	 * @param batch the batch to draw on
+	 * @param vp    the viewport
+	 * @throws IOException
+	 */
 	public void draw(Batch batch, Viewport vp) throws IOException {
 		Vector3 v = vp.getCamera().position;
 		int sx = (int) ((v.x - vp.getWorldWidth() / 2) / h2) - 1;
@@ -176,22 +223,22 @@ public class MapLayout {
 		}
 	}
 
-	public Collection<TilesetInfo> tilesetInfo() {
-		return tileset.values();
-	}
-
-	public void setTilesetInfo(Iterable<TilesetInfo> tilesetInfo) {
-		tileset.clear();
-		for (TilesetInfo t : tilesetInfo)
-			tileset.put(t.name, t);
-	}
-
-	/**
-	 * list tilesetName
-	 */
-	public String[] tilesets() {
-		return tileset.keySet().toArray(new String[0]);
-	}
+//	public Collection<TilesetInfo> tilesetInfo() {
+//		return tileset.values();
+//	}
+//
+//	public void setTilesetInfo(Iterable<TilesetInfo> tilesetInfo) {
+//		tileset.clear();
+//		for (TilesetInfo t : tilesetInfo)
+//			tileset.put(t.name, t);
+//	}
+//
+//	/**
+//	 * list tilesetName
+//	 */
+//	public String[] tilesets() {
+//		return tileset.keySet().toArray(new String[0]);
+//	}
 
 	public static class TilesetInfo {
 		public String name;
