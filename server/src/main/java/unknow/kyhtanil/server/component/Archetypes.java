@@ -32,6 +32,9 @@ public class Archetypes extends BaseSystem {
 	/** managed mob entities */
 	public Archetype managerMob;
 
+	/** instance of damage */
+	public Archetype damage;
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void initialize() {
@@ -40,8 +43,7 @@ public class Archetypes extends BaseSystem {
 		ArchetypeBuilder builder = new ArchetypeBuilder();
 		builder.add(Position.class, Velocity.class, Sprite.class);
 		builder.add(StatShared.class, StatBase.class, StatAgg.class, StatModAggregator.class);
-		builder.add(DamageListComp.class, Dirty.class);
-		builder.add(ContributionList.class);
+		builder.add(Dirty.class);
 		mob = builder.build(world);
 		managerMob = new ArchetypeBuilder(mob).add(Spawned.class).build(world);
 
@@ -49,10 +51,12 @@ public class Archetypes extends BaseSystem {
 		pj = builder.build(world);
 
 		builder = new ArchetypeBuilder();
-		builder.add(Position.class, Velocity.class, Projectile.class, Sprite.class);
+		builder.add(Dirty.class, Position.class, Velocity.class, Projectile.class, Sprite.class, TTL.class);
 		proj = builder.build(world);
 
 		spawner = new ArchetypeBuilder().add(Spawner.class).build(world);
+
+		damage = new ArchetypeBuilder().add(Damage.class, TTL.class).build(world);
 	}
 
 	@Override

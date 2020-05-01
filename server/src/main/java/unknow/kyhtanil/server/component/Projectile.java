@@ -16,8 +16,6 @@ public class Projectile extends PooledComponent {
 	public UUID source;
 	/** the effect to apply on hit */
 	public IntConsumer onHit;
-	/** the remaining time */
-	public float ttl;
 
 	@Override
 	protected void reset() {

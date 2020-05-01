@@ -1,4 +1,4 @@
-<layout id="root" fillParent="true" xmlns="dynLayout" init="state.create(); $ss=state.shared(); $sb=state.base(); $basePoints=state.points().base; $input={};">
+<layout id="root" fillParent="true" xmlns="dynLayout">
 	<table fillParent="true">
 		<row>
 			<cell colspan="2">
@@ -10,7 +10,7 @@
 				<label text="'Name'" />
 			</cell>
 			<cell>
-				<input id="name" text="$ss.name" />
+				<input id="name" />
 			</cell>
 		</row>
 		<row>

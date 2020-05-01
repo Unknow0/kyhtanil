@@ -1,7 +1,6 @@
 package unknow.kyhtanil.server.system.net;
 
 import java.util.function.IntConsumer;
-import java.util.function.IntPredicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +24,10 @@ import unknow.kyhtanil.common.component.net.NetComp;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.server.Database;
 import unknow.kyhtanil.server.component.Archetypes;
-import unknow.kyhtanil.server.component.DamageListComp;
+import unknow.kyhtanil.server.component.Damage;
 import unknow.kyhtanil.server.component.Dirty;
 import unknow.kyhtanil.server.component.Projectile;
+import unknow.kyhtanil.server.component.TTL;
 import unknow.kyhtanil.server.manager.LocalizedManager;
 import unknow.kyhtanil.server.manager.UUIDManager;
 
@@ -44,18 +44,17 @@ public class AttackSystem extends IteratingSystem {
 
 	private ComponentMapper<Attack> attack;
 	private ComponentMapper<NetComp> net;
+	private ComponentMapper<Damage> damage;
+	private ComponentMapper<TTL> ttl;
 	private ComponentMapper<Position> position;
 	private ComponentMapper<Velocity> velocity;
 	private ComponentMapper<StatShared> mobInfo;
 	private ComponentMapper<Dirty> dirty;
-	private ComponentMapper<DamageListComp> damage;
 	private ComponentMapper<Projectile> projectile;
 	private ComponentMapper<Sprite> sprite;
 	private ComponentMapper<StatAgg> stat;
 
 	private Archetypes arch;
-
-	private final IntPredicate filter = e -> damage.has(e);
 
 	@Wire
 	private Database database;
@@ -78,7 +77,7 @@ public class AttackSystem extends IteratingSystem {
 			double r = Math.atan2(point.y - p.y, point.x - p.x);
 
 			// TODO weapon range
-			IntBag intBag = locManager.get(p.x, p.y, 32, e -> damage.has(e) && p.distance(position.get(e)) < sp.w + sprite.get(e).w);
+			IntBag intBag = locManager.get(p.x, p.y, 32, e -> p.distance(position.get(e)) < sp.w + sprite.get(e).w);
 			if (intBag.isEmpty())
 				return;
 			for (int i = 0; i < intBag.size(); i++) {
@@ -88,7 +87,7 @@ public class AttackSystem extends IteratingSystem {
 				Position m = position.get(t);
 				double mr = Math.atan2(m.y - p.y, m.x - p.x);
 				double diff = r - mr;
-				if (-.3 < diff && diff < .3) {
+				if (-1 < diff && diff < 1) {
 					target = t;
 					break;
 				}
@@ -116,7 +115,7 @@ public class AttackSystem extends IteratingSystem {
 			addProj(self, r, 25, 5, "skills/fire", t -> {
 				Position p2 = position.get(t);
 
-				IntBag intBag = locManager.get(p2.x, p2.y, 50, filter);
+				IntBag intBag = locManager.get(p2.x, p2.y, 50, null);
 				for (int i = 0; i < intBag.size(); i++) {
 					if (t != self)
 						addDamage(self, 0, 0, 0, 0, 5, 0, 0, t);
@@ -154,8 +153,19 @@ public class AttackSystem extends IteratingSystem {
 	}
 
 	private void addDamage(int source, int slashing, int blunt, int pierce, int lightning, int fire, int ice, float duration, int target) {
-		DamageListComp d = damage.get(target);
-		d.add(new DamageListComp.Damage(source, 0, slashing, blunt, pierce, lightning, fire, ice, duration));
+		int e = world.create(arch.damage);
+		Damage d = damage.get(e);
+		d.source = source;
+		d.target = target;
+
+		d.slashing = slashing;
+		d.blunt = blunt;
+		d.piercing = pierce;
+		d.lightning = lightning;
+		d.fire = fire;
+		d.ice = ice;
+
+		ttl.get(e).ttl = duration;
 	}
 
 	private void addProj(int source, float dir, float speed, float ttl, String tex, IntConsumer onHit) {
@@ -164,8 +174,8 @@ public class AttackSystem extends IteratingSystem {
 		Velocity v = velocity.get(e);
 		v.direction = dir;
 		v.speed = speed;
+		this.ttl.get(e).ttl = ttl;
 		Projectile p = projectile.get(e);
-		p.ttl = ttl;
 		p.onHit = onHit;
 		p.source = manager.getUuid(source);
 

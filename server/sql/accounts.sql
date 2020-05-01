@@ -3,5 +3,5 @@ create table accounts (
 	login varchar(50),
 	pass_hash bytea,
 
-	constrain login unique (login)
+	constraint login unique (login)
 	);

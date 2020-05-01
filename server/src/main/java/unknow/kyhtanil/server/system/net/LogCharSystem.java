@@ -102,6 +102,8 @@ public class LogCharSystem extends IteratingSystem {
 
 		s.state = States.IN_GAME;
 
+		Sprite sp = sprite.get(st);
+		sp.w = 16;
 		Position p = position.get(st);
 		StatShared m = stats.get(st);
 		log.info("log char {} {}", l.uuid, m.name);

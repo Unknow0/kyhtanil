@@ -1,4 +1,4 @@
-<layout fillParent="true" xmlns="dynLayout" onkeypress="if(e.getKeyCode()==com.badlogic.gdx.Input.Keys.ENTER) {co.login($login.getText(), $pass.getText());}">
+<layout fillParent="true" xmlns="dynLayout" onkeypress="if(e.getKeyCode()==com.badlogic.gdx.Input.Keys.ENTER) {co.createAccount($login.getText(), $pass.getText());}">
 	<table fillParent="true" id="table" init="$table.defaults().pad(1)">
 		<row>
 			<cell colspan="2">

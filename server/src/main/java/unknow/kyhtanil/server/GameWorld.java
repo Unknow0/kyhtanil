@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.artemis.World;
 import com.artemis.WorldConfiguration;
+import com.artemis.link.EntityLinkManager;
 
 import unknow.kyhtanil.common.maps.MapLayout;
 import unknow.kyhtanil.server.component.Archetypes;
@@ -21,6 +22,7 @@ import unknow.kyhtanil.server.system.MovementSystem;
 import unknow.kyhtanil.server.system.ProjectileSystem;
 import unknow.kyhtanil.server.system.SpawnSystem;
 import unknow.kyhtanil.server.system.SpawnedSystem;
+import unknow.kyhtanil.server.system.TtlSystem;
 import unknow.kyhtanil.server.system.UpdateStatSystem;
 import unknow.kyhtanil.server.system.net.AttackSystem;
 import unknow.kyhtanil.server.system.net.Clients;
@@ -50,7 +52,8 @@ public class GameWorld {
 		MapLayout layout = new MapLayout(new DataInputStream(new FileInputStream("data/maps.layout")));
 
 		WorldConfiguration cfg = new WorldConfiguration();
-		cfg.setSystem(DebugSystem.class);
+		cfg.setSystem(new EntityLinkManager());
+		cfg.setSystem(new DebugSystem());
 		cfg.setSystem(new Database());
 
 		cfg.setSystem(new UUIDManager());
@@ -72,10 +75,12 @@ public class GameWorld {
 		cfg.setSystem(new SpawnedSystem());
 
 		cfg.setSystem(new UpdateStatSystem());
-		cfg.setSystem(new DamageSystem());
 		cfg.setSystem(new MovementSystem());
 		cfg.setSystem(new ProjectileSystem());
+		cfg.setSystem(new DamageSystem());
 		cfg.setSystem(new DirtySystem());
+
+		cfg.setSystem(new TtlSystem());
 
 		cfg.register(layout);
 

@@ -2,59 +2,44 @@ package unknow.kyhtanil.server.system;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
+import com.artemis.systems.IteratingSystem;
 
 import unknow.kyhtanil.common.component.StatShared;
-import unknow.kyhtanil.server.component.DamageListComp;
+import unknow.kyhtanil.server.component.Damage;
 import unknow.kyhtanil.server.component.Dirty;
+import unknow.kyhtanil.server.component.TTL;
 
 /**
  * apply all damage on entities
  * 
  * @author unknow
  */
-public class DamageSystem extends CompositeEntityProcessor<DamageListComp, DamageListComp.Damage> {
+public class DamageSystem extends IteratingSystem {
+	private ComponentMapper<Damage> damage;
+	private ComponentMapper<TTL> ttl;
 	private ComponentMapper<StatShared> mobInfo;
 	private ComponentMapper<Dirty> dirty;
-
-	private StatShared mob;
-	private Dirty d;
 
 	/**
 	 * create new DamageSystem
 	 */
 	public DamageSystem() {
-		super(Aspect.all(DamageListComp.class, StatShared.class), DamageListComp.class);
-	}
-
-	protected StatShared processEntity(int e) {
-		return mobInfo.get(e);
+		super(Aspect.all(Damage.class));
 	}
 
 	@Override
-	protected boolean processStart(int e) {
-		mob = mobInfo.get(e);
-		d = dirty.get(e);
-		return true;
-	}
-
-	@Override
-	protected boolean processComponent(int e, DamageListComp.Damage c) {
-		// TODO res calculation
+	protected void process(int entityId) {
+		Damage c = damage.get(entityId);
 		int total = c.base + c.blunt + c.piercing + c.slashing + c.fire + c.ice + c.lightning;
 
-		if (c.duration > 0)
+		if (ttl.get(entityId).ttl > 0)
 			total *= world.delta;
 
+		StatShared mob = mobInfo.get(c.target);
 		mob.hp -= total;
-		if (mob.hp <= 0) {
-			world.delete(e);
-			return false;
-		}
-		d.add(mob);
-		return true;
-	}
-
-	@Override
-	protected void processEnd(int e) {
+		if (mob.hp <= 0)
+			world.delete(c.target);
+		else
+			dirty.get(c.target).add(mob);
 	}
 }

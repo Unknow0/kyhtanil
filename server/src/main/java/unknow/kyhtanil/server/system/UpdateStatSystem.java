@@ -2,6 +2,7 @@ package unknow.kyhtanil.server.system;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
+import com.artemis.annotations.PreserveProcessVisiblity;
 import com.artemis.systems.IteratingSystem;
 
 import unknow.kyhtanil.common.Stats;
@@ -16,6 +17,7 @@ import unknow.kyhtanil.server.component.StatModAggregator;
  * 
  * @author unknow
  */
+@PreserveProcessVisiblity
 public class UpdateStatSystem extends IteratingSystem {
 	private ComponentMapper<StatShared> shared;
 	private ComponentMapper<StatBase> base;
