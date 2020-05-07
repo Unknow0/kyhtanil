@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import unknow.kyhtanil.common.component.ErrorComp;
 import unknow.kyhtanil.common.component.StatAgg;
 import unknow.kyhtanil.common.component.StatBase;
+import unknow.kyhtanil.common.component.StatPoint;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.account.CreateAccount;
 import unknow.kyhtanil.common.component.account.CreateChar;
@@ -48,6 +49,7 @@ public class KyhtanilSerialize {
 		create.register(StatBase.class);
 		create.register(StatShared.class);
 		create.register(StatAgg.class);
+		create.register(StatPoint.class);
 
 		try {
 			format = create.build();

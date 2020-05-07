@@ -45,6 +45,6 @@ public class DebugSystem extends BaseEntitySystem {
 
 	@Override
 	protected void removed(int entityId) {
-		log.trace("removed {}", entityId);
+		log.trace("removed {} {}", entityId, uuid.getUuid(entityId));
 	}
 }

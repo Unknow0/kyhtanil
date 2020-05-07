@@ -17,6 +17,14 @@
 			</cell>
 		</row>
 		<row>
+			<cell>
+				<label text="'Xp'" />
+			</cell>
+			<cell>
+				<label text="''+state.points().exp" />
+			</cell>
+		</row>
+		<row>
 			<cell colspan="2" padTop="10" padBottom="10" padRight="$root.getWidth()*.1" padLeft="$root.getWidth()*.1" fillX="true" expandX="true">
 				<actor class="com.kotcrab.vis.ui.widget.Separator" />
 			</cell>

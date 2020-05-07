@@ -45,7 +45,7 @@ public class Archetypes extends BaseSystem {
 		builder.add(StatShared.class, StatBase.class, StatAgg.class, StatModAggregator.class);
 		builder.add(Dirty.class);
 		mob = builder.build(world);
-		managerMob = new ArchetypeBuilder(mob).add(Spawned.class).build(world);
+		managerMob = new ArchetypeBuilder(mob).add(Spawned.class, Contribution.class).build(world);
 
 		builder.add(StateComp.class, StatPoint.class);
 		pj = builder.build(world);

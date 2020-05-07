@@ -5,6 +5,7 @@ import java.io.InputStream;
 import org.xml.sax.InputSource;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.kotcrab.vis.ui.widget.VisWindow;
 
 import unknow.kyhtanil.client.Main;
@@ -29,7 +30,7 @@ public enum GameWindow {
 	public static void init(DynLayout root) {
 		ROOT = root;
 		for (GameWindow w : values()) {
-			DynLayout dynLayout = new DynLayout(Main.dynContext);
+			DynLayout dynLayout = new Internal();
 			try (InputStream is = Gdx.files.internal(w.layout).read()) {
 				dynLayout.load(new InputSource(is));
 			} catch (Exception e) {
@@ -43,9 +44,21 @@ public enum GameWindow {
 	private final VisWindow internal;
 	private final String layout;
 
-	GameWindow(String title, String layout) {
+	private GameWindow(String title, String layout) {
 		this.layout = layout;
 		internal = new VisWindow(title);
+	}
+
+	private static class Internal extends DynLayout {
+		public Internal() {
+			super(Main.dynContext);
+		}
+
+		@Override
+		public void draw(Batch batch, float parentAlpha) {
+			layout();
+			super.draw(batch, parentAlpha);
+		}
 	}
 
 	/**

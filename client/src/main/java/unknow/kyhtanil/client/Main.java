@@ -130,6 +130,16 @@ public class Main implements ApplicationListener {
 	}
 
 	/**
+	 * show a fatal error
+	 * 
+	 * @param t
+	 */
+	public static void error(Throwable t) {
+		t.printStackTrace();
+		System.exit(1);
+	}
+
+	/**
 	 * show an error
 	 * 
 	 * @param code the error
@@ -140,18 +150,18 @@ public class Main implements ApplicationListener {
 			return;
 		}
 		switch (code) {
-		case INVALID_LOGIN:
-			info.setText(i18n.get("error_invalid_login"));
-			break;
-		case ALREADY_LOGGED:
-			info.setText(i18n.get("error_already_logged"));
-			break;
-		case NAME_ALREADY_USED:
-			info.setText(i18n.get("error_name_already_used"));
-			break;
-		case UNKNOWN_ERROR:
-		default:
-			info.setText(i18n.get("error_unknown"));
+			case INVALID_LOGIN:
+				info.setText(i18n.get("error_invalid_login"));
+				break;
+			case ALREADY_LOGGED:
+				info.setText(i18n.get("error_already_logged"));
+				break;
+			case NAME_ALREADY_USED:
+				info.setText(i18n.get("error_name_already_used"));
+				break;
+			case UNKNOWN_ERROR:
+			default:
+				info.setText(i18n.get("error_unknown"));
 		}
 	}
 

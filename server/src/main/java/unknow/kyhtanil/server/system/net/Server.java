@@ -169,6 +169,7 @@ public class Server extends BaseSystem {
 				KyhtanilSerialize.write(data, out);
 			} catch (Throwable e) {
 				log.error(e.getMessage(), e);
+				ctx.close();
 			}
 		}
 	}

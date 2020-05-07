@@ -20,6 +20,7 @@ import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 
+import unknow.kyhtanil.client.Main;
 import unknow.kyhtanil.client.system.State;
 import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.account.CreateAccount;
@@ -177,8 +178,7 @@ public class Connection extends BaseSystem implements Runnable {
 				}
 			}
 		} catch (Exception e) {
-			// TODOs
-			e.printStackTrace();
+			Main.error(e);
 		}
 	}
 

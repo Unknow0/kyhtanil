@@ -117,6 +117,7 @@ public class AttackSystem extends IteratingSystem {
 
 				IntBag intBag = locManager.get(p2.x, p2.y, 50, null);
 				for (int i = 0; i < intBag.size(); i++) {
+					t = intBag.get(i);
 					if (t != self)
 						addDamage(self, 0, 0, 0, 0, 5, 0, 0, t);
 				}
