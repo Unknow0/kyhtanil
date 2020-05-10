@@ -1,13 +1,11 @@
 package unknow.kyhtanil.common.component;
 
-import com.artemis.*;
-
 /**
  * Component for something that can move
  * 
  * @author unknow
  */
-public class Velocity extends PooledComponent implements Setable<Velocity> {
+public class Velocity extends Setable<Velocity> {
 	/** the direction in radiant */
 	public float direction;
 	/** the speed */

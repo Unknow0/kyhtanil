@@ -4,8 +4,9 @@ import com.artemis.BaseSystem;
 import com.artemis.ComponentMapper;
 import com.artemis.annotations.SkipWire;
 
+import unknow.kyhtanil.common.component.Dirty;
+import unknow.kyhtanil.common.component.Setable;
 import unknow.kyhtanil.common.component.StatBase;
-import unknow.kyhtanil.common.component.StatPoint;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.pojo.CharDesc;
 import unknow.kyhtanil.common.pojo.UUID;
@@ -22,7 +23,7 @@ public class State extends BaseSystem {
 
 	private ComponentMapper<StatShared> shared;
 	private ComponentMapper<StatBase> base;
-	private ComponentMapper<StatPoint> points;
+	private ComponentMapper<Dirty> dirty;
 
 	/** the list of characters */
 	public CharDesc[] chars;
@@ -58,9 +59,13 @@ public class State extends BaseSystem {
 	}
 
 	/**
-	 * @return the point stat of the current char
+	 * mark component as dirty
+	 * 
+	 * @param component
 	 */
-	public StatPoint points() {
-		return points.get(entity);
+	public void dirty(Setable<?>... component) {
+		Dirty d = dirty.get(entity);
+		for (Setable<?> c : component)
+			d.add(c);
 	}
 }

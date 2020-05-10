@@ -50,25 +50,20 @@ public class PjInfoSystem extends IteratingSystem {
 
 		world.delete(entityId);
 
-		state.entity = world.create(arch.self);
-		manager.setUuid(state.entity, state.uuid);
+		int e = state.entity = world.create(arch.self);
+		manager.setUuid(e, state.uuid);
 
-		Velocity v = velocity.get(state.entity);
+		Velocity v = velocity.get(e);
 		v.speed = 0f;
 
-		Position p = position.get(state.entity);
-		p.x = pj.x;
-		p.y = pj.y;
+		position.get(e).set(pj.p);
 
-		Sprite s = sprite.get(state.entity);
+		Sprite s = sprite.get(e);
 		s.tex = "char";
 		s.w = s.h = 16;
 
-		StatShared c = info.get(state.entity);
-		c.set(pj.stats);
-
-		StatBase d = perso.get(state.entity);
-		d.set(pj.perso);
+		info.get(e).set(pj.stats);
+		perso.get(e).set(pj.perso);
 
 		main.show(Screen.GAME);
 	}

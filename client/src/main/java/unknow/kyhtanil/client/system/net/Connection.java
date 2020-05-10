@@ -28,7 +28,6 @@ import unknow.kyhtanil.common.component.account.CreateChar;
 import unknow.kyhtanil.common.component.account.LogChar;
 import unknow.kyhtanil.common.component.account.Login;
 import unknow.kyhtanil.common.component.net.Attack;
-import unknow.kyhtanil.common.component.net.Move;
 import unknow.kyhtanil.common.pojo.CharDesc;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.common.util.KyhtanilSerialize;
@@ -117,46 +116,34 @@ public class Connection extends BaseSystem implements Runnable {
 	}
 
 	/**
-	 * send the updated position
-	 * 
-	 * @param id        the uuid
-	 * @param p         the new position
-	 * @param direction the direction
-	 */
-	public void update(UUID id, Position p, float direction) {
-		write(new Move(id, p.x, p.y, direction));
-	}
-
-	/**
 	 * log a char to the game
 	 * 
-	 * @param uuid     the uuid
 	 * @param charDesc the char to log
 	 */
-	public void logChar(UUID uuid, CharDesc charDesc) {
-		write(new LogChar(uuid, charDesc.id));
+	public void logChar(CharDesc charDesc) {
+		write(new LogChar(state.uuid, charDesc.id));
 	}
 
 	/**
 	 * send an attack
 	 * 
-	 * @param uuid   the uuid
 	 * @param attId  the id of the attack
 	 * @param target the target uuid (can be null if no selected target)
 	 * @param x      the target x
 	 * @param y      the target y
 	 */
-	public void attack(UUID uuid, int attId, UUID target, float x, float y) {
-		write(new Attack(uuid, attId, target == null ? new Position(x, y) : target));
+	public void attack(int attId, UUID target, float x, float y) {
+		write(new Attack(state.uuid, attId, target == null ? new Position(x, y) : target));
 	}
 
 	/**
 	 * write an object to the server
 	 * 
 	 * @param o object to write
-	 * @throws IOException
 	 */
-	private void write(Object o) {
+	public void write(Object o) {
+		if (o == null)
+			return;
 		try {
 			log.info("write {}", o);
 			KyhtanilSerialize.write(o, out);

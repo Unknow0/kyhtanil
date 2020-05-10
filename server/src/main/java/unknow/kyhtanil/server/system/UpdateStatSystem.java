@@ -6,10 +6,10 @@ import com.artemis.annotations.PreserveProcessVisiblity;
 import com.artemis.systems.IteratingSystem;
 
 import unknow.kyhtanil.common.Stats;
+import unknow.kyhtanil.common.component.Dirty;
 import unknow.kyhtanil.common.component.StatAgg;
 import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatShared;
-import unknow.kyhtanil.server.component.Dirty;
 import unknow.kyhtanil.server.component.StatModAggregator;
 
 /**

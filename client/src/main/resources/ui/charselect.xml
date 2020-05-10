@@ -1,4 +1,4 @@
-<layout id="root" fillParent="true" xmlns="dynLayout">
+<layout id="root" fillParent="true" xmlns="dynLayout" onkeypress="if(e.getKeyCode()==com.badlogic.gdx.Input.Keys.ENTER) {co.logChar($list.selected());}">
 	<table fillParent="true">
 		<row>
 			<cell colspan="2" fillX="" align="Align.center">
@@ -12,7 +12,7 @@
 				<button text="i18n.get('dialog_create')" onchange="main.show(Screen.CHARCREATE)" />
 			</cell>
 			<cell expandX="">
-				<button text="i18n.get('dialog_login')" disabled="state.chars==null" onchange="co.logChar(state.uuid, $list.selected())" />
+				<button text="i18n.get('dialog_login')" disabled="state.chars==null" onchange="co.logChar($list.selected())" />
 			</cell>
 		</row>
 	</table>

@@ -2,6 +2,7 @@ package unknow.kyhtanil.server;
 
 import unknow.kyhtanil.common.component.net.*;
 import unknow.kyhtanil.common.pojo.*;
+import unknow.kyhtanil.server.component.NetComp;
 
 import com.artemis.*;
 import com.artemis.systems.*;

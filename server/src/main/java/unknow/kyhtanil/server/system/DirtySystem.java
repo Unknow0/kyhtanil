@@ -4,12 +4,12 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 
+import unknow.kyhtanil.common.component.Dirty;
 import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.StatAgg;
 import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.common.component.net.UpdateInfo;
 import unknow.kyhtanil.common.pojo.UUID;
-import unknow.kyhtanil.server.component.Dirty;
 import unknow.kyhtanil.server.component.StateComp;
 import unknow.kyhtanil.server.manager.UUIDManager;
 import unknow.kyhtanil.server.system.net.Clients;
@@ -44,9 +44,13 @@ public class DirtySystem extends IteratingSystem {
 			return;
 
 		StateComp s = state.get(e);
-		if (s != null)
-			s.channel.writeAndFlush(new UpdateInfo(u, d.changed(Velocity.class)));
-		clients.send(e, new UpdateInfo(u, d.changed(StatAgg.class)));
+		if (s != null) {
+			UpdateInfo changed = d.changed(u, Position.class, Velocity.class);
+			if (changed != null)
+				s.channel.writeAndFlush(changed);
+		}
+		clients.send(e, d.changed(u, StatAgg.class));
+		// TODO notify other server
 		d.reset();
 	}
 }

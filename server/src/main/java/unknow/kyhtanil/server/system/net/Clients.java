@@ -46,6 +46,8 @@ public class Clients extends BaseSystem {
 	 * @param msg      the message to send
 	 */
 	public void send(int entityId, Object msg) {
+		if (msg == null)
+			return;
 		Position p = position.get(entityId);
 		StateComp sender = state.get(entityId);
 		log.debug("send {} ({}) at {} x {} from {}", msg.getClass().getSimpleName(), msg, p.x, p.y, sender);

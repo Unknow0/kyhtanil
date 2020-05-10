@@ -9,10 +9,12 @@ import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.component.Velocity;
+import unknow.kyhtanil.server.Database;
 import unknow.kyhtanil.server.component.Archetypes;
 import unknow.kyhtanil.server.component.Spawned;
 import unknow.kyhtanil.server.component.Spawner;
-import unknow.kyhtanil.server.component.Spawner.Mob;
+import unknow.kyhtanil.server.pojo.IdRate;
+import unknow.kyhtanil.server.pojo.Mob;
 
 /**
  * spawn new entities
@@ -31,6 +33,7 @@ public class SpawnSystem extends IteratingSystem {
 	private Archetypes arch;
 
 	private UpdateStatSystem update;
+	private Database database;
 
 	/**
 	 * create new SpawnSystem
@@ -52,7 +55,7 @@ public class SpawnSystem extends IteratingSystem {
 			int m = world.create(arch.managerMob);
 			spawned.get(m).spawner = e;
 
-			Mob mob = s.mobs[(int) (Math.random() * s.mobs.length)];
+			Mob mob = database.getMob(IdRate.gen(s.mobs));
 
 			Position p = position.get(m);
 			p.x = (float) (s.x + Math.random() * s.r * 2 - s.r);

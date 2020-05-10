@@ -15,6 +15,7 @@ import com.artemis.ComponentMapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import unknow.common.data.IntMap;
 import unknow.kyhtanil.common.Stats;
 import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.StatBase;
@@ -22,7 +23,9 @@ import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.pojo.CharDesc;
 import unknow.kyhtanil.server.component.Archetypes;
 import unknow.kyhtanil.server.component.Spawner;
-import unknow.kyhtanil.server.component.Spawner.Mob;
+import unknow.kyhtanil.server.pojo.IdRate;
+import unknow.kyhtanil.server.pojo.Item;
+import unknow.kyhtanil.server.pojo.Mob;
 
 /**
  * database connection
@@ -30,7 +33,7 @@ import unknow.kyhtanil.server.component.Spawner.Mob;
  * @author unknow
  */
 public class Database extends BaseSystem {
-	private static final Spawner.Mob[] MOB_ARRAY = new Spawner.Mob[0];
+	private static final IdRate[] IDRATES = new IdRate[0];
 	private static final RSConvert<Integer> FIRT_INT = rs -> rs.getInt(1);
 
 	private DataSource ds;
@@ -40,6 +43,11 @@ public class Database extends BaseSystem {
 	private ComponentMapper<StatShared> statShared;
 	private ComponentMapper<StatBase> statBase;
 	private ComponentMapper<Spawner> spawner;
+
+	/** cache */
+	private final IntMap<Mob> mobs = new IntMap<>();
+	/** cache */
+	private final IntMap<Item> items = new IntMap<>();
 
 	/**
 	 * create new Database
@@ -54,6 +62,91 @@ public class Database extends BaseSystem {
 	@Override
 	public void initialize() {
 		ds = new HikariDataSource(new HikariConfig("/hikari.properties"));
+	}
+
+	/**
+	 * all lazy load
+	 * 
+	 * @throws SQLException
+	 */
+	public void init() throws SQLException {
+		List<IdRate> list = new ArrayList<>();
+		class Convert implements RSConvert<IdRate[]> {
+			private String c;
+			private boolean standard;
+
+			public Convert(String c) {
+				this(c, false);
+			}
+
+			public Convert(String c, boolean standard) {
+				this.c = c;
+				this.standard = standard;
+			}
+
+			@Override
+			public IdRate[] convert(ResultSet rs) throws SQLException {
+				list.clear();
+				float sum = 0;
+				while (rs.next()) {
+					IdRate r = new IdRate();
+					r.id = rs.getInt(c);
+					r.rate = rs.getFloat(standard ? "factor" : "rate");
+					sum += r.rate;
+					list.add(r);
+				}
+				if (standard) {
+					for (IdRate r : list)
+						r.rate = r.rate / sum;
+				}
+				return list.toArray(IDRATES);
+			}
+		}
+		// load mobs
+		exec("select * from mobs", rs -> {
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				Mob mob = new Mob(rs);
+				mob.loots = exec("select * from mobs_loot where mob=?", new Convert("item"), id);
+				mobs.put(id, mob);
+			}
+			return null;
+		});
+
+		// load items
+		exec("select * from items", rs -> {
+			while (rs.next())
+				items.put(rs.getInt("id"), new Item());
+			return null;
+		});
+
+		// load spawners
+		exec("select * from spawners", rs -> {
+			while (rs.next()) {
+				int i = world.create(archetype.spawner);
+				Spawner s = spawner.get(i);
+				s.x = rs.getFloat("x");
+				s.y = rs.getFloat("y");
+				s.r = rs.getFloat("r");
+				s.max = rs.getInt("max");
+				s.speed = rs.getInt("speed");
+
+				s.mobs = exec("select * from spawner_mobs where spawner=?", new Convert("mob", true), rs.getInt("id"));
+			}
+			return null;
+		});
+	}
+
+	/**
+	 * @param id the mob id
+	 * @return the mob
+	 */
+	public Mob getMob(int id) {
+		return mobs.get(id);
+	}
+
+	public Item getItem(int id) {
+		return items.get(id);
 	}
 
 	private static interface RSConvert<T> {
@@ -166,8 +259,7 @@ public class Database extends BaseSystem {
 					b.concentration = rs.getInt("concentration");
 					b.intelligence = rs.getInt("intelligence");
 					b.dexterity = rs.getInt("dexterity");
-
-					// b.level = b.level;
+					b.xp = 50;
 
 					return true;
 				}, account, id);
@@ -189,42 +281,4 @@ public class Database extends BaseSystem {
 		}, name, account, Stats.baseHp(0), Stats.baseMp(0));
 	}
 
-	/**
-	 * load all spawners into the world
-	 * 
-	 * @throws SQLException
-	 */
-	public void loadSpawner() throws SQLException {
-		List<Spawner.Mob> list = new ArrayList<>();
-		exec("select * from spawners", rs -> {
-			while (rs.next()) {
-				int i = world.create(archetype.spawner);
-				Spawner s = spawner.get(i);
-				s.x = rs.getFloat("x");
-				s.y = rs.getFloat("y");
-				s.r = rs.getFloat("r");
-				s.max = rs.getInt("max");
-				s.speed = rs.getInt("speed");
-
-				s.mobs = exec("select m.*, factor from spawner_mobs s inner join mobs m on m.id=s.mob where s.spawner=?", rsm -> {
-					list.clear();
-					while (rsm.next()) {
-						Mob mob = new Spawner.Mob();
-						mob.name = rsm.getString("name");
-						mob.tex = rsm.getString("tex");
-						mob.w = rsm.getFloat("w");
-
-						mob.strength = rsm.getInt("strength");
-						mob.constitution = rsm.getInt("constitution");
-						mob.intelligence = rsm.getInt("intelligence");
-						mob.concentration = rsm.getInt("concentration");
-						mob.dexterity = rsm.getInt("dexterity");
-						list.add(mob);
-					}
-					return list.toArray(MOB_ARRAY);
-				}, rs.getInt("id"));
-			}
-			return null;
-		});
-	}
 }

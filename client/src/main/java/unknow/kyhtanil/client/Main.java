@@ -11,6 +11,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Align;
@@ -24,6 +25,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import unknow.kyhtanil.client.component.Archetypes;
 import unknow.kyhtanil.client.graphics.GameWindow;
 import unknow.kyhtanil.client.graphics.StatSelector;
+import unknow.kyhtanil.client.system.DirtySystem;
 import unknow.kyhtanil.client.system.InputSystem;
 import unknow.kyhtanil.client.system.MovementSystem;
 import unknow.kyhtanil.client.system.RenderingSystem;
@@ -40,7 +42,6 @@ import unknow.kyhtanil.common.Stats;
 import unknow.kyhtanil.common.TexManager;
 import unknow.kyhtanil.common.component.ErrorComp.ErrorCode;
 import unknow.kyhtanil.common.component.StatBase;
-import unknow.kyhtanil.common.component.StatPoint;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.common.util.BaseUUIDManager;
 import unknow.scene.builder.DynLayout;
@@ -80,7 +81,7 @@ public class Main implements ApplicationListener {
 			dynContext.put("co", co);
 			dynContext.put("state", State.state);
 			dynContext.put("i18n", i18n);
-			for (Class<?> c : Arrays.asList(Stats.class, Align.class, Screen.class, StatBase.class, StatShared.class, StatPoint.class, GameWindow.class))
+			for (Class<?> c : Arrays.asList(Color.class, Stats.class, Align.class, Screen.class, StatBase.class, StatShared.class, GameWindow.class))
 				dynContext.putClass(c);
 			dynContext.addValue(StatSelector.class, new Attr[] { new Attr("value", "setValue"), new Attr("min", "setMin"), new Attr("max", "setMax") });
 
@@ -94,6 +95,7 @@ public class Main implements ApplicationListener {
 			cfg.setSystem(new RenderingSystem(gameVp));
 			cfg.setSystem(co);
 			cfg.setSystem(State.state);
+			cfg.setSystem(new DirtySystem());
 
 			cfg.setSystem(new ErrorSystem(this));
 			cfg.setSystem(new LogResultSystem(this));

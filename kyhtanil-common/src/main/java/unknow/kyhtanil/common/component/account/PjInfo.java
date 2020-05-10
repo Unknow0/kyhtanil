@@ -2,6 +2,7 @@ package unknow.kyhtanil.common.component.account;
 
 import com.artemis.Component;
 
+import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatShared;
 
@@ -9,10 +10,8 @@ import unknow.kyhtanil.common.component.StatShared;
  * @author unknow
  */
 public class PjInfo extends Component {
-	/** the x position of the char */
-	public float x = 0;
-	/** the x position of the char */
-	public float y = 0;
+	/** the position of the char */
+	public Position p;
 	/** the shared stats */
 	public StatShared stats = null;
 	/** the base stats */
@@ -27,20 +26,18 @@ public class PjInfo extends Component {
 	/**
 	 * create new PjInfo
 	 * 
-	 * @param x
-	 * @param y
+	 * @param p
 	 * @param stats
 	 * @param perso
 	 */
-	public PjInfo(float x, float y, StatShared stats, StatBase perso) {
-		this.x = x;
-		this.y = y;
+	public PjInfo(Position p, StatShared stats, StatBase perso) {
+		this.p = p;
 		this.stats = stats;
 		this.perso = perso;
 	}
 
 	@Override
 	public String toString() {
-		return "PjInfo [x=" + x + ", y=" + y + ", stats=" + stats + ", perso=" + perso + "]";
+		return "PjInfo [p=" + p + ",  stats=" + stats + ", perso=" + perso + "]";
 	}
 }

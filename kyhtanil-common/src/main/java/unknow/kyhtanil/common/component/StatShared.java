@@ -1,13 +1,11 @@
 package unknow.kyhtanil.common.component;
 
-import com.artemis.PooledComponent;
-
 /**
  * Stat off all visible entity
  * 
  * @author unknow
  */
-public class StatShared extends PooledComponent implements Setable<StatShared> {
+public class StatShared extends Setable<StatShared> {
 	/** name of the entity */
 	public String name;
 	/** the current hp */

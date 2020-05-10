@@ -2,8 +2,6 @@ package unknow.kyhtanil.common.component;
 
 import java.util.Arrays;
 
-import com.artemis.PooledComponent;
-
 import unknow.kyhtanil.common.Stats;
 
 /**
@@ -11,7 +9,7 @@ import unknow.kyhtanil.common.Stats;
  * 
  * @author unknow
  */
-public class StatAgg extends PooledComponent implements Setable<StatAgg> {
+public class StatAgg extends Setable<StatAgg> {
 	/** all stat values */
 	public int[] stats = new int[Stats.values().length];
 

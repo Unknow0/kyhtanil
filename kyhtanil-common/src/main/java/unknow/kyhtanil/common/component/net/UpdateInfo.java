@@ -29,7 +29,7 @@ public class UpdateInfo extends Component {
 	 * @param uuid
 	 * @param c
 	 */
-	public UpdateInfo(UUID uuid, Component[] c) {
+	public UpdateInfo(UUID uuid, Component... c) {
 		this.uuid = uuid;
 		this.c = c;
 	}

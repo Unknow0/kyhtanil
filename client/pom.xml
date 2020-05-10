@@ -34,9 +34,9 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>unknow.scene-builder</groupId>
+			<groupId>unknow.common</groupId>
 			<artifactId>scene-builder</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1</version>
 		</dependency>
 
 		<dependency>

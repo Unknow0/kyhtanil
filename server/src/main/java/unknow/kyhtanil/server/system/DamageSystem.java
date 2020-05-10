@@ -5,10 +5,10 @@ import com.artemis.ComponentMapper;
 import com.artemis.EntityManager;
 import com.artemis.systems.IteratingSystem;
 
+import unknow.kyhtanil.common.component.Dirty;
 import unknow.kyhtanil.common.component.StatShared;
 import unknow.kyhtanil.server.component.Contribution;
 import unknow.kyhtanil.server.component.Damage;
-import unknow.kyhtanil.server.component.Dirty;
 import unknow.kyhtanil.server.component.TTL;
 
 /**

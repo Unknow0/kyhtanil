@@ -31,8 +31,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
-import unknow.kyhtanil.common.component.net.NetComp;
 import unknow.kyhtanil.common.util.KyhtanilSerialize;
+import unknow.kyhtanil.server.component.NetComp;
 
 /**
  * The server move event from network to world

@@ -2,6 +2,8 @@ package unknow.kyhtanil.server.component;
 
 import com.artemis.PooledComponent;
 
+import unknow.kyhtanil.server.pojo.IdRate;
+
 /**
  * spawn mobs
  * 
@@ -26,40 +28,12 @@ public class Spawner extends PooledComponent {
 	public float time;
 
 	/** mob variation that can be spawned */
-	public Mob[] mobs;
+	public IdRate[] mobs;
 
 	@Override
 	protected void reset() {
 		x = y = r = 0;
 		max = count = 0;
 		speed = time = 0;
-	}
-
-	/**
-	 * mob data that can be spawned
-	 * 
-	 * @author unknow
-	 */
-	public static class Mob {
-		/** name of the mob */
-		public String name;
-		/** texture to use */
-		public String tex;
-		/** width of the texture */
-		public float w;
-
-		/** load factor for the spawner */
-		public int factor;
-
-		/** base stats */
-		public int strength;
-		/** base stats */
-		public int constitution;
-		/** base stats */
-		public int intelligence;
-		/** base stats */
-		public int concentration;
-		/** base stats */
-		public int dexterity;
 	}
 }

@@ -17,11 +17,11 @@ import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.common.component.account.LogChar;
 import unknow.kyhtanil.common.component.account.PjInfo;
 import unknow.kyhtanil.common.component.net.Despawn;
-import unknow.kyhtanil.common.component.net.NetComp;
 import unknow.kyhtanil.common.component.net.Spawn;
 import unknow.kyhtanil.common.pojo.UUID;
 import unknow.kyhtanil.server.Database;
 import unknow.kyhtanil.server.component.Archetypes;
+import unknow.kyhtanil.server.component.NetComp;
 import unknow.kyhtanil.server.component.StateComp;
 import unknow.kyhtanil.server.component.StateComp.States;
 import unknow.kyhtanil.server.manager.LocalizedManager;
@@ -112,11 +112,10 @@ public class LogCharSystem extends IteratingSystem {
 		update.process(st);
 
 		// spawn the new pj in the world
-		PjInfo pjInfo = new PjInfo(p.x, p.y, m, perso.get(st));
-		s.channel.write(pjInfo);
+		PjInfo pjInfo = new PjInfo(p, m, perso.get(st));
+		s.channel.writeAndFlush(pjInfo);
 
 		locManager.track(st, Clients.RANGE, new SpawnListener(s.channel));
-		s.channel.flush();
 	}
 
 	private class SpawnListener implements AreaListener {

@@ -8,10 +8,10 @@ import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 import com.badlogic.gdx.utils.IntMap.Entry;
 
-import unknow.kyhtanil.common.component.StatPoint;
+import unknow.kyhtanil.common.component.Dirty;
+import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.server.component.Contribution;
 import unknow.kyhtanil.server.component.Contribution.D;
-import unknow.kyhtanil.server.component.Dirty;
 import unknow.kyhtanil.server.component.Spawned;
 import unknow.kyhtanil.server.component.Spawner;
 
@@ -24,7 +24,7 @@ public class SpawnedSystem extends IteratingSystem {
 	private ComponentMapper<Spawned> spawned;
 	private ComponentMapper<Spawner> spawner;
 	private ComponentMapper<Contribution> contrib;
-	private ComponentMapper<StatPoint> points;
+	private ComponentMapper<StatBase> base;
 	private ComponentMapper<Dirty> dirty;
 
 	/**
@@ -44,10 +44,8 @@ public class SpawnedSystem extends IteratingSystem {
 		// TODO give out reward
 		Contribution contribution = contrib.get(entityId);
 		for (Entry<D> e : contribution.contributions.entries()) {
-			StatPoint p = points.get(e.key);
-			if (p == null)
-				continue;
-			p.exp += 1; // TODO
+			StatBase p = base.get(e.key);
+			p.xp += 1; // TODO
 			dirty.get(e.key).add(p);
 		}
 	}

@@ -23,6 +23,7 @@ import unknow.kyhtanil.client.component.TargetComp;
 import unknow.kyhtanil.client.graphics.GameWindow;
 import unknow.kyhtanil.client.system.net.Connection;
 import unknow.kyhtanil.common.Stats;
+import unknow.kyhtanil.common.component.Dirty;
 import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatAgg;
@@ -47,16 +48,17 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 	private ComponentMapper<Velocity> velocity;
 	private ComponentMapper<Position> position;
 	private ComponentMapper<Sprite> sprite;
+	private ComponentMapper<Dirty> dirty;
 	private BaseUUIDManager manager;
 	private Connection connection;
 	private State state;
 
 	/** state */
-	private long lastSend = 0;
-	private float lastX;
-	private float lastY;
 	private double dirX = 0;
 	private double dirY = 0;
+	private float lastX;
+	private float lastY;
+	private float lastSpeed;
 
 	private Map<Keybind, Integer> skillBars = new HashMap<>();
 
@@ -139,7 +141,7 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 			uuid = manager.getUuid(t);
 			log.info("attaque {} {}", t, uuid);
 		}
-		connection.attack(state.uuid, skillId, uuid, vec.x, vec.y);
+		connection.attack(skillId, uuid, vec.x, vec.y);
 
 		return true;
 	}
@@ -204,23 +206,27 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 
 	@Override
 	protected void processSystem() {
-		Sprite s = sprite.get(state.entity);
-		Position p = position.get(state.entity);
-		Vector2 d = vp.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+		int e = state.entity;
+		Sprite s = sprite.get(e);
+		Position p = position.get(e);
+		Vector2 mouse = vp.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 		IntBag targets = target.getEntities();
 		if (!targets.isEmpty()) {
 			Position t = position.get(targets.get(0));
-			d.set(t.x, t.y);
+			mouse.set(t.x, t.y);
 		}
-		s.rotation = (float) Math.atan2(d.y - p.y, d.x - p.x);
+		s.rotation = (float) Math.atan2(mouse.y - p.y, mouse.x - p.x);
 
-		long now = System.currentTimeMillis();
-		if (now - lastSend > 250 && (lastX != p.x || lastY != p.y)) {
-			Velocity v = velocity.get(state.entity);
-			connection.update(state.uuid, p, v.direction);
+		Dirty d = dirty.get(e);
+		Velocity v = velocity.get(e);
+		if (lastSpeed != v.speed) {
+			d.add(v);
+			lastSpeed = v.speed;
+		}
+		if (lastX != p.x || lastY != p.y) {
+			d.add(p);
 			lastX = p.x;
 			lastY = p.y;
-			lastSend = now;
 		}
 	}
 }

@@ -30,7 +30,7 @@ import unknow.kyhtanil.server.system.net.CreateAccountSystem;
 import unknow.kyhtanil.server.system.net.CreateCharSystem;
 import unknow.kyhtanil.server.system.net.LogCharSystem;
 import unknow.kyhtanil.server.system.net.LoginSystem;
-import unknow.kyhtanil.server.system.net.MoveSystem;
+import unknow.kyhtanil.server.system.net.UpdateInfoSystem;
 import unknow.kyhtanil.server.system.net.Server;
 
 /**
@@ -68,7 +68,7 @@ public class GameWorld {
 		cfg.setSystem(new CreateAccountSystem());
 		cfg.setSystem(new LogCharSystem());
 		cfg.setSystem(new CreateCharSystem());
-		cfg.setSystem(new MoveSystem());
+		cfg.setSystem(new UpdateInfoSystem());
 		cfg.setSystem(new AttackSystem());
 
 		cfg.setSystem(new SpawnSystem());
@@ -85,7 +85,7 @@ public class GameWorld {
 		cfg.register(layout);
 
 		world = new World(cfg);
-		world.getSystem(Database.class).loadSpawner();
+		world.getSystem(Database.class).init();
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class GameWorld {
 		while (true) {
 			try {
 				long s = System.currentTimeMillis();
-				world.setDelta((s - start) / 1000f);
+				world.delta = (s - start) / 1000f;
 				world.process();
 				start = s;
 				Thread.sleep(1);

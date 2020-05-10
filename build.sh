@@ -3,25 +3,6 @@ shopt -s extglob
 
 cd $(dirname "$0")
 
-function update-dep
-	{
-	if [ -d "$1" ]
-	then
-		cd "$1" && git pull && cd .. || exit 1
-	else
-		git clone "https://github.com/Unknow0/$1" || exit 1
-	fi
-	cd "$1" && mvn install && cd ../ || exit 1
-	}
-
-mkdir -p deps
-cd deps
-for dep in scene-builder sync unknow-common
-do
-	update-dep "$dep"
-done
-cd ..
-
 git pull
 
 mvn clean package assembly:assembly || exit 1

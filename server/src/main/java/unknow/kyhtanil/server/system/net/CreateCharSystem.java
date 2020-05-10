@@ -13,9 +13,9 @@ import io.netty.channel.Channel;
 import unknow.kyhtanil.common.component.ErrorComp;
 import unknow.kyhtanil.common.component.account.CreateChar;
 import unknow.kyhtanil.common.component.account.LogResult;
-import unknow.kyhtanil.common.component.net.NetComp;
 import unknow.kyhtanil.common.pojo.CharDesc;
 import unknow.kyhtanil.server.Database;
+import unknow.kyhtanil.server.component.NetComp;
 import unknow.kyhtanil.server.component.StateComp;
 import unknow.kyhtanil.server.manager.UUIDManager;
 

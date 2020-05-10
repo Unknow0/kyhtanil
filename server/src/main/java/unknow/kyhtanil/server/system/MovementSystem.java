@@ -7,10 +7,10 @@ import com.artemis.ComponentMapper;
 import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
 
+import unknow.kyhtanil.common.component.Dirty;
 import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.Velocity;
 import unknow.kyhtanil.common.maps.MapLayout;
-import unknow.kyhtanil.server.component.Dirty;
 import unknow.kyhtanil.server.manager.LocalizedManager;
 
 /**
