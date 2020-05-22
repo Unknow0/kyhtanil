@@ -29,11 +29,9 @@
 								<includes>
 									<include>unknow.sync:sync-client</include>
 									<include>unknow.sync:sync-common</include>
-									<include>com.esotericsoftware:kryo</include>
-									<include>com.esotericsoftware:reflectasm</include>
+									<include>args4j:args4j</include>
+									<include>unknow.common:unknow-serialize</include>
 									<include>org.ow2.asm:asm</include>
-									<include>com.esotericsoftware:minlog</include>
-									<include>org.objenesis:objenesis</include>
 									<include>org.slf4j:slf4j-api</include>
 									<include>org.slf4j:slf4j-simple</include>
 								</includes>
@@ -42,10 +40,7 @@
 								<filter>
 									<artifact>*</artifact>
 									<excludes>
-										<exlude>META-INF/*SF</exlude>
-										<exclude>META-INF/*.DSA</exclude>
-										<exclude>META-INF/*.RSA</exclude>
-										<exclude>META-INF/maven/**</exclude>
+										<exlude>META-INF/**</exlude>
 									</excludes>
 								</filter>
 							</filters>

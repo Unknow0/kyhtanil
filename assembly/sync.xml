@@ -23,26 +23,8 @@
 				</dependencySets>
 			</binaries>
 		</moduleSet>
-		<moduleSet>
-			<includes>
-				<include>unknow.kyhtanil:kyhtanil-data</include>
-			</includes>
-			<binaries>
-				<includeDependencies>true</includeDependencies>
-				<outputDirectory>lib</outputDirectory>
-				<dependencySets>
-					<dependencySet>
-						<scope>provided</scope>
-					</dependencySet>
-				</dependencySets>
-			</binaries>
-		</moduleSet>
 	</moduleSets>
 	<fileSets>
-		<fileSet>
-			<outputDirectory>/</outputDirectory>
-			<directory>kyhtanil-data/target/sync/</directory>
-		</fileSet>
 		<fileSet>
 			<outputDirectory>kyhtanil/data</outputDirectory>
 			<directory>kyhtanil-data/data</directory>

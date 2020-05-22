@@ -12,21 +12,6 @@
 	<build>
 		<plugins>
 			<plugin>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/sync/</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.1</version>
@@ -97,11 +82,4 @@
 			</plugin-->
 		</plugins>
 	</build>
-	<dependencies>
-		<dependency>
-			<groupId>unknow.sync</groupId>
-			<artifactId>sync-server</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-	</dependencies>
 </project>
