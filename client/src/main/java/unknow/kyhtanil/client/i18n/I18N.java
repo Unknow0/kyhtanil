@@ -3,12 +3,11 @@
  */
 package unknow.kyhtanil.client.i18n;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.Locale;
 
-import com.badlogic.gdx.Gdx;
+import unknow.common.data.kvstore.StringIndex;
 
 /**
  * @author unknow
@@ -16,23 +15,27 @@ import com.badlogic.gdx.Gdx;
 public class I18N {
 	private static I18NParser parser = new I18NParser();
 
-	private Map<String, Source> sources = new HashMap<>();
+	private static StringIndex index;
 
-	private StringBuilder sb = new StringBuilder();
+	private static StringBuilder sb = new StringBuilder();
 
-	public I18N() throws IOException {
-		final Properties p = new Properties();
-		p.load(Gdx.files.internal("text.properties").reader());
-		sources.put("ui", p::getProperty);
+	private I18N() {
 	}
 
-	public String get(String key) {
-		int i = key.indexOf('/');
-		Source source = sources.get(key.substring(0, i));
-		return source == null ? null : source.get(key.substring(i + 1));
+	public static void load(Locale locale) throws IOException {
+		parser.setLocale(locale);
+		index = new StringIndex(new File("data", "text." + locale.getLanguage()));
 	}
 
-	public String format(String key, Object... arg) {
+	public static String get(String key) {
+		try {
+			return index.get(key);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static String format(String key, Object... arg) {
 		String string = get(key);
 		if (string == null)
 			return "";

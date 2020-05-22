@@ -34,6 +34,10 @@ public class I18NParser {
 
 	private Locale locale;
 
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
 	public MessageFormat parse(String input) {
 		int index = -1;
 		String type = null;

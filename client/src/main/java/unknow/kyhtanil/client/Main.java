@@ -2,6 +2,7 @@ package unknow.kyhtanil.client;
 
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Locale;
 
 import org.xml.sax.InputSource;
 
@@ -15,7 +16,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -61,7 +61,6 @@ public class Main implements ApplicationListener {
 	private final Viewport gameVp = new ExtendViewport(560, 368);
 	private final DynLayout dynLayout = new DynLayout(dynContext);
 	private Stage stage;
-	private I18N i18n;
 
 	private World world;
 
@@ -72,7 +71,7 @@ public class Main implements ApplicationListener {
 			TexManager.init();
 			Keybind.load();
 
-			i18n = new I18N();
+			I18N.load(Locale.ENGLISH);
 			stage = new Stage(new ScreenViewport());
 
 			BaseUUIDManager manager = new BaseUUIDManager();
@@ -81,8 +80,7 @@ public class Main implements ApplicationListener {
 			dynContext.put("main", this);
 			dynContext.put("co", co);
 			dynContext.put("state", State.state);
-			dynContext.put("i18n", i18n);
-			for (Class<?> c : Arrays.asList(Color.class, Stats.class, Align.class, Screen.class, StatBase.class, StatShared.class, GameWindow.class))
+			for (Class<?> c : Arrays.asList(I18N.class, Color.class, Stats.class, Align.class, Screen.class, StatBase.class, StatShared.class, GameWindow.class))
 				dynContext.putClass(c);
 			dynContext.addValue(StatSelector.class, new Attr[] { new Attr("value", "setValue"), new Attr("min", "setMin"), new Attr("max", "setMax") });
 
@@ -152,19 +150,23 @@ public class Main implements ApplicationListener {
 		if (info == null) {
 			return;
 		}
-		switch (code) {
-			case INVALID_LOGIN:
-				info.setText(i18n.get("error_invalid_login"));
-				break;
-			case ALREADY_LOGGED:
-				info.setText(i18n.get("error_already_logged"));
-				break;
-			case NAME_ALREADY_USED:
-				info.setText(i18n.get("error_name_already_used"));
-				break;
-			case UNKNOWN_ERROR:
-			default:
-				info.setText(i18n.get("error_unknown"));
+		try {
+			switch (code) {
+				case INVALID_LOGIN:
+					info.setText(I18N.get("error_invalid_login"));
+					break;
+				case ALREADY_LOGGED:
+					info.setText(I18N.get("error_already_logged"));
+					break;
+				case NAME_ALREADY_USED:
+					info.setText(I18N.get("error_name_already_used"));
+					break;
+				case UNKNOWN_ERROR:
+				default:
+					info.setText(I18N.get("error_unknown"));
+			}
+		} catch (Exception e) {
+			error(e);
 		}
 	}
 

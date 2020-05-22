@@ -7,7 +7,7 @@
 		</row>
 		<row>
 			<cell>
-				<label text="i18n.get('ui/field_name')" />
+				<label text="I18N.get('field_name')" />
 			</cell>
 			<cell>
 				<input id="name" />
@@ -15,10 +15,10 @@
 		</row>
 		<row>
 			<cell expandX="">
-				<button text="i18n.get('ui/dialog_cancel')" onchange="main.show(Screen.CHARSELECT)" />
+				<button text="I18N.get('dialog_cancel')" onchange="main.show(Screen.CHARSELECT)" />
 			</cell>
 			<cell expandX="">
-				<button text="i18n.get('ui/dialog_create')" onchange="co.createChar($name.getText())" />
+				<button text="I18N.get('dialog_create')" onchange="co.createChar($name.getText())" />
 			</cell>
 		</row>
 	</table>

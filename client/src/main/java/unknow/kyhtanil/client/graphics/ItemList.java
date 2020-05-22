@@ -10,6 +10,7 @@ import java.util.Iterator;
 import com.kotcrab.vis.ui.widget.VisLabel;
 
 import unknow.common.data.IntIterator;
+import unknow.kyhtanil.client.i18n.I18N;
 import unknow.kyhtanil.client.system.State;
 import unknow.kyhtanil.common.component.Inventory;
 
@@ -30,13 +31,13 @@ public class ItemList extends CustomList<VisLabel> {
 		while (it.hasNext()) {
 			int n = it.nextInt();
 			if (n != i) {
-				list.add(new VisLabel("Id: " + i + " (" + c + ")"));
+				list.add(new VisLabel("Id: " + I18N.get("item_name_" + i) + " (" + c + ")"));
 				c = 0;
 				i = n;
 			}
 			c++;
 		}
-		list.add(new VisLabel("Id: " + i + " (" + c + ")"));
+		list.add(new VisLabel("Id: " + I18N.get("item_name_" + i) + " (" + c + ")"));
 		return list.iterator();
 	}
 }

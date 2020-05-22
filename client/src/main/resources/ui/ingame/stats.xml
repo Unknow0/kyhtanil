@@ -58,7 +58,7 @@
 		</row>
 		<row>
 			<cell>
-				<label text="i18n.get('ui/stat_strength')" />
+				<label text="I18N.get('stat_strength')" />
 			</cell>
 			<cell>
 				<actor class="unknow.kyhtanil.client.graphics.StatSelector" min="$sb.strength" max="StatBase.max($l, a.getValue(), $xp)" init="$input.strength=a; a.setValue($sb.strength)" onchange="$xp-=StatBase.costdiff($l, $l+e.current-e.old); $l+=e.current-e.old; $root.invalidate()" />
@@ -66,7 +66,7 @@
 		</row>
 		<row>
 			<cell>
-				<label text="i18n.get('ui/stat_constitution')" />
+				<label text="I18N.get('stat_constitution')" />
 			</cell>
 			<cell>
 				<actor class="unknow.kyhtanil.client.graphics.StatSelector" min="$sb.constitution" max="StatBase.max($l, a.getValue(), $xp)" init="$input.constitution=a; a.setValue($sb.constitution)" onchange="$xp-=StatBase.costdiff($l, $l+e.current-e.old); $l+=e.current-e.old; $root.invalidate()" />
@@ -74,7 +74,7 @@
 		</row>
 		<row>
 			<cell>
-				<label text="i18n.get('ui/stat_intelligence')" />
+				<label text="I18N.get('stat_intelligence')" />
 			</cell>
 			<cell>
 				<actor class="unknow.kyhtanil.client.graphics.StatSelector" min="$sb.intelligence" max="StatBase.max($l, a.getValue(), $xp)" init="$input.intelligence=a; a.setValue($sb.intelligence)" onchange="$xp-=StatBase.costdiff($l, $l+e.current-e.old); $l+=e.current-e.old; $root.invalidate()" />
@@ -82,7 +82,7 @@
 		</row>
 		<row>
 			<cell>
-				<label text="i18n.get('ui/stat_concentration')" />
+				<label text="I18N.get('stat_concentration')" />
 			</cell>
 			<cell>
 				<actor class="unknow.kyhtanil.client.graphics.StatSelector" min="$sb.concentration" max="StatBase.max($l, a.getValue(), $xp)" init="$input.concentration=a; a.setValue($sb.concentration)" onchange="$xp-=StatBase.costdiff($l, $l+e.current-e.old); $l+=e.current-e.old; $root.invalidate()" />
@@ -90,7 +90,7 @@
 		</row>
 		<row>
 			<cell>
-				<label text="i18n.get('ui/stat_dexterity')" />
+				<label text="I18N.get('stat_dexterity')" />
 			</cell>
 			<cell>
 				<actor class="unknow.kyhtanil.client.graphics.StatSelector" min="$sb.dexterity" max="StatBase.max($l, a.getValue(), $xp)" init="$input.dexterity=a; a.setValue($sb.dexterity)" onchange="$xp-=StatBase.costdiff($l, $l+e.current-e.old); $l+=e.current-e.old; $root.invalidate()" />
@@ -98,10 +98,10 @@
 		</row>
 		<row>
 			<cell expandX="">
-				<button text="i18n.get('ui/dialog_cancel')" onchange="$xp=$sb.xp; $l=$sb.level; for(var s in $input) { $input[s].setValue($sb[s])}; GameWindow.STATS.close()" />
+				<button text="I18N.get('dialog_cancel')" onchange="$xp=$sb.xp; $l=$sb.level; for(var s in $input) { $input[s].setValue($sb[s])}; GameWindow.STATS.close()" />
 			</cell>
 			<cell expandX="">
-				<button text="'Apply'" onchange="$sb.level=$l; $sb.xp=$xp; for(var s in $input) { $sb[s]=$input[s].getValue()}; state.dirty($sb);" />
+				<button text="'Apply'" onchange="$sb.level=$l; $sb.xp=$xp; for(var s in $input) { $sb[s]=$input[s].getValue()}; state.dirty($sb);$root.invalidate()" />
 			</cell>
 		</row>
 	</table>

@@ -43,7 +43,7 @@
 			<plugin>
 				<groupId>unknow.common</groupId>
 				<artifactId>unknow-maven-plugin</artifactId>
-				<version>1.0.0</version>
+				<version>1.0.1</version>
 				<executions>
 					<execution>
 						<goals>
@@ -51,9 +51,9 @@
 						</goals>
 						<phase>generate-resources</phase>
 						<configuration>
-							<output>${project.basedir}/data/text.eng</output>
+							<output>${project.basedir}/data/text.en</output>
 							<input>
-								<directory>src/main/resource/eng/</directory>
+								<directory>${project.basedir}/src/main/resources/en</directory>
 								<includes>
 									<include>*.properties</include>
 								</includes>
