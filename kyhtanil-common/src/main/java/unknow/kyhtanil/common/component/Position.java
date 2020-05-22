@@ -1,11 +1,13 @@
 package unknow.kyhtanil.common.component;
 
+import com.artemis.PooledComponent;
+
 /**
  * the position
  * 
  * @author unknow
  */
-public class Position extends Setable<Position> {
+public class Position extends PooledComponent implements Setable<Position> {
 	/** the x position */
 	public float x;
 	/** the y position */
@@ -57,9 +59,14 @@ public class Position extends Setable<Position> {
 	}
 
 	@Override
-	public void set(Position p) {
-		this.x = p.x;
-		this.y = p.y;
+	public Class<Position> component() {
+		return Position.class;
+	}
+
+	@Override
+	public void setTo(Position p) {
+		p.x = this.x;
+		p.y = this.y;
 	}
 
 	@Override

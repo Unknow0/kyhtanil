@@ -129,6 +129,10 @@ public class InputSystem extends BaseSystem implements InputProcessor {
 			GameWindow.STATS.toggle();
 			return true;
 		}
+		if (keybind == Keybind.INVENTORY) {
+			GameWindow.INVENTORY.toggle();
+			return true;
+		}
 		Integer skillId = skillBars.get(keybind);
 		if (skillId == null)
 			return false;

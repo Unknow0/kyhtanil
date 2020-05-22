@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.artemis.Aspect;
-import com.artemis.Component;
 import com.artemis.ComponentMapper;
 import com.artemis.annotations.Wire;
 import com.artemis.systems.IteratingSystem;
@@ -16,6 +15,7 @@ import unknow.kyhtanil.common.Stats;
 import unknow.kyhtanil.common.component.Dirty;
 import unknow.kyhtanil.common.component.ErrorComp;
 import unknow.kyhtanil.common.component.Position;
+import unknow.kyhtanil.common.component.Setable;
 import unknow.kyhtanil.common.component.StatAgg;
 import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.Velocity;
@@ -71,7 +71,7 @@ public class UpdateInfoSystem extends IteratingSystem {
 		Dirty d = dirty.get(e);
 
 		// TODO validate if from client else apply
-		for (Component c : u.c) {
+		for (Setable<?> c : u.c) {
 			if (c instanceof Position)
 				update(chan, d, e, (Position) c);
 			else if (c instanceof Velocity)
@@ -98,7 +98,7 @@ public class UpdateInfoSystem extends IteratingSystem {
 		}
 		if (p.x != newPos.x || p.y != newPos.y)
 			d.add(p);
-		p.set(newPos);
+		newPos.setTo(p);
 		locManager.changed(e);
 	}
 
@@ -106,7 +106,7 @@ public class UpdateInfoSystem extends IteratingSystem {
 		Velocity v = velocity.get(e);
 		if (v.direction != newV.direction)
 			d.add(v);
-		v.set(newV);
+		newV.setTo(v);
 	}
 
 	private void update(Dirty d, int e, StatBase newBase) {
@@ -116,14 +116,14 @@ public class UpdateInfoSystem extends IteratingSystem {
 			d.add(b); // revert change
 			return;
 		}
-		int l = b.level + b.strength - newBase.strength + b.constitution - newBase.constitution + b.intelligence - newBase.intelligence + b.concentration - newBase.concentration + b.dexterity - newBase.dexterity;
+		int l = b.level + newBase.strength - b.strength + newBase.constitution - b.constitution + newBase.intelligence - b.intelligence + newBase.concentration - b.concentration + newBase.dexterity - b.dexterity;
 		int xp = b.xp - StatBase.costdiff(b.level, l);
 		// wrong xp value
 		if (xp < 0) {
 			d.add(b);
 			return;
 		}
-		b.set(newBase);
+		newBase.setTo(b);
 		b.level = l;
 		b.xp = xp;
 		if (newBase.level != l || newBase.xp != xp)

@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import com.artemis.Component;
 
+import unknow.kyhtanil.common.component.Setable;
 import unknow.kyhtanil.common.pojo.UUID;
 
 /**
@@ -15,7 +16,7 @@ public class UpdateInfo extends Component {
 	/** the uuid to update */
 	public UUID uuid = null;
 	/** the component t update */
-	public Component[] c;
+	public Setable<?>[] c;
 
 	/**
 	 * create new UpdateInfo
@@ -29,7 +30,7 @@ public class UpdateInfo extends Component {
 	 * @param uuid
 	 * @param c
 	 */
-	public UpdateInfo(UUID uuid, Component... c) {
+	public UpdateInfo(UUID uuid, Setable<?>... c) {
 		this.uuid = uuid;
 		this.c = c;
 	}

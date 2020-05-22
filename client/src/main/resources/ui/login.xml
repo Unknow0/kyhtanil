@@ -7,7 +7,7 @@
 		</row>
 		<row>
 			<cell>
-				<label text="'Login'" />
+				<label text="i18n.get('ui/field_login')" />
 			</cell>
 			<cell>
 				<input id="login" />
@@ -15,7 +15,7 @@
 		</row>
 		<row>
 			<cell>
-				<label text="'Pass'" />
+				<label text="i18n.get('ui/field_password')" />
 			</cell>
 			<cell>
 				<input id="pass" password="true" />
@@ -26,10 +26,10 @@
 				<table>
 					<row>
 						<cell expandX="">
-							<button text="i18n.get('dialog_create')" onchange="main.show(Screen.ACCOUNTCREATE)" />
+							<button text="i18n.get('ui/dialog_create')" onchange="main.show(Screen.ACCOUNTCREATE)" />
 						</cell>
 						<cell expandX="">
-							<button id="l" text="i18n.get('dialog_login')" onchange="co.login($login.getText(), $pass.getText());" />
+							<button id="l" text="i18n.get('ui/dialog_login')" onchange="co.login($login.getText(), $pass.getText());" />
 						</cell>
 					</row>
 				</table>

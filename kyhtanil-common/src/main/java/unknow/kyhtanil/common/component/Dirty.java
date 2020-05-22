@@ -3,7 +3,6 @@ package unknow.kyhtanil.common.component;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import com.artemis.Component;
 import com.artemis.PooledComponent;
 
 import unknow.kyhtanil.common.component.net.UpdateInfo;
@@ -48,7 +47,7 @@ public class Dirty extends PooledComponent {
 		}
 		if (len == 0)
 			return null;
-		Component[] t = new Component[len];
+		Setable<?>[] t = new Setable[len];
 		len = 0;
 		loop: for (Setable<?> c : map.values()) {
 			for (int i = 0; i < elen; i++) {

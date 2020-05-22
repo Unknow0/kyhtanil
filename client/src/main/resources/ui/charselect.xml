@@ -9,10 +9,10 @@
 		</row>
 		<row>
 			<cell expandX="">
-				<button text="i18n.get('dialog_create')" onchange="main.show(Screen.CHARCREATE)" />
+				<button text="i18n.get('ui/dialog_create')" onchange="main.show(Screen.CHARCREATE)" />
 			</cell>
 			<cell expandX="">
-				<button text="i18n.get('dialog_login')" disabled="state.chars==null" onchange="co.logChar($list.selected())" />
+				<button text="i18n.get('ui/dialog_login')" disabled="state.chars==null" onchange="co.logChar($list.selected())" />
 			</cell>
 		</row>
 	</table>

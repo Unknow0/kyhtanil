@@ -115,11 +115,13 @@ public class AttackSystem extends IteratingSystem {
 			addProj(self, r, 25, 5, "skills/fire", t -> {
 				Position p2 = position.get(t);
 
-				IntBag intBag = locManager.get(p2.x, p2.y, 50, null);
+				StatAgg s = stat.get(self);
+				int fire = 5 + (int) (s.get(Stats.STAT_INTELLIGENCE) * .5);
+				IntBag intBag = locManager.get(p2.x, p2.y, 50, e -> mobInfo.has(e));
 				for (int i = 0; i < intBag.size(); i++) {
 					t = intBag.get(i);
 					if (t != self)
-						addDamage(self, 0, 0, 0, 0, 5, 0, 0, t);
+						addDamage(self, 0, 0, 0, 0, fire, 0, 0, t);
 				}
 			});
 		});
@@ -171,7 +173,7 @@ public class AttackSystem extends IteratingSystem {
 
 	private void addProj(int source, float dir, float speed, float ttl, String tex, IntConsumer onHit) {
 		final int e = world.create(arch.proj);
-		position.get(e).set(position.get(source));
+		position.get(source).setTo(position.get(e));
 		Velocity v = velocity.get(e);
 		v.direction = dir;
 		v.speed = speed;

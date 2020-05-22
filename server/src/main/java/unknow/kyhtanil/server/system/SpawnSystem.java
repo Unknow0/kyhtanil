@@ -53,9 +53,11 @@ public class SpawnSystem extends IteratingSystem {
 			s.time = 0;
 			s.count++;
 			int m = world.create(arch.managerMob);
-			spawned.get(m).spawner = e;
 
 			Mob mob = database.getMob(IdRate.gen(s.mobs));
+			Spawned spa = spawned.get(m);
+			spa.spawner = e;
+			spa.mob = mob;
 
 			Position p = position.get(m);
 			p.x = (float) (s.x + Math.random() * s.r * 2 - s.r);

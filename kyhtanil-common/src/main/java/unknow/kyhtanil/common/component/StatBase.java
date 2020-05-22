@@ -1,9 +1,11 @@
 package unknow.kyhtanil.common.component;
 
+import com.artemis.PooledComponent;
+
 /**
  * base stats (without modifier)
  */
-public class StatBase extends Setable<StatBase> {
+public class StatBase extends PooledComponent implements Setable<StatBase> {
 	/** the strength */
 	public int strength;
 	/** the constitution */
@@ -25,13 +27,19 @@ public class StatBase extends Setable<StatBase> {
 	}
 
 	@Override
-	public void set(StatBase t) {
-		strength = t.strength;
-		constitution = t.constitution;
-		intelligence = t.intelligence;
-		concentration = t.concentration;
-		dexterity = t.dexterity;
-		xp = t.xp;
+	public Class<StatBase> component() {
+		return StatBase.class;
+	}
+
+	@Override
+	public void setTo(StatBase t) {
+		t.strength = strength;
+		t.constitution = constitution;
+		t.intelligence = intelligence;
+		t.concentration = concentration;
+		t.dexterity = dexterity;
+		t.xp = xp;
+		t.level = level;
 	}
 
 	/**
@@ -78,6 +86,6 @@ public class StatBase extends Setable<StatBase> {
 
 	@Override
 	public String toString() {
-		return "StatBase [strength=" + strength + ", constitution=" + constitution + ", intelligence=" + intelligence + ", concentration=" + concentration + ", dexterity=" + dexterity + ", xp=" + xp + "]";
+		return "StatBase [strength=" + strength + ", constitution=" + constitution + ", intelligence=" + intelligence + ", concentration=" + concentration + ", dexterity=" + dexterity + ", level=" + level + ", xp=" + xp + "]";
 	}
 }

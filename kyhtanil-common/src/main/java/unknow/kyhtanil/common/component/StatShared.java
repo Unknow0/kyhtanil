@@ -1,11 +1,13 @@
 package unknow.kyhtanil.common.component;
 
+import com.artemis.PooledComponent;
+
 /**
  * Stat off all visible entity
  * 
  * @author unknow
  */
-public class StatShared extends Setable<StatShared> {
+public class StatShared extends PooledComponent implements Setable<StatShared> {
 	/** name of the entity */
 	public String name;
 	/** the current hp */
@@ -29,7 +31,7 @@ public class StatShared extends Setable<StatShared> {
 	 * @param m
 	 */
 	public StatShared(StatShared m) {
-		set(m);
+		m.setTo(this);
 	}
 
 	@Override
@@ -40,12 +42,17 @@ public class StatShared extends Setable<StatShared> {
 	}
 
 	@Override
-	public void set(StatShared m) {
-		this.name = m.name;
-		this.hp = m.hp;
-		this.maxHp = m.maxHp;
-		this.mp = m.mp;
-		this.maxMp = m.maxMp;
+	public Class<StatShared> component() {
+		return StatShared.class;
+	}
+
+	@Override
+	public void setTo(StatShared m) {
+		m.name = this.name;
+		m.hp = this.hp;
+		m.maxHp = this.maxHp;
+		m.mp = this.mp;
+		m.maxMp = this.maxMp;
 	}
 
 	@Override

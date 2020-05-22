@@ -46,9 +46,9 @@ public class SpawnSystem extends IteratingSystem {
 		int mob = world.create(arch.all);
 		manager.setUuid(mob, s.uuid);
 		if (s.m != null)
-			info.get(mob).set(s.m);
-		position.get(mob).set(s.p);
-		velocity.get(mob).set(s.v);
+			s.m.setTo(info.get(mob));
+		s.p.setTo(position.get(mob));
+		s.v.setTo(velocity.get(mob));
 		sprite.get(mob).set(s.sprite);
 	}
 }

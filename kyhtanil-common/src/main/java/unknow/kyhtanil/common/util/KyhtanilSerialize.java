@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import unknow.kyhtanil.common.component.ErrorComp;
+import unknow.kyhtanil.common.component.Inventory;
 import unknow.kyhtanil.common.component.StatAgg;
 import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatShared;
@@ -17,7 +18,6 @@ import unknow.kyhtanil.common.component.account.PjInfo;
 import unknow.kyhtanil.common.component.net.Attack;
 import unknow.kyhtanil.common.component.net.DamageReport;
 import unknow.kyhtanil.common.component.net.Despawn;
-import unknow.kyhtanil.common.component.net.Move;
 import unknow.kyhtanil.common.component.net.Spawn;
 import unknow.kyhtanil.common.component.net.UpdateInfo;
 import unknow.serialize.binary.BinaryFormat;
@@ -41,13 +41,13 @@ public class KyhtanilSerialize {
 		create.register(PjInfo.class);
 		create.register(Spawn.class);
 		create.register(Despawn.class);
-		create.register(Move.class);
 		create.register(UpdateInfo.class);
 		create.register(Attack.class);
 		create.register(DamageReport.class);
 		create.register(StatBase.class);
 		create.register(StatShared.class);
 		create.register(StatAgg.class);
+		create.register(Inventory.Add.class);
 
 		try {
 			format = create.build();

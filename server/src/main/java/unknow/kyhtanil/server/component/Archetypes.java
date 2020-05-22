@@ -5,6 +5,7 @@ import com.artemis.ArchetypeBuilder;
 import com.artemis.BaseSystem;
 
 import unknow.kyhtanil.common.component.Dirty;
+import unknow.kyhtanil.common.component.Inventory;
 import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatAgg;
@@ -47,7 +48,7 @@ public class Archetypes extends BaseSystem {
 		mob = builder.build(world);
 		managerMob = new ArchetypeBuilder(mob).add(Spawned.class, Contribution.class).build(world);
 
-		builder.add(StateComp.class);
+		builder.add(StateComp.class, Inventory.class);
 		pj = builder.build(world);
 
 		builder = new ArchetypeBuilder();

@@ -18,7 +18,9 @@ import unknow.scene.builder.DynLayout;
  */
 public enum GameWindow {
 	/** the stats window */
-	STATS("Stats", "ui/ingame/stats.xml");
+	STATS("Stats", "ui/ingame/stats.xml"),
+	/** the inventory window */
+	INVENTORY("Inventory", "ui/ingame/inventory.xml");
 
 	private static DynLayout ROOT;
 
@@ -30,7 +32,7 @@ public enum GameWindow {
 	public static void init(DynLayout root) {
 		ROOT = root;
 		for (GameWindow w : values()) {
-			DynLayout dynLayout = new Internal();
+			DynLayout dynLayout = new DynLayout(Main.dynContext);
 			try (InputStream is = Gdx.files.internal(w.layout).read()) {
 				dynLayout.load(new InputSource(is));
 			} catch (Exception e) {
@@ -49,17 +51,17 @@ public enum GameWindow {
 		internal = new VisWindow(title);
 	}
 
-	private static class Internal extends DynLayout {
-		public Internal() {
-			super(Main.dynContext);
-		}
-
-		@Override
-		public void draw(Batch batch, float parentAlpha) {
-			layout();
-			super.draw(batch, parentAlpha);
-		}
-	}
+//	private static class Internal extends DynLayout {
+//		public Internal() {
+//			super(Main.dynContext);
+//		}
+//
+//		@Override
+//		public void draw(Batch batch, float parentAlpha) {
+//			layout();
+//			super.draw(batch, parentAlpha);
+//		}
+//	}
 
 	/**
 	 * close this window

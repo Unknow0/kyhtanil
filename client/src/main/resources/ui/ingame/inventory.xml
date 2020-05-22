@@ -1,0 +1,19 @@
+<layout id="root" xmlns="dynLayout" init="$ss=state.shared(); $sb=state.base(); $xp=$sb.xp; $l=$sb.level; $input={};">
+	<table fillParent="true">
+		<row>
+			<cell>
+				<label text="'TODO equipement'" />
+			</cell>
+		</row>
+		<row>
+			<cell padTop="10" padBottom="10" padRight="$root.getWidth()*.1" padLeft="$root.getWidth()*.1" fillX="true" expandX="true">
+				<actor class="com.kotcrab.vis.ui.widget.Separator" />
+			</cell>
+		</row>
+		<row>
+			<cell>
+				<table class="unknow.kyhtanil.client.graphics.ItemList" />
+			</cell>
+		</row>
+	</table>
+</layout>

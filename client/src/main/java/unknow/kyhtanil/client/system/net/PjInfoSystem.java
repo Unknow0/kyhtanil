@@ -8,6 +8,7 @@ import unknow.kyhtanil.client.Main;
 import unknow.kyhtanil.client.Main.Screen;
 import unknow.kyhtanil.client.component.Archetypes;
 import unknow.kyhtanil.client.system.State;
+import unknow.kyhtanil.common.component.Inventory;
 import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatBase;
@@ -32,6 +33,7 @@ public class PjInfoSystem extends IteratingSystem {
 	private ComponentMapper<Sprite> sprite;
 	private ComponentMapper<StatShared> info;
 	private ComponentMapper<StatBase> perso;
+	private ComponentMapper<Inventory> inventory;
 	private Archetypes arch;
 
 	/**
@@ -56,14 +58,16 @@ public class PjInfoSystem extends IteratingSystem {
 		Velocity v = velocity.get(e);
 		v.speed = 0f;
 
-		position.get(e).set(pj.p);
+		pj.p.setTo(position.get(e));
 
 		Sprite s = sprite.get(e);
 		s.tex = "char";
 		s.w = s.h = 16;
 
-		info.get(e).set(pj.stats);
-		perso.get(e).set(pj.perso);
+		pj.stats.setTo(info.get(e));
+		pj.perso.setTo(perso.get(e));
+
+		pj.inventory.setTo(inventory.get(e));
 
 		main.show(Screen.GAME);
 	}

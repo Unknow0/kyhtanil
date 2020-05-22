@@ -1,11 +1,13 @@
 package unknow.kyhtanil.common.component;
 
+import com.artemis.PooledComponent;
+
 /**
  * Component for something that can move
  * 
  * @author unknow
  */
-public class Velocity extends Setable<Velocity> {
+public class Velocity extends PooledComponent implements Setable<Velocity> {
 	/** the direction in radiant */
 	public float direction;
 	/** the speed */
@@ -33,9 +35,14 @@ public class Velocity extends Setable<Velocity> {
 	}
 
 	@Override
-	public void set(Velocity v) {
-		this.direction = v.direction;
-		this.speed = v.speed;
+	public Class<Velocity> component() {
+		return Velocity.class;
+	}
+
+	@Override
+	public void setTo(Velocity m) {
+		m.direction = this.direction;
+		m.speed = this.speed;
 	}
 
 	@Override

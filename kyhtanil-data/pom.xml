@@ -55,6 +55,28 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>unknow.common</groupId>
+				<artifactId>unknow-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>kvstore-create</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<output>${project.basedir}/data/text.eng</output>
+							<input>
+								<directory>src/main/resource/eng/</directory>
+								<includes>
+									<include>*.properties</include>
+								</includes>
+							</input>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<!--plugin>
 				<groupId>unknow.common</groupId>
 				<artifactId>unknow-plugin</artifactId>

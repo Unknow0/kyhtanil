@@ -5,6 +5,7 @@ import com.artemis.ComponentMapper;
 import com.artemis.annotations.SkipWire;
 
 import unknow.kyhtanil.common.component.Dirty;
+import unknow.kyhtanil.common.component.Inventory;
 import unknow.kyhtanil.common.component.Setable;
 import unknow.kyhtanil.common.component.StatBase;
 import unknow.kyhtanil.common.component.StatShared;
@@ -23,6 +24,7 @@ public class State extends BaseSystem {
 
 	private ComponentMapper<StatShared> shared;
 	private ComponentMapper<StatBase> base;
+	private ComponentMapper<Inventory> inventory;
 	private ComponentMapper<Dirty> dirty;
 
 	/** the list of characters */
@@ -49,6 +51,13 @@ public class State extends BaseSystem {
 	 */
 	public StatShared shared() {
 		return shared.get(entity);
+	}
+
+	/**
+	 * @return the inventory
+	 */
+	public Inventory inventory() {
+		return inventory.get(entity);
 	}
 
 	/**

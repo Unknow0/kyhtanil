@@ -5,7 +5,10 @@ cd $(dirname "$0")
 
 git pull
 
-mvn clean package assembly:assembly || exit 1
+mvn clean package assembly:assembly \
+       javadoc:aggregate -Dquiet=true -DjavadocExecutable=/usr/lib/jvm/java-1.8.0-openjdk-amd64/bin/javadoc -Dshow=private -Dlinks= \
+       || exit 1
+
 
 docker build -t kyhtanil/server -f Dockerfile.server target || exit 1
 docker build -t kyhtanil/sync -f Dockerfile.sync target || exit 2

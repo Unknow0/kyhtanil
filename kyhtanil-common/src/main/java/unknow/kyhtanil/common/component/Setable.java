@@ -1,7 +1,6 @@
 package unknow.kyhtanil.common.component;
 
 import com.artemis.Component;
-import com.artemis.PooledComponent;
 
 /**
  * a component to copy
@@ -9,11 +8,19 @@ import com.artemis.PooledComponent;
  * @author unknow
  * @param <T> the Setable type
  */
-public abstract class Setable<T extends Component> extends PooledComponent {
+public interface Setable<T extends Component> {
+
 	/**
-	 * set the value from another component
+	 * the component to set
 	 * 
-	 * @param t
+	 * @return the settable class
 	 */
-	public abstract void set(T t);
+	Class<T> component();
+
+	/**
+	 * set the value to another component
+	 * 
+	 * @param t the component to set value
+	 */
+	void setTo(T t);
 }

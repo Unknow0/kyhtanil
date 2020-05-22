@@ -61,6 +61,11 @@ public class UpdateStatSystem extends IteratingSystem {
 		info.maxHp = calc.get(Stats.HP_MAX);
 		info.maxMp = calc.get(Stats.MP_MAX);
 
+		if (oldMaxHp > 0)
+			info.hp = (int) (1. * info.hp * info.maxHp / oldMaxHp);
+		if (oldMaxMp > 0)
+			info.mp = (int) (1. * info.mp * info.maxMp / oldMaxMp);
+
 		// TODO add partial value
 		info.hp += calc.get(Stats.HP_REGEN);
 		info.mp += calc.get(Stats.MP_REGEN);

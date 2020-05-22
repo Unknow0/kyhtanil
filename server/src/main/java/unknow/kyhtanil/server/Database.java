@@ -260,6 +260,9 @@ public class Database extends BaseSystem {
 					b.intelligence = rs.getInt("intelligence");
 					b.dexterity = rs.getInt("dexterity");
 					b.xp = 50;
+					b.level = 0;
+
+					// TODO load inventory
 
 					return true;
 				}, account, id);

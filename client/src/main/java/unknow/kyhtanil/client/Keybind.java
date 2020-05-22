@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.IntMap;
 @SuppressWarnings("javadoc")
 public enum Keybind {
 	// move
-	UP, DOWN, LEFT, RIGHT, SHOW_STAT,
+	UP, DOWN, LEFT, RIGHT, SHOW_STAT, INVENTORY,
 
 	BAR_1, BAR_2, BAR_3, BAR_4, BAR_5, BAR_6, BAR_7, BAR_8, BAR_9;
 
@@ -25,6 +25,7 @@ public enum Keybind {
 		bind.put(Input.Keys.D, RIGHT);
 
 		bind.put(Input.Keys.C, SHOW_STAT);
+		bind.put(Input.Keys.I, INVENTORY);
 
 		bind.put(Input.Keys.NUM_1, BAR_1);
 		bind.put(Input.Keys.NUM_2, BAR_2);

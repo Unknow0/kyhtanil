@@ -41,9 +41,9 @@ public class UpdateInfoSystem extends IteratingSystem {
 		int e = manager.getEntity(u.uuid);
 		log.info("=> {} / {}", e, state.entity);
 
-		for (Component c : u.c) {
-			ComponentMapper<? extends Component> m = world.getMapper(c.getClass());
-			((Setable<Component>) m.get(e)).set(c);
+		for (@SuppressWarnings("rawtypes") Setable s : u.c) {
+			ComponentMapper<? extends Component> m = world.getMapper(s.component());
+			s.setTo(m.get(e));
 		}
 	}
 }

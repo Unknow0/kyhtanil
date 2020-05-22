@@ -9,6 +9,7 @@ import com.artemis.systems.IteratingSystem;
 
 import io.netty.channel.Channel;
 import unknow.kyhtanil.common.component.ErrorComp;
+import unknow.kyhtanil.common.component.Inventory;
 import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatBase;
@@ -49,6 +50,7 @@ public class LogCharSystem extends IteratingSystem {
 	private ComponentMapper<Velocity> velocity;
 	private ComponentMapper<StatShared> stats;
 	private ComponentMapper<StatBase> perso;
+	private ComponentMapper<Inventory> inventory;
 
 	private UpdateStatSystem update;
 
@@ -112,7 +114,11 @@ public class LogCharSystem extends IteratingSystem {
 		update.process(st);
 
 		// spawn the new pj in the world
-		PjInfo pjInfo = new PjInfo(p, m, perso.get(st));
+		Inventory i = inventory.get(st);
+		Inventory.Add add = new Inventory.Add();
+		add.addAll(i.items);
+
+		PjInfo pjInfo = new PjInfo(p, m, perso.get(st), add);
 		s.channel.writeAndFlush(pjInfo);
 
 		locManager.track(st, Clients.RANGE, new SpawnListener(s.channel));

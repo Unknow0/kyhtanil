@@ -25,6 +25,7 @@ import com.kotcrab.vis.ui.widget.VisLabel;
 import unknow.kyhtanil.client.component.Archetypes;
 import unknow.kyhtanil.client.graphics.GameWindow;
 import unknow.kyhtanil.client.graphics.StatSelector;
+import unknow.kyhtanil.client.i18n.I18N;
 import unknow.kyhtanil.client.system.DirtySystem;
 import unknow.kyhtanil.client.system.InputSystem;
 import unknow.kyhtanil.client.system.MovementSystem;
@@ -60,7 +61,7 @@ public class Main implements ApplicationListener {
 	private final Viewport gameVp = new ExtendViewport(560, 368);
 	private final DynLayout dynLayout = new DynLayout(dynContext);
 	private Stage stage;
-	private I18NBundle i18n;
+	private I18N i18n;
 
 	private World world;
 
@@ -71,7 +72,7 @@ public class Main implements ApplicationListener {
 			TexManager.init();
 			Keybind.load();
 
-			i18n = I18NBundle.createBundle(Gdx.files.internal("text"));
+			i18n = new I18N();
 			stage = new Stage(new ScreenViewport());
 
 			BaseUUIDManager manager = new BaseUUIDManager();
