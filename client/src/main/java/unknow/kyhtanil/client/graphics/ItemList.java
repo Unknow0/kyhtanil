@@ -31,13 +31,13 @@ public class ItemList extends CustomList<VisLabel> {
 		while (it.hasNext()) {
 			int n = it.nextInt();
 			if (n != i) {
-				list.add(new VisLabel("Id: " + I18N.get("item_name_" + i) + " (" + c + ")"));
+				list.add(new VisLabel(I18N.get("item_name_" + i) + " (" + c + ")"));
 				c = 0;
 				i = n;
 			}
 			c++;
 		}
-		list.add(new VisLabel("Id: " + I18N.get("item_name_" + i) + " (" + c + ")"));
+		list.add(new VisLabel(I18N.get("item_name_" + i) + " (" + c + ")"));
 		return list.iterator();
 	}
 }

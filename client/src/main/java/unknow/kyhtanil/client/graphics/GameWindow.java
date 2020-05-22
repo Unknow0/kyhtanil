@@ -5,7 +5,6 @@ import java.io.InputStream;
 import org.xml.sax.InputSource;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.kotcrab.vis.ui.widget.VisWindow;
 
 import unknow.kyhtanil.client.Main;
