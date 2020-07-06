@@ -2,7 +2,7 @@
 	<table fillParent="true">
 		<row>
 			<cell>
-				<label text="'Name'" />
+				<label text="i18N.get('field_name')" />
 			</cell>
 			<cell>
 				<label text="$ss.name" />
@@ -10,7 +10,7 @@
 		</row>
 		<row>
 			<cell>
-				<label text="'Body Level'" />
+				<label text="I18N.get('stat_level')" />
 			</cell>
 			<cell>
 				<label text="''+$sb.level" />
@@ -26,15 +26,15 @@
 		</row>
 		<row>
 			<cell>
-				<label text="'Hp'" />
+				<label text="I18N.get('stat_hp')" />
 			</cell>
-			<cell><!-- compute mp/hp -->
+			<cell>
 				<label text='$ss.hp+" / "+$ss.maxHp' />
 			</cell>
 		</row>
 		<row>
 			<cell>
-				<label text="'Mp'" />
+				<label text="I18N.get('stat_mp')" />
 			</cell>
 			<cell>
 				<label text='$ss.mp+" / "+$ss.maxMp' />
@@ -47,7 +47,7 @@
 		</row>
 		<row>
 			<cell>
-				<label text="'Experience Points:'" />
+				<label text="I18N.get('stat_xp')" />
 			</cell>
 			<cell>
 				<label text="''+$xp" />
@@ -98,10 +98,10 @@
 		</row>
 		<row>
 			<cell expandX="">
-				<button text="I18N.get('dialog_cancel')" onchange="$xp=$sb.xp; $l=$sb.level; for(var s in $input) { $input[s].setValue($sb[s])}; GameWindow.STATS.close()" />
+				<button text="I18N.get('dialog_cancel')" onchange="for(var s in $input) { $input[s].setValue($sb[s])}; $xp=$sb.xp; $l=$sb.level; java.lang.System.out.println($xp+'\t'+$sb.xp); java.lang.System.out.println($l+'\t'+$sb.level)" />
 			</cell>
 			<cell expandX="">
-				<button text="'Apply'" onchange="$sb.level=$l; $sb.xp=$xp; for(var s in $input) { $sb[s]=$input[s].getValue()}; state.dirty($sb);$root.invalidate()" />
+				<button text="I18N.get('dialog_apply')" onchange="$sb.level=$l; $sb.xp=$xp; for(var s in $input) { $sb[s]=$input[s].getValue()}; state.dirty($sb);$root.invalidate()" />
 			</cell>
 		</row>
 	</table>

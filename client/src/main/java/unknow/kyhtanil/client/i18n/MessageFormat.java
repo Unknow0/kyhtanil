@@ -79,4 +79,20 @@ public interface MessageFormat {
 			return "{" + index + "," + fmt + "}";
 		}
 	}
+
+	public static class Item implements MessageFormat {
+		private final int index;
+
+		public Item(int index) {
+			this.index = index;
+		}
+
+		@Override
+		public void format(StringBuilder sb, Object... arg) {
+			Object o = arg[index];
+			if (!(o instanceof Number))
+				throw new IllegalArgumentException("wrong argument type");
+			sb.append(I18N.get("item_name_" + o));
+		}
+	}
 }

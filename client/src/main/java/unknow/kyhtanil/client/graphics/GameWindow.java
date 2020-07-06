@@ -74,6 +74,7 @@ public enum GameWindow {
 	 */
 	public void show() {
 		ROOT.addActor(internal);
+		internal.layout();
 		internal.pack();
 		internal.centerWindow();
 	}

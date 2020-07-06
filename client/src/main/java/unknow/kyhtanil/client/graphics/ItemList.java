@@ -18,7 +18,7 @@ import unknow.kyhtanil.common.component.Inventory;
  * @author unknow
  */
 public class ItemList extends CustomList<VisLabel> {
-	private Inventory inventory = State.state.inventory();
+	private static final Inventory inventory = State.state.inventory();
 
 	@Override
 	protected Iterator<VisLabel> content() {

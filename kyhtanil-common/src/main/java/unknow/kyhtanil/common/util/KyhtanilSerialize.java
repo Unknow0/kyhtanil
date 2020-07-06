@@ -21,7 +21,7 @@ import unknow.kyhtanil.common.component.net.Despawn;
 import unknow.kyhtanil.common.component.net.Spawn;
 import unknow.kyhtanil.common.component.net.UpdateInfo;
 import unknow.serialize.binary.BinaryFormat;
-import unknow.serialize.binary.BinaryFormat.Builder;
+import unknow.serialize.binary.BinaryFormatBuilder;
 
 /**
  * BinarySerializer for the client<->server communication
@@ -31,7 +31,7 @@ import unknow.serialize.binary.BinaryFormat.Builder;
 public class KyhtanilSerialize {
 	private static final BinaryFormat format;
 	static {
-		Builder create = BinaryFormat.create();
+		BinaryFormatBuilder create = new BinaryFormatBuilder();
 		create.register(ErrorComp.class);
 		create.register(Login.class);
 		create.register(CreateAccount.class);

@@ -27,15 +27,15 @@ public class I18N {
 		index = new StringIndex(new File("data", "text." + locale.getLanguage()));
 	}
 
-	public static String get(String key) {
+	public static String get(CharSequence key) {
 		try {
-			return index.get(key);
+			return index.get(key.toString());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static String format(String key, Object... arg) {
+	public static String format(CharSequence key, Object... arg) {
 		String string = get(key);
 		if (string == null)
 			return "";

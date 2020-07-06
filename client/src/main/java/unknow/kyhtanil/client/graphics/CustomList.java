@@ -35,6 +35,7 @@ public abstract class CustomList<T extends Actor> extends VisTable {
 				}
 			}
 		});
+		validate();
 	}
 
 	protected abstract Iterator<T> content();
@@ -54,6 +55,6 @@ public abstract class CustomList<T extends Actor> extends VisTable {
 	protected void drawBackground(Batch batch, float parentAlpha, float x, float y) {
 		super.drawBackground(batch, parentAlpha, x, y);
 		if (selection != null)
-			border.draw(batch, selection.getX(), selection.getY(), selection.getWidth(), selection.getHeight());
+			border.draw(batch, selection.getX()+x, selection.getY()+y, selection.getWidth(), selection.getHeight());
 	}
 }

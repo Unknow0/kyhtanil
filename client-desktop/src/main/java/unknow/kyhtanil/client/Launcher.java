@@ -72,8 +72,6 @@ public class Launcher {
 		for (int i = 0; i < libs.length; i++)
 			cp[i + 1] = libs[i].toString();
 		launch("-cp", implode(File.pathSeparator, cp), B.class.getName());
-
-		Files.deleteIfExists(tmp);
 	}
 
 	/**

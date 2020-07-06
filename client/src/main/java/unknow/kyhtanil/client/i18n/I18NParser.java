@@ -15,6 +15,7 @@ import java.util.Locale;
 
 import unknow.kyhtanil.client.i18n.MessageFormat.Compound;
 import unknow.kyhtanil.client.i18n.MessageFormat.FieldFormat;
+import unknow.kyhtanil.client.i18n.MessageFormat.Item;
 import unknow.kyhtanil.client.i18n.MessageFormat.Static;
 import unknow.kyhtanil.client.i18n.MessageFormat.ToString;
 
@@ -39,6 +40,9 @@ public class I18NParser {
 	}
 
 	public MessageFormat parse(String input) {
+		sb.setLength(0);
+		format.clear();
+
 		int index = -1;
 		String type = null;
 		int s = TEXT;
@@ -143,6 +147,8 @@ public class I18NParser {
 		}
 		if ("choice".equals(type))
 			return new FieldFormat(index, new ChoiceFormat(mod));
+		if ("item".equals(type))
+			return new Item(index);
 		return null;
 	}
 
