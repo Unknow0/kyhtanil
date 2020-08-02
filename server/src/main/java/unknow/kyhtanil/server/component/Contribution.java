@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.IntMap;
  */
 @PooledWeaver
 public class Contribution extends Component {
-	/** source -> data */
+	/** source -&gt; data */
 	public IntMap<D> contributions = new IntMap<>();
 
 	/**

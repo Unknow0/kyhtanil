@@ -12,7 +12,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>[1.7.16,)</slf4j.version>
-		<gdx.version>1.9.1</gdx.version>
+		<gdx.version>1.9.10</gdx.version>
 		<artemis.version>2.2.0</artemis.version>
 	</properties>
 
@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>unknow.common</groupId>
 			<artifactId>unknow-serialize</artifactId>
-			<version>1.1.0</version>
+			<version>1.1.2</version>
 		</dependency>
 
 

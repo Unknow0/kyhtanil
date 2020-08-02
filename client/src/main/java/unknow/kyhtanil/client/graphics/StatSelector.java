@@ -119,7 +119,7 @@ public class StatSelector extends VisTable {
 	}
 
 	/**
-	 * set the value (truncate to max if > max, and to min if < min)
+	 * set the value (truncate to max if &gt; max, and to min if &lt; min)
 	 * 
 	 * @param v the new value
 	 */

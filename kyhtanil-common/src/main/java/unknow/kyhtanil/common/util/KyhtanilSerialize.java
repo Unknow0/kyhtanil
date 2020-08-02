@@ -24,7 +24,7 @@ import unknow.serialize.binary.BinaryFormat;
 import unknow.serialize.binary.BinaryFormatBuilder;
 
 /**
- * BinarySerializer for the client<->server communication
+ * BinarySerializer for the client&lt;-&gt;server communication
  * 
  * @author unknow
  */

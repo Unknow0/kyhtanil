@@ -2,7 +2,7 @@
 	<table fillParent="true">
 		<row>
 			<cell>
-				<label text="i18N.get('field_name')" />
+				<label text="I18N.get('field_name')" />
 			</cell>
 			<cell>
 				<label text="$ss.name" />

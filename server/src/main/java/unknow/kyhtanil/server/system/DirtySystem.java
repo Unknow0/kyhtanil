@@ -15,7 +15,7 @@ import unknow.kyhtanil.server.manager.UUIDManager;
 import unknow.kyhtanil.server.system.net.Clients;
 
 /**
- * send & clear dirty event
+ * send and clear dirty event
  * 
  * @author unknow
  */

@@ -104,11 +104,11 @@ public class TexManager {
 	}
 
 	private static class AnimationDrawable implements Drawable {
-		private Animation a;
+		private Animation<TextureRegion> a;
 		private float t;
 
 		public AnimationDrawable(Array<AtlasRegion> regions) {
-			this.a = new Animation(1f, regions, Animation.PlayMode.LOOP);
+			this.a = new Animation<>(1f, regions, Animation.PlayMode.LOOP);
 			this.t = 0;
 		}
 

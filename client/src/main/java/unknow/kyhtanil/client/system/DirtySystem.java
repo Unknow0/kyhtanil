@@ -9,7 +9,7 @@ import unknow.kyhtanil.common.component.Dirty;
 import unknow.kyhtanil.common.component.Position;
 
 /**
- * send & clear dirty event
+ * send &amp; clear dirty event
  * 
  * @author unknow
  */

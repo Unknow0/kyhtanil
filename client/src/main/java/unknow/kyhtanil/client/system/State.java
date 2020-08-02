@@ -13,7 +13,7 @@ import unknow.kyhtanil.common.pojo.CharDesc;
 import unknow.kyhtanil.common.pojo.UUID;
 
 /**
- * Used to share state between actor & entity system
+ * Used to share state between actor &amp; entity system
  * 
  * @author unknow
  */

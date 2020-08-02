@@ -14,7 +14,7 @@ import unknow.kyhtanil.server.manager.LocalizedManager;
 import unknow.kyhtanil.server.manager.UUIDManager;
 
 /**
- * manage projectile life time & on hit effect
+ * manage projectile life time and on hit effect
  * 
  * @author unknow
  */

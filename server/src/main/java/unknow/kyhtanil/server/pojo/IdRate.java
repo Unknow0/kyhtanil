@@ -4,7 +4,7 @@
 package unknow.kyhtanil.server.pojo;
 
 /**
- * an id->rate mapping
+ * a id with some %
  * 
  * @author unknow
  */
@@ -17,7 +17,7 @@ public class IdRate {
 	/**
 	 * choose one id at random
 	 * 
-	 * @param rates all the id rate (the rate sum shoud == 1)
+	 * @param rates all the id rate (the rate sum should == 1)
 	 * @return the chosen id
 	 */
 	public static int gen(IdRate[] rates) {
