@@ -1,4 +1,7 @@
 <layout fillParent="true" id="l" xmlns="dynLayout">
 	<actor class="unknow.kyhtanil.client.graphics.BarActor$Hp" x="0" y="$l.getHeight()-20" width="100" height="10" />
 	<actor class="unknow.kyhtanil.client.graphics.BarActor$Mp" x="0" y="$l.getHeight()-30" width="100" height="10" />
+
+	<img texture="'hud/button'" width="24" height="24" x="100" y="100" />
+	<img texture="'skills/fire'" width="24" height="24" x="100" y="100" />
 </layout>

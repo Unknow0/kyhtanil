@@ -24,7 +24,7 @@ import unknow.kyhtanil.common.pojo.CharDesc;
 import unknow.kyhtanil.server.component.Archetypes;
 import unknow.kyhtanil.server.component.Spawner;
 import unknow.kyhtanil.server.pojo.IdRate;
-import unknow.kyhtanil.server.pojo.Item;
+import unknow.kyhtanil.server.pojo.ItemTemplate;
 import unknow.kyhtanil.server.pojo.Mob;
 
 /**
@@ -47,7 +47,7 @@ public class Database extends BaseSystem {
 	/** cache */
 	private final IntMap<Mob> mobs = new IntMap<>();
 	/** cache */
-	private final IntMap<Item> items = new IntMap<>();
+	private final IntMap<ItemTemplate> items = new IntMap<>();
 
 	/**
 	 * create new Database
@@ -116,7 +116,7 @@ public class Database extends BaseSystem {
 		// load items
 		exec("select * from items", rs -> {
 			while (rs.next())
-				items.put(rs.getInt("id"), new Item());
+				items.put(rs.getInt("id"), new ItemTemplate());
 			return null;
 		});
 
@@ -145,7 +145,7 @@ public class Database extends BaseSystem {
 		return mobs.get(id);
 	}
 
-	public Item getItem(int id) {
+	public ItemTemplate getItem(int id) {
 		return items.get(id);
 	}
 

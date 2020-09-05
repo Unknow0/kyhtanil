@@ -9,10 +9,10 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.kotcrab.vis.ui.Sizes;
 import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.widget.NumberSelector.NumberSelectorStyle;
 import com.kotcrab.vis.ui.widget.VisImageButton;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextField;
+import com.kotcrab.vis.ui.widget.spinner.Spinner.SpinnerStyle;
 
 /**
  * The stat value selector (allow to increment value if points is available)
@@ -34,7 +34,7 @@ public class StatSelector extends VisTable {
 	 * create new StatSelector
 	 */
 	public StatSelector() {
-		NumberSelectorStyle style = VisUI.getSkin().get("default", NumberSelectorStyle.class);
+		SpinnerStyle style = VisUI.getSkin().get("default", SpinnerStyle.class);
 		Sizes sizes = VisUI.getSizes();
 
 		text.setProgrammaticChangeEvents(false);
@@ -45,8 +45,8 @@ public class StatSelector extends VisTable {
 		VisImageButton upButton = new VisImageButton(style.up);
 		VisImageButton downButton = new VisImageButton(style.down);
 
-		buttonsTable.add(upButton).height(sizes.numberSelectorButtonSize).row();
-		buttonsTable.add(downButton).height(sizes.numberSelectorButtonSize);
+		buttonsTable.add(upButton).height(sizes.spinnerButtonHeight).row();
+		buttonsTable.add(downButton).height(sizes.spinnerButtonHeight);
 		add(buttonsTable);
 
 		upButton.addListener(new ChangeListener() {

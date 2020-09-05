@@ -23,6 +23,7 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
 
 import unknow.kyhtanil.client.component.Archetypes;
+import unknow.kyhtanil.client.graphics.DrawableActor;
 import unknow.kyhtanil.client.graphics.GameWindow;
 import unknow.kyhtanil.client.graphics.StatSelector;
 import unknow.kyhtanil.client.i18n.I18N;
@@ -48,6 +49,7 @@ import unknow.kyhtanil.common.util.BaseUUIDManager;
 import unknow.scene.builder.DynLayout;
 import unknow.scene.builder.DynLayoutContext;
 import unknow.scene.builder.DynLayoutContext.Attr;
+import unknow.scene.builder.builders.BuilderActor;
 
 /**
  * Global game window
@@ -83,6 +85,9 @@ public class Main implements ApplicationListener {
 			for (Class<?> c : Arrays.asList(I18N.class, Color.class, Stats.class, Align.class, Screen.class, StatBase.class, StatShared.class, GameWindow.class))
 				dynContext.putClass(c);
 			dynContext.addValue(StatSelector.class, new Attr[] { new Attr("value", "setValue"), new Attr("min", "setMin"), new Attr("max", "setMax") });
+
+			dynContext.addBuilder("img", new BuilderActor(DrawableActor.class, () -> new DrawableActor()));
+			dynContext.addValue(DrawableActor.class, new Attr[] { new Attr("texture", "setTexture") });
 
 			InputSystem inputSystem = new InputSystem(gameVp);
 			WorldConfiguration cfg = new WorldConfiguration();

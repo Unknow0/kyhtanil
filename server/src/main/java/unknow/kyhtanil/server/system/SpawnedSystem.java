@@ -15,7 +15,6 @@ import unknow.kyhtanil.server.component.Contribution;
 import unknow.kyhtanil.server.component.Contribution.D;
 import unknow.kyhtanil.server.component.Spawned;
 import unknow.kyhtanil.server.component.Spawner;
-import unknow.kyhtanil.server.pojo.IdRate;
 
 /**
  * manage spawned entities
@@ -44,8 +43,7 @@ public class SpawnedSystem extends IteratingSystem {
 			return;
 		spawner.get(s.spawner).count--;
 
-		IdRate[] loots = s.mob.loots;
-		int len = loots.length;
+		Inventory mobInventory = inventory.get(entityId);
 
 		Contribution contribution = contrib.get(entityId);
 		for (Entry<D> e : contribution.contributions.entries()) {
@@ -54,18 +52,13 @@ public class SpawnedSystem extends IteratingSystem {
 			p.xp += 1; // TODO
 			d.add(p);
 
-			double random = Math.random();
-			int i = 0;
-			IdRate r;
-
 			Inventory inv = inventory.get(e.key);
-			Inventory.Add add = new Inventory.Add(); // TODO pool
-			while (i < len && (r = loots[i++]).rate < random) {
-				inv.items.add(r.id);
-				add.add(r.id);
-			}
-			if (!add.isEmpty())
+			if (!mobInventory.items.isEmpty()) {
+				Inventory.Add add = new Inventory.Add(); // TODO pool
+				add.addAll(mobInventory.items);
 				d.add(add);
+				inv.items.addAll(mobInventory.items);
+			}
 		}
 	}
 

@@ -3,16 +3,19 @@
  */
 package unknow.kyhtanil.common.component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.artemis.PooledComponent;
 
-import unknow.common.data.IntArrayList;
+import unknow.kyhtanil.common.pojo.Item;
 
 /**
  * @author unknow
  */
 public class Inventory extends PooledComponent {
 	/** list of all item id */
-	public IntArrayList items = new IntArrayList(10);
+	public List<Item> items = new ArrayList<>(10);
 
 	@Override
 	protected void reset() {
@@ -22,7 +25,9 @@ public class Inventory extends PooledComponent {
 	/**
 	 * @author unknow
 	 */
-	public static class Add extends IntArrayList implements Setable<Inventory> {
+	public static class Add extends ArrayList<Item> implements Setable<Inventory> {
+		private static final long serialVersionUID = 1L;
+
 		@Override
 		public Class<Inventory> component() {
 			return Inventory.class;

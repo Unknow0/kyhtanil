@@ -4,6 +4,7 @@ import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 
+import unknow.kyhtanil.common.component.Inventory;
 import unknow.kyhtanil.common.component.Position;
 import unknow.kyhtanil.common.component.Sprite;
 import unknow.kyhtanil.common.component.StatBase;
@@ -29,6 +30,7 @@ public class SpawnSystem extends IteratingSystem {
 	private ComponentMapper<StatShared> mobInfo;
 	private ComponentMapper<Sprite> sprite;
 	private ComponentMapper<StatBase> stats;
+	private ComponentMapper<Inventory> inventory;
 
 	private Archetypes arch;
 
@@ -58,6 +60,18 @@ public class SpawnSystem extends IteratingSystem {
 			Spawned spa = spawned.get(m);
 			spa.spawner = e;
 			spa.mob = mob;
+
+			// Generate mob inventory
+			Inventory inv = inventory.get(m);
+			IdRate[] loots = mob.loots;
+			int len = loots.length;
+			int i = 0;
+			IdRate r;
+
+			double random = Math.random();
+			while (i < len && (r = loots[i++]).rate < random) {
+				inv.items.add(database.getItem(r.id).gen());
+			}
 
 			Position p = position.get(m);
 			p.x = (float) (s.x + Math.random() * s.r * 2 - s.r);
