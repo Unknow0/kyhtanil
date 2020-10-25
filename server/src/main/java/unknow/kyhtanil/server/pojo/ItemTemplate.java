@@ -3,6 +3,9 @@
  */
 package unknow.kyhtanil.server.pojo;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import unknow.kyhtanil.common.Stats;
 import unknow.kyhtanil.common.pojo.Item;
 
@@ -14,6 +17,11 @@ import unknow.kyhtanil.common.pojo.Item;
 public class ItemTemplate {
 	private int id;
 	private StatTemplate[] stats;
+
+	public ItemTemplate(int id, StatTemplate[] stats) {
+		this.id = id;
+		this.stats = stats;
+	}
 
 	/**
 	 * generate an item
@@ -35,10 +43,23 @@ public class ItemTemplate {
 	 * @author unknow
 	 */
 	public static class StatTemplate {
-		private double rate;
 		private Stats stat;
+		private double rate;
 		private int min;
 		private int max;
+
+		/**
+		 * create new StatTemplate
+		 * 
+		 * @param rss
+		 * @throws SQLException
+		 */
+		public StatTemplate(ResultSet rss) throws SQLException {
+			stat = Stats.valueOf(rss.getString("stat"));
+			rate = rss.getDouble("rate");
+			min = rss.getInt("min");
+			max = rss.getInt("max");
+		}
 
 		public double getRate() {
 			return rate;

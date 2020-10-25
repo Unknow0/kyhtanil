@@ -25,6 +25,7 @@ import unknow.kyhtanil.server.component.Archetypes;
 import unknow.kyhtanil.server.component.Spawner;
 import unknow.kyhtanil.server.pojo.IdRate;
 import unknow.kyhtanil.server.pojo.ItemTemplate;
+import unknow.kyhtanil.server.pojo.ItemTemplate.StatTemplate;
 import unknow.kyhtanil.server.pojo.Mob;
 
 /**
@@ -34,6 +35,7 @@ import unknow.kyhtanil.server.pojo.Mob;
  */
 public class Database extends BaseSystem {
 	private static final IdRate[] IDRATES = new IdRate[0];
+	private static final StatTemplate[] STAT_TEMPLATE = new StatTemplate[0];
 	private static final RSConvert<Integer> FIRT_INT = rs -> rs.getInt(1);
 
 	private DataSource ds;
@@ -70,7 +72,7 @@ public class Database extends BaseSystem {
 	 * @throws SQLException
 	 */
 	public void init() throws SQLException {
-		List<IdRate> list = new ArrayList<>();
+		List<Object> list = new ArrayList<>();
 		class Convert implements RSConvert<IdRate[]> {
 			private String c;
 			private boolean standard;
@@ -96,8 +98,10 @@ public class Database extends BaseSystem {
 					list.add(r);
 				}
 				if (standard) {
-					for (IdRate r : list)
+					for (Object o : list) {
+						IdRate r = (IdRate) o;
 						r.rate = r.rate / sum;
+					}
 				}
 				return list.toArray(IDRATES);
 			}
@@ -107,17 +111,22 @@ public class Database extends BaseSystem {
 			while (rs.next()) {
 				int id = rs.getInt("id");
 				Mob mob = new Mob(rs);
-				mob.loots = exec("select * from mobs_loot where mob=?", new Convert("item"), id);
+				mob.loots = query("select * from mobs_loot where mob=?", new Convert("item"), id);
 				mobs.put(id, mob);
 			}
-			return null;
 		});
 
 		// load items
 		exec("select * from items", rs -> {
-			while (rs.next())
-				items.put(rs.getInt("id"), new ItemTemplate());
-			return null;
+			while (rs.next()) {
+				int item = rs.getInt("id");
+				list.clear();
+				exec("select * from items_stats where item=?", rss -> {
+					while (rss.next())
+						list.add(new StatTemplate(rss));
+				}, item);
+				items.put(item, new ItemTemplate(item, list.toArray(STAT_TEMPLATE)));
+			}
 		});
 
 		// load spawners
@@ -131,9 +140,8 @@ public class Database extends BaseSystem {
 				s.max = rs.getInt("max");
 				s.speed = rs.getInt("speed");
 
-				s.mobs = exec("select * from spawner_mobs where spawner=?", new Convert("mob", true), rs.getInt("id"));
+				s.mobs = query("select * from spawner_mobs where spawner=?", new Convert("mob", true), rs.getInt("id"));
 			}
-			return null;
 		});
 	}
 
@@ -153,13 +161,28 @@ public class Database extends BaseSystem {
 		public T convert(ResultSet rs) throws SQLException;
 	}
 
-	private <T> T exec(String sql, RSConvert<T> convert, Object... param) throws SQLException {
+	private static interface RSConsumer {
+		public void accept(ResultSet rs) throws SQLException;
+	}
+
+	private <T> T query(String sql, RSConvert<T> convert, Object... param) throws SQLException {
 		try (Connection c = ds.getConnection()) {
 			PreparedStatement st = c.prepareStatement(sql);
 			for (int i = 0; i < param.length; i++)
 				st.setObject(i + 1, param[i]);
 			try (ResultSet rs = st.executeQuery()) {
 				return convert.convert(rs);
+			}
+		}
+	}
+
+	private void exec(String sql, RSConsumer consumer, Object... param) throws SQLException {
+		try (Connection c = ds.getConnection()) {
+			PreparedStatement st = c.prepareStatement(sql);
+			for (int i = 0; i < param.length; i++)
+				st.setObject(i + 1, param[i]);
+			try (ResultSet rs = st.executeQuery()) {
+				consumer.accept(rs);
 			}
 		}
 	}
@@ -207,7 +230,7 @@ public class Database extends BaseSystem {
 	 * @throws SQLException
 	 */
 	public Integer getAccount(String login, byte[] passHash) throws SQLException {
-		return exec("select id from accounts where lower(login)=lower(?) and pass_hash=?", rs -> rs.next() ? rs.getInt("id") : null, login, passHash);
+		return query("select id from accounts where lower(login)=lower(?) and pass_hash=?", rs -> rs.next() ? rs.getInt("id") : null, login, passHash);
 	}
 
 	/**
@@ -218,7 +241,7 @@ public class Database extends BaseSystem {
 	 * @throws SQLException
 	 */
 	public List<CharDesc> getCharList(int account) throws SQLException {
-		return exec("select c.id, name, level from characters c inner join characters_body b on c.body=b.id  where account=?", rs -> {
+		return query("select c.id, name, level from characters c inner join characters_body b on c.body=b.id  where account=?", rs -> {
 			List<CharDesc> list = new ArrayList<>();
 			while (rs.next())
 				list.add(new CharDesc(rs.getInt("id"), rs.getString("name"), rs.getInt("level")));
@@ -236,7 +259,7 @@ public class Database extends BaseSystem {
 	 * @throws SQLException
 	 */
 	public boolean loadPj(int account, Integer id, int e) throws SQLException {
-		return exec(
+		return query(
 				"select" // @formatter:off
 				+ " c.name, c.hp, c.mp, b.strength, b.constitution, b.intelligence, b.concentration, b.dexterity, b.points"
 				+ " from characters c"

@@ -5,9 +5,12 @@ end
 $func$ LANGUAGE plpgsql;
 
 insert into items (id, name, "desc") values
-	(1, 'slime remains', 'stricky slime remains')
+	(1, 'slime remains', 'stricky slime remains'),
+	(2, 'wooden sword', '')
 	;
 select pg_temp.setserial('items'::regclass);
+insert into items_stats(item, stat, rate, min max) values
+	(2, 'WPN_DMG_SLASH', 1, 1, 1)
 
 insert into mobs (id, name, tex, w, strength, constitution, intelligence, concentration, dexterity) values
 	(1, 'blue slime', 'mobs/slime_blue', 8, 1, 1, 1, 1, 1),
@@ -17,6 +20,7 @@ select pg_temp.setserial('mobs');
 
 insert into mobs_loot (mob, item, rate) values
 	(1, 1, .5),
+	(1, 2, 1),
 	(2, 1, .66)
 	;
 
