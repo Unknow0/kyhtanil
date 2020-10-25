@@ -29,9 +29,8 @@
 								<includes>
 									<include>unknow.sync:sync-client</include>
 									<include>unknow.sync:sync-common</include>
+									<include>org.msgpack:msgpack-core</include>
 									<include>args4j:args4j</include>
-									<include>unknow.common:unknow-serialize</include>
-									<include>org.ow2.asm:asm</include>
 									<include>org.slf4j:slf4j-api</include>
 									<include>org.slf4j:slf4j-simple</include>
 								</includes>
@@ -40,7 +39,8 @@
 								<filter>
 									<artifact>*</artifact>
 									<excludes>
-										<exlude>META-INF/**</exlude>
+										<exlude>META-INF/maven/**</exlude>
+										<exlude>META-INF/versions/**</exlude>
 									</excludes>
 								</filter>
 							</filters>
@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>unknow.sync</groupId>
 			<artifactId>sync-client</artifactId>
-			<version>2.0.0</version>
+			<version>2.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>unknow.kyhtanil</groupId>
