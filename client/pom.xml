@@ -54,5 +54,10 @@
 			<artifactId>vis-ui</artifactId>
 			<version>1.4.6</version>
 		</dependency>
+		<dependency>
+			<groupId>com.xenoamess</groupId>
+			<artifactId>nashorn</artifactId>
+			<version>jdk8u265-b01-x3</version>
+		</dependency>
 	</dependencies>
 </project>

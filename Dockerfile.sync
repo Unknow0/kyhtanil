@@ -1,5 +1,7 @@
-FROM docker.pkg.github.com/unknow0/sync/server
+FROM docker.pkg.github.com/unknow0/sync/server:2.3.0
 
 WORKDIR /opt/sync
+ENTRYPOINT ["java", "-Dorg.slf4j.simpleLogger.defaultLogLevel=trace", "-jar", "/opt/sync-server.jar", "-p", "54320", "-d", "kyhtanil", "-bs", "1024", "--tokens", "kyhtanil"]
 
 ADD bundle-sync.tar.gz /opt/sync
+

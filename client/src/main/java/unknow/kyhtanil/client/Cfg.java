@@ -7,7 +7,7 @@ package unknow.kyhtanil.client;
  */
 public class Cfg {
 	/** server host */
-	public static String host = "127.0.0.1";
+	public static String host = "unknow.hd.free.fr";
 	/** server port */
 	public static int port = 54321;
 }

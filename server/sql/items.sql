@@ -7,7 +7,7 @@ create table items (
 create table items_stats (
 	item int not null,
 	stat varchar(20),
-	rate double,
+	rate float,
 	min int,
 	max int
 	);

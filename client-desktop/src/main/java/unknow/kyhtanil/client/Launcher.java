@@ -11,6 +11,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Pattern;
+import java.io.RandomAccessFile;
+
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -144,7 +147,7 @@ class A extends JFrame implements SyncListener {
 			}
 			SyncRead sync = new SyncRead(".", "temp", p.getProperty("host"), Integer.parseInt(p.getProperty("port")));
 			sync.setListener(a);
-			sync.process(p.getProperty("login"), null);
+			sync.process(p.getProperty("login"), Pattern.compile("^(?:log|tmp.jar)"));
 			a.dispose();
 			return true;
 		} catch (Throwable e) {
